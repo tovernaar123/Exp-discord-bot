@@ -1,6 +1,7 @@
 
 
 //const Rcon = require('simple-rcon');
+require('dotenv').config();
 const fs = require('fs');
 const Rcon = require('rcon-client');
 const Discord = require('discord.js');
@@ -39,15 +40,20 @@ let seconds = date_ob.getSeconds();
 
 
 
-require('dotenv').config();
-
 const TOKEN = process.env.DISCORD_TOKEN;
 
 client.on("ready", () => {
     console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
 });
 
+
+
 client.on("message", msg => {
+    function internal_error(err) {
+        console.error(err)
+        msg.channel.send('Internal error in the command plz contact and admin')
+    }
+
     const guild = msg.guild; 
     //Ends msg early if author is a bot, or if the command does not start with a prefix
     if (msg.author.bot) return;
@@ -85,15 +91,11 @@ client.on("message", msg => {
         if (command.usage) {
             reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
         }
-
         return msg.channel.send(reply);
     }
 
-
-
-
     try {
-        command.execute(msg, args);
+        command.execute(msg, args, internal_error);
     } catch (error) {
         console.error(error);
         msg.reply(`there was an error trying to execute that command!`);
