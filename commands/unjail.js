@@ -61,12 +61,5 @@ module.exports = {
         console.log(main().catch(console.log));
         msg.channel.send('.');
 
-
-
-
-
-
-
-
     },
 };
