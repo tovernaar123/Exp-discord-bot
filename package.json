@@ -1,0 +1,19 @@
+{
+  "name": "botinfo",
+  "version": "1.0.0",
+  "description": "discord bot test for game info",
+  "main": "botinfo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ALo",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^14.6.0",
+    "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0",
+    "file-system": "^2.2.2",
+    "rcon-client": "^4.2.2",
+    "read-last-lines": "^1.7.2"
+  }
+}
