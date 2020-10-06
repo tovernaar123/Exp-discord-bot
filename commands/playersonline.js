@@ -1,4 +1,5 @@
 const { Rcon } = require('rcon-client');
+const Discord = require('discord.js');
 const baseport = 34228;
 const rconpw = process.env.RCONPASS;
 
@@ -19,13 +20,7 @@ async function allCommand(msg, internal_error) {
         results.push(res)
     }
     let values = await Promise.all(results)
-    for (let i = 0; i < values.length; i++) {
-        if(!values[i]){
-            await msg.channel.send(`s${i+1} did not responde`); 
-            continue;
-        }
-        await msg.channel.send(`s${i+1}: ${values[i]}`)
-    }
+    return values
 }
 
 module.exports = {
@@ -56,7 +51,22 @@ module.exports = {
                 .catch((err)=>{internal_error(err); return})
         } else if (server === 'all') {
             console.log(`Server is all`);
-            allCommand(msg, internal_error).catch((err)=>{internal_error(err); return})
+            allCommand(msg, internal_error)
+                .then((values)=>{
+                    const Embed = new Discord.MessageEmbed()
+                        .addField('Online Players', `request by ${author}`, false)
+                        .setColor('0xb40e0e')
+                    for (let i = 0; i < values.length; i++) {
+                        Embed.addField(`S${i+1}`, values[i], true)
+                    }
+                    let amount_of_empty_spaces = 3 - (values.length % 3)
+                    for (let i = 0; i < amount_of_empty_spaces; i++) {
+                        //add and empty to make it look nice 
+                        Embed.addField(`\u200B`,`\u200B`,true)
+                    }
+                    msg.channel.send(Embed)
+                })
+                .catch((err)=>{internal_error(err); return})
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
             msg.reply(`Please pick a server first just a number (1-8) or *all*.  Correct usage is \` po <server#>\``)
