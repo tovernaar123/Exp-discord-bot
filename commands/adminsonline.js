@@ -11,8 +11,9 @@ module.exports = {
         const rconpw = process.env.RCONPASS;
         const rconToSend = `/sc local admins, ctn = {}, 0 for _, p in ipairs(game.connected_players) do if p.admin then ctn = ctn + 1 admins[ctn] = p.name end end rcon.print('Online: '..ctn..': '..table.concat(admins, ', '))`; //get Admins, then add count, then display.
         const server = args[0];
-        const extra = args.slice(2).join(" "); // nothing extra please for this command
-        const rconport = Number(server) + baseport
+        const extra = args.slice(1).join(" "); // nothing extra please for this command
+        const rconport = Number(server) + baseport;
+        let snum = [`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`];
 
         /* OG COMMAND 
         async function main() {
@@ -40,19 +41,19 @@ module.exports = {
         */
         if (!server) 
         { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
-            msg.channel.send('Please pick a server first just a number (1-8). \`<#>\`');
+            msg.channel.send(`Please pick a server. Just the number - ie S1 would be \`1\` (Currently 1-8). Correct usage is \`ao <Server#>\``);
             console.log(`AO Check does not have server number`);
             return;
         }
         if (snum.indexOf(server) === -1) 
         { // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.channel.send(`Please pick a server first just a number (1-8).  Correct usage is afk  \`<Server#>\``);
-            console.log(`AFK Check incorrect server number`);
+            msg.channel.send(`This does not seem to be a valid server number. We need just the number (1-8) ie S1 would be \`1\`.\nCorrect usage is \`ao <Server#>\``);
+            console.log(`AO provided an invalid server number`);
             return;
         }
         if (extra) 
-        { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
-            msg.channel.send(`No reasons (or extra arguments) needed - Please remove. \`<Server#> <username>\``);
+        { // if no other arguments (after 1st ) than returns without running with notice to provide a reason
+            msg.channel.send(`No reasons (or extra arguments) needed - Please remove "${extra}". Correct usage: \`ao <Server#>\``);
             console.log(`AFK was given too many arguments`);
             return;
         }
