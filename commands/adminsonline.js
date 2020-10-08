@@ -15,30 +15,6 @@ module.exports = {
         const rconport = Number(server) + baseport;
         let snum = [`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`];
 
-        /* OG COMMAND 
-        async function main() {
-            const rcon = new Rcon.Rcon({
-                host: "127.0.0.1",
-                port: `${rconport}`,
-                password: `${rconpw}`
-            });
-
-            rcon.on("connect", () => console.log("connected"));
-            rcon.on("authenticated", () => console.log("authenticated"));
-            rcon.on("end", () => console.log("end"));
-
-            await rcon.connect();
-
-            let res = await rcon.send(rconToSend);
-
-            msg.channel.send(res);
-
-            console.log(res);
-
-          rcon.end();
-       }
-        console.log(main().catch(console.log));
-        */
         if (!server) 
         { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
             msg.channel.send(`Please pick a server. Just the number - ie S1 would be \`1\` (Currently 1-8). Correct usage is \`ao <Server#>\``);
@@ -94,7 +70,5 @@ module.exports = {
             return; // ends runCommand Function
         }
         runCommand();
-
-
     },
 };
