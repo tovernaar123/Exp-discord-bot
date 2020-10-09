@@ -13,7 +13,7 @@ module.exports = {
         const server = Number(args[0]) ||args[0]|;
         const extra = args.slice(1).join(" "); // nothing extra please for this command
         const rconport = Number(server) + baseport;
-        let snum = [`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`];
+        
 
         if (!server) 
         { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
