@@ -50,7 +50,7 @@ module.exports = {
 
                 await rcon.connect();
                 const responses = await rcon.send(rconToSend);
-                rcon.end();
+                await rcon.end();
                 await rcon.end();
                 if (!responses) { return console.log('fail') }; // checks to see if the reply is completly void - if so then returns without running, posts in console
                 if (!responses) { return respNone() }; // If Responses is blank (normal for kicks and bans) then runs function called respNone found below.
