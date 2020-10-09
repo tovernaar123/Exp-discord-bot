@@ -43,7 +43,7 @@ module.exports = {
 
             rcon.on("connect", () => console.log("connected"));
             rcon.on("authenticated", () => console.log("authenticated"));
-            rcon.on("error", () => console.log("errors"));
+            rcon.on("error", (err) => console.log(err));
             rcon.on("end", () => console.log("end"));
 
             try {	// tests to see if the connection works, if not fails to catch block 
