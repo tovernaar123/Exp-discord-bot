@@ -21,7 +21,7 @@ module.exports = {
             console.log(`AO Check does not have server number`);
             return;
         }
-        if (snum.indexOf(server) === -1) 
+        if (server < 9 && server > 0) 
         { // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
             msg.channel.send(`This does not seem to be a valid server number. We need just the number (1-8) ie S1 would be \`1\`.\nCorrect usage is \`ao <Server#>\``);
             console.log(`AO provided an invalid server number`);
