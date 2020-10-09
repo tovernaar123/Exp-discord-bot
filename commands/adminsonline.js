@@ -52,7 +52,7 @@ module.exports = {
                 const responses = await rcon.send(rconToSend);
                 rcon.end();
                 await rcon.end();
-                if (responses === void 0) { return console.log('fail') }; // checks to see if the reply is completly void - if so then returns without running, posts in console
+                if (!responses) { return console.log('fail') }; // checks to see if the reply is completly void - if so then returns without running, posts in console
                 if (!responses) { return respNone() }; // If Responses is blank (normal for kicks and bans) then runs function called respNone found below.
                 if (responses) { return resp(); } // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
 
