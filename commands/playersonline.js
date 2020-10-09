@@ -65,6 +65,7 @@ module.exports = {
                         Embed.addField(`\u200B`,`\u200B`,true)
                     }
                     msg.channel.send(Embed)
+                        .catch((err)=>{internal_error(err); return})
                 })
                 .catch((err)=>{internal_error(err); return})
         } else {
