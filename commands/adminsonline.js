@@ -10,7 +10,7 @@ module.exports = {
     execute(msg, args) {
         const rconpw = process.env.RCONPASS;
         const rconToSend = `/sc local admins, ctn = {}, 0 for _, p in ipairs(game.connected_players) do if p.admin then ctn = ctn + 1 admins[ctn] = p.name end end rcon.print('Online: '..ctn..': '..table.concat(admins, ', '))`; //get Admins, then add count, then display.
-        const server = args[0];
+        const server = Number(args[0]) ||args[0]|;
         const extra = args.slice(1).join(" "); // nothing extra please for this command
         const rconport = Number(server) + baseport;
         let snum = [`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`];
