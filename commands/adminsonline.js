@@ -26,9 +26,8 @@ async function runCommand(server, rcon, msg) {
 
     // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message 
     if (response) {
-        const Embed = new Discord.MessageEmbed()
+        const Embed = Discord.MessageEmbed()
         Embed.addField('Online Admins', `request by ${msg.author.username} \n \u200B`, false)
-        Embed.setColor('0xb40e0e')
         Embed.addField(`S${server}`, response, true)
         await msg.channel.send(Embed)
         console.log(`S${server} checked admins online: ${response}`)
@@ -42,9 +41,8 @@ async function runCommand(server, rcon, msg) {
 */
 async function all_servers(rcons, msg) {
     await msg.channel.send("Asked for all online admins: Awaiting reply from servers...")
-    const Embed = new Discord.MessageEmbed()
+    const Embed = Discord.MessageEmbed()
     Embed.addField('Online Admins', `request by ${msg.author.username}`, false)
-    Embed.setColor('0xb40e0e')
 
     //adds fields for every server
     let amount_of_fields = 0;

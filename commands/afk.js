@@ -39,8 +39,7 @@ module.exports = {
             let json_data
             try {
                 if(!rcon.connected){
-                    const Embed = new Discord.MessageEmbed()
-                    Embed.setColor('0xb40e0e')
+                    const Embed = Discord.MessageEmbed()
                     Embed.addField(`S${server} is not connected to the bot`, `S${server} offline`, false)
                     await msg.channel.send(Embed);
                     return
@@ -49,7 +48,7 @@ module.exports = {
                 if(responses){
                     json_data = JSON.parse(responses)
                 }else{
-                    const Embed = new Discord.MessageEmbed()
+                    const Embed = Discord.MessageEmbed()
                     Embed.addField(`AFK players S${server}`, `request by ${msg.author.username}`, false)
                     Embed.addField(`No players online`, `\u200B`, false);
                     await msg.channel.send(Embed)
@@ -65,8 +64,7 @@ module.exports = {
             };
             // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
             if (json_data) {
-                const Embed = new Discord.MessageEmbed()
-                Embed.setColor('0xb40e0e')
+                const Embed = Discord.MessageEmbed()
                 let length = Object.keys(json_data).length
                 if(length === 0 ){
                     Embed.addField(`AFK players S${server}`, `request by ${msg.author.username}`, false)

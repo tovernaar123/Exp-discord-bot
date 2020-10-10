@@ -12,6 +12,15 @@ let rcons = {};
 //array for all ofline servers
 let offline_servers = [2, 7]
 
+//standart embed settings like color and footer
+let real_discord_embed = Discord.MessageEmbed
+Discord.MessageEmbed = function () {
+    let discord_embed = new real_discord_embed()
+    discord_embed.setTimestamp()
+    discord_embed.setFooter(client.user.username, client.user.avatarURL())
+    discord_embed.setColor('0xb40e0e')
+    return discord_embed
+}
 
 async function start() {
     //instantiate the list of commands 

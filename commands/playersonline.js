@@ -12,8 +12,7 @@ async function oneCommand(servernum, rcon, msg, client) {
     if (rcon.connected) {
         res = await rcon.send('/p o')
     } else if(msg){
-        const Embed = new Discord.MessageEmbed()
-        Embed.setColor('0xb40e0e')
+        const Embed = Discord.MessageEmbed()
         Embed.addField(`S${servernum} is not connected to the bot`, `S${servernum} offline`, false)
         await msg.channel.send(Embed);
         return
@@ -23,12 +22,8 @@ async function oneCommand(servernum, rcon, msg, client) {
     if (!msg) {
         return res
     } else {
-        const Embed = new Discord.MessageEmbed()
-        Embed.setTimestamp()
-        Embed.setFooter(client.user.username, client.user.avatarURL())
-        console.log(client.user.avatarURL)
+        const Embed = Discord.MessageEmbed()
         Embed.addField('Online Players', `request by ${msg.author.username} \n \u200B`, false)
-        Embed.setColor('0xb40e0e')
         Embed.addField(`S${servernum}`, res, true)
         await msg.channel.send(Embed)
     }
@@ -42,9 +37,8 @@ async function oneCommand(servernum, rcon, msg, client) {
 async function allCommand(msg, rcons) {
     await msg.channel.send("Asked for all online players: Awaiting reply from servers...")
 
-    const Embed = new Discord.MessageEmbed()
+    const Embed = Discord.MessageEmbed()
     Embed.addField('Online Players', `request by ${msg.author.username}`, false)
-    Embed.setColor('0xb40e0e')
 
     //adds field for every server
     let amount_of_fields = 0;
@@ -91,11 +85,11 @@ module.exports = {
 
         if (server < 9 && server > 0) {
             console.log('Server is 1-8');
-            oneCommand(server, rcons[server], msg, client)
+            oneCommand(server, rcons[server], msg)
                 .catch((err) => { internal_error(err); return })
         } else if (server === 'all') {
             console.log(`Server is all`);
-            allCommand(msg, rcons, internal_error, client)
+            allCommand(msg, rcons, internal_error)
                 .catch((err) => { internal_error(err); return })
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
