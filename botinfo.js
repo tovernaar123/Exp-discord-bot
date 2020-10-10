@@ -1,7 +1,6 @@
 
 
 //const Rcon = require('simple-rcon');
-require('dotenv').config();
 const fs = require('fs');
 const { rcon_connect } = require('./rcon_auto_connect.js');
 const Discord = require('discord.js');
@@ -55,17 +54,19 @@ client.on("ready", () => {
     console.log(`${date_string}: I am ready!`)
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
 });
+}); // when bot boots up prints the time along with the ready notice. 
 
 
 
 client.on("message", msg => {
+    //Ends msg early if author is a bot
     function internal_error(err) {
         console.log(err)
         msg.channel.send('Internal error in the command plz contact and admin')
     }
     const guild = msg.guild;
-    //Ends msg early if author is a bot, or if the command does not start with a prefix
     if (msg.author.bot) return;
+    //Ends msg  code early if the command does not start with a prefix
 
     if (!msg.content.startsWith(prefix)) return;
 
@@ -74,23 +75,22 @@ client.on("message", msg => {
 
     //gets the command in lower case
     const commandName = args.shift().toLowerCase();
-
     // get the command or its aka
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aka && cmd.aka.includes(commandName));
 
     // if no command dont do anything
     if (!command) return;
-
-    if (command.guildOnly && msg.channel.type !== 'text') {
+    // disallows commands in dm's to run as commands in dms if it is set to guild only
+    if (command.guildOnly && msg.channel.type !== 'text') 
+    {
         return msg.reply('Sorry - I can\'t do that in a DM');
     }
-
-    // 260843215836545025 test server 762249085268656178 exp
+    // only runs if below Guild id's (EXP = `260843215836545025`)
     if (command.guildOnly && (guild != `762249085268656178` && guild != `260843215836545025`)) {
         console.log(`Not correct guild`);
         return msg.reply(`Wrong guild`);
     }
-
+    
     let req_role = command.required_role
     if (req_role) {
         let all_roles = Array.from(guild.roles.cache)
@@ -102,11 +102,12 @@ client.on("message", msg => {
             return;
         };
     }
-
+        /* END ALo to review */
+    // If command requires an argument, decline to run if none is provided. Request arguments in the main export of the command file. 
     if (command.args && !args.length) {
         let reply = `You didn't provide any arguments, ${msg.author}!`;
         if (command.usage) {
-            reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+            reply += `\nThe proper usage would be: \`${prefix} ${command.name} ${command.usage}\``;
         }
         return msg.channel.send(reply);
     }
