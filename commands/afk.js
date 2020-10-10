@@ -1,9 +1,7 @@
-const Rcon = require('rcon-client');
-const rconpw = process.env.RCONPASS;
-const baseport = 34228;
+const Discord = require('discord.js');
 module.exports = {
     name: 'afk',
-    aka: ['whoisafk','afkstreak','alwaysafk'],
+    aka: ['whoisafk', 'afkstreak', 'alwaysafk'],
     description: 'how many players are online?',
     guildOnly: true,
     args: true,
@@ -11,77 +9,85 @@ module.exports = {
     usage: `<#>`,
     execute(msg, args, rcons, internal_error) {
         const server = Number(args[0]) || args[0];
+        let extra = args.slice(1).join(" "); // cant have any of this here for afk
+        let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`; //send afk chat bot
 
-        let rconport = Number(server) + baseport
-        let toAFK = args[1]; //person to check afk for
-        let extra = args[2] // cant have any of this here for afk
-        let rconToSend = `/c rcon.print(math.floor(game.players['${toAFK}'].afk_time /3600))`; //send afk chat bot
-
-
-        if (!server) { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
-            msg.channel.send('Please pick a server first just a number (1-8). \`<#> <Serverusername>\`');
-            console.log(`AFK Check not have server number`);
-            return;
-        }
-        if (!(server >= 1 && server <= 8)) { // If a person DID give a server number but did NOT give the correct one (1 to 8 )
-            msg.channel.send(`Please pick a server first just a number (1-8).  Correct usage is afk  \`<Server#> <username>\``);
-            console.log(`AFK Check incorrect server number`);
-            return;
-        }
-        if (!toAFK) { // if no 2nd argument returns without running with error
-            msg.channel.send(`You need to tell us who you would like to check for AFK time. \`<Server#> <username>\``);
-            console.log(`AFK-Did not have name`);
-            return;
-        }
         if (extra) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
-            msg.channel.send(`No reasons (or extra arguments) needed - Please remove. \`<Server#> <username>\``);
+            msg.channel.send(`Please remove "${extra}". Correct usage: \`.exp afk <Server#>\``)
+                .catch((err) => { internal_error(err); return })
             console.log(`AFK was given too many arguments`);
             return;
         }
-        async function runCommand(internal_error) {
-            const rcon = new Rcon.Rcon({
-                host: "127.0.0.1",
-                port: `${rconport}`,
-                password: `${rconpw}`
-            });
+        if (!server) { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
+            msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`')
+                .catch((err) => { internal_error(err); return })
+            console.log(`Kick-Did not have server number`);
+            return;
+        }
 
-            rcon.on("connect", () => console.log("connected"));
-            rcon.on("authenticated", () => console.log("authenticated"));
-            rcon.on("error", () => console.log("errors"));
-            rcon.on("end", () => console.log("end"));
-
-            try {	// tests to see if the connection works, if not fails to catch block 
-
-                await rcon.connect();
-                let player_exsits = await rcon.send(`/c rcon.print(game.players[${toAFK}] ~= nil)`)
-                player_exsits = Boolean(player_exsits)
-                if(!player_exsits){
-                    sg.channel.send(`Player ${toAFK} has not been reported to be on that server`)
+        if (server < 9 && server > 0) {
+            console.log('Server is 1-8');
+            runCommand(server, rcons[server], msg, internal_error)
+                .catch((err) => { internal_error(err); return })
+        } else {
+            // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
+            msg.reply(`Please pick a server first just a number (1-8).  Correct usage is \`.exp afk <server#>\``)
+                .catch((err) => { internal_error(err); return })
+            console.log(`players online by ${msg.author.username} incorrect server number`);
+        }
+        async function runCommand(server, rcon, msg, internal_error) {
+            let json_data
+            try {
+                if(!rcon.connected){
+                    const Embed = new Discord.MessageEmbed()
+                    Embed.setColor('0xb40e0e')
+                    Embed.addField(`S${server} is not connected to the bot`, `S${server} offline`, false)
+                    await msg.channel.send(Embed);
+                    return
                 }
                 const responses = await rcon.send(rconToSend);
-                await rcon.end();
-                if (!responses) { return respNone() }; // If Responses is blank (normal for kicks and bans) then runs function called respNone found below.
-                if (responses) { return resp(); } // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
-
-                function resp() { // reply from Rcon pasted in command chat and logged in log
-                    if(responses.startsWith('Cannot execute command. Error: (command):1: attempt to index field')) { msg.channel.send(`Player ${toAFK} has not been reported to be on that server`) }
-                    else { msg.channel.send(`Player ${toAFK} has been AFK for the following amount of min(s): ${responses}`) }
-                    console.log(responses + "min afk")
+                if(responses){
+                    json_data = JSON.parse(responses)
+                }else{
+                    const Embed = new Discord.MessageEmbed()
+                    Embed.addField(`AFK players S${server}`, `request by ${msg.author.username}`, false)
+                    Embed.addField(`No players online`, `\u200B`, false);
+                    await msg.channel.send(Embed)
                 }
-                function respNone() { // ran if no reply from rcon - normal for kicks and bans because why not
-                    msg.channel.send(`There was no response from the server, this is not normal for this command please ask an admin to check the logs.`)
-                        .catch((err)=>{internal_error(err); return})
-                    console.log(`Rcon: There was no response from the server, this is not normal for this command please ask an admin to check the logs.`);
+            } catch (err) {
+                return internal_error(err)
+            }
+            // If Responses is blank (not normal).
+            if (!json_data) {
+                await msg.channel.send(`There was no response from the server, this is not normal for this command please ask an admin to check the logs.`)
+                console.log(`Rcon: There was no response from the server, this is not normal for this command please ask an admin to check the logs.`);
+                return;
+            };
+            // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
+            if (json_data) {
+                const Embed = new Discord.MessageEmbed()
+                Embed.setColor('0xb40e0e')
+                let length = Object.keys(json_data).length
+                if(length === 0 ){
+                    Embed.addField(`AFK players S${server}`, `request by ${msg.author.username}`, false)
+                    Embed.addField(`No players online`, `\u200B`, false);
+                }else{
+                    Embed.addField(`AFK players S${server}`, `request by ${msg.author.username} \n \u200B`, false)
                 }
-            } catch (error) { //If any major fails from above will stop and run this, normally this is from a connection error, which is normally due to an offline server.
-                //await msg.channel.send(`Error: *${error.message}* \nErrors are normally caused by trying to reach an offline server. But not always.`)
-                console.log(error.name + error.message + error.stack)
-                console.log('\nServer is offline???')
-                internal_error(error);
+                for (let name in json_data) {
+                    let time = json_data[name] / 60;
+                    let hours = Math.floor(time / 3600);
+                    let minutes = Math.floor(time / 60) - (hours * 60);
+                    let seconds = Math.floor(time - ((hours * 3600) + (minutes * 60)));
+                    if(hours > 0 ){
+                        Embed.addField(`${name}:`, `${hours}h, ${minutes}m and ${seconds}s`, false);
+                    }else{
+                        Embed.addField(`${name}:`, `${minutes}m and ${seconds}s`, false);
+                    }
+                }
+                await msg.channel.send(Embed)
             }
 
-            return // ends runCommand Function
         }
-        runCommand(internal_error);
     },
 };

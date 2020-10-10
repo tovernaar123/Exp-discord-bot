@@ -7,7 +7,7 @@ module.exports = {
     helpLevel: 'staff',
     required_role: 'staff', //board
     usage: ` <server#> <lines>`,
-    execute(msg, args) {
+    execute(msg, args, rcons, internal_error) {
         const readLastLines = require(`read-last-lines`);
         const server = args[0];
         let extra = args.slice(2).join(" ");

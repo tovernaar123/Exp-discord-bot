@@ -1,6 +1,6 @@
 
 
-//const Rcon = require('simple-rcon');
+require('dotenv').config()
 const fs = require('fs');
 const { rcon_connect } = require('./rcon_auto_connect.js');
 const Discord = require('discord.js');
@@ -9,9 +9,8 @@ const baseport = 34228;
 const prefix = `.exp`
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 let rcons = {};
-
 //array for all ofline servers
-let offline_servers = [2]
+let offline_servers = [2, 7]
 
 
 async function start() {
@@ -80,17 +79,19 @@ client.on("message", msg => {
 
     // if no command dont do anything
     if (!command) return;
+    
     // disallows commands in dm's to run as commands in dms if it is set to guild only
     if (command.guildOnly && msg.channel.type !== 'text') 
     {
         return msg.reply('Sorry - I can\'t do that in a DM');
     }
-    // only runs if below Guild id's (EXP = `260843215836545025`)
+    // only runs if below Guild id's (EXP = `260843215836545025`) 762249085268656178 is testing server
     if (command.guildOnly && (guild != `762249085268656178` && guild != `260843215836545025`)) {
         console.log(`Not correct guild`);
         return msg.reply(`Wrong guild`);
     }
     
+    // Check to see if you the role you need or a higher one
     let req_role = command.required_role
     if (req_role) {
         let all_roles = Array.from(guild.roles.cache)
@@ -102,7 +103,7 @@ client.on("message", msg => {
             return;
         };
     }
-        /* END ALo to review */
+
     // If command requires an argument, decline to run if none is provided. Request arguments in the main export of the command file. 
     if (command.args && !args.length) {
         let reply = `You didn't provide any arguments, ${msg.author}!`;

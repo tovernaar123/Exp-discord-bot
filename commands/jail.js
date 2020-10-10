@@ -10,7 +10,7 @@ module.exports = {
     helpLevel: 'staff',
     required_role: 'staff',
     usage: `<#> <username> <reason>`,
-    execute(msg, args) {
+    execute(msg, args, rcons, client, internal_error) {
         const server = args[0];
         const rconport = Number(server) + Number(baseport)
         let reason1 = args.slice(2).join(" ");

@@ -1,26 +1,68 @@
-const { Rcon } = require('rcon-client');
 const Discord = require('discord.js');
-const baseport = 34228;
-const rconpw = process.env.RCONPASS;
 
-async function oneCommand(servernum) {
-    let port_to_use = baseport + Number(servernum)
-    const rcon = await Rcon.connect({
-        host: "localhost", port: port_to_use, password: rconpw
-    })
-    let res = await rcon.send('/p o')
-    return res
-}
-
-async function allCommand(msg, internal_error) {
-    await msg.channel.send("Asked for all online players: Awaiting reply from servers...")
-    let results = [];
-    for (let i = 1; i < 9; i++) {
-        let res = oneCommand(i).catch((err)=>{internal_error(err); return})
-        results.push(res)
+/**
+ * 
+ * @param {Number} servernum the number name of the server not used for anything but printing
+ * @param {Rcon} rcon the rcon to send the command 
+ * @param {Discord.Message} send_message if given will send the result in an embed to the channel
+ * @returns {string} the players that are online on the server
+*/
+async function oneCommand(servernum, rcon, msg, client) {
+    let res;
+    if (rcon.connected) {
+        res = await rcon.send('/p o')
+    } else if(msg){
+        const Embed = new Discord.MessageEmbed()
+        Embed.setColor('0xb40e0e')
+        Embed.addField(`S${servernum} is not connected to the bot`, `S${servernum} offline`, false)
+        await msg.channel.send(Embed);
+        return
+    }else{
+        res = `S${servernum} is not connected to the bot`
     }
-    let values = await Promise.all(results)
-    return values
+    if (!msg) {
+        return res
+    } else {
+        const Embed = new Discord.MessageEmbed()
+        Embed.setTimestamp()
+        Embed.setFooter(client.user.username, client.user.avatarURL())
+        console.log(client.user.avatarURL)
+        Embed.addField('Online Players', `request by ${msg.author.username} \n \u200B`, false)
+        Embed.setColor('0xb40e0e')
+        Embed.addField(`S${servernum}`, res, true)
+        await msg.channel.send(Embed)
+    }
+}
+/**
+ * 
+ * @param {Discord.Message} msg the message that excute this command
+ * @param {Rcon} rcons the open rcon connection to the server
+ * @returns {void}
+*/
+async function allCommand(msg, rcons) {
+    await msg.channel.send("Asked for all online players: Awaiting reply from servers...")
+
+    const Embed = new Discord.MessageEmbed()
+    Embed.addField('Online Players', `request by ${msg.author.username}`, false)
+    Embed.setColor('0xb40e0e')
+
+    //adds field for every server
+    let amount_of_fields = 0;
+    for (let i = 1; i < 9; i++) {
+        let res = await oneCommand(i, rcons[i])
+        Embed.addField(`S${i}`, res, true)
+        amount_of_fields += 1;
+    }
+
+    //adds empty fields to make the grid look good
+    let amount_of_empty_spaces = 3 - (amount_of_fields % 3)
+    for (let i = 0; i < amount_of_empty_spaces; i++) {
+        //add and empty to make it look nice 
+        Embed.addField(`\u200B`, `\u200B`, true)
+    }
+
+    //Send the embed
+    await msg.channel.send(Embed)
 }
 
 module.exports = {
@@ -32,46 +74,33 @@ module.exports = {
     usage: ` <server#>`,
     execute(msg, args, rcons, internal_error) {
         const author = msg.author.username; //find author
-        const server =  Number(args[0]) || args[0];
+        const server = Number(args[0]) || args[0];
 
         if (!server) { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
             msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`')
-                .catch((err)=>{internal_error(err); return})
-            console.log(`Kick-Did not have server number`);
+                .catch((err) => { internal_error(err); return })
+            console.log(`po-Did not have server number`);
             return;
         }
+        if (args[1]) {
+            msg.channel.send('No second argument is needed (1-8). correct usage: \`<#> <username> <reason>\`')
+                .catch((err) => { internal_error(err); return })
+            console.log(`To many args not have server number`);
+            return
+        }
 
-        if (server >= 1 && server <= 1) {
+        if (server < 9 && server > 0) {
             console.log('Server is 1-8');
-            oneCommand(server)
-                .then((result) => {
-                    msg.channel.send(result)
-                        .catch((err)=>{internal_error(err); return})
-                })
-                .catch((err)=>{internal_error(err); return})
+            oneCommand(server, rcons[server], msg, client)
+                .catch((err) => { internal_error(err); return })
         } else if (server === 'all') {
             console.log(`Server is all`);
-            allCommand(msg, internal_error)
-                .then((values)=>{
-                    const Embed = new Discord.MessageEmbed()
-                        .addField('Online Players', `request by ${author}`, false)
-                        .setColor('0xb40e0e')
-                    for (let i = 0; i < values.length; i++) {
-                        Embed.addField(`S${i+1}`, values[i], true)
-                    }
-                    let amount_of_empty_spaces = 3 - (values.length % 3)
-                    for (let i = 0; i < amount_of_empty_spaces; i++) {
-                        //add and empty to make it look nice 
-                        Embed.addField(`\u200B`,`\u200B`,true)
-                    }
-                    msg.channel.send(Embed)
-                        .catch((err)=>{internal_error(err); return})
-                })
-                .catch((err)=>{internal_error(err); return})
+            allCommand(msg, rcons, internal_error, client)
+                .catch((err) => { internal_error(err); return })
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
             msg.reply(`Please pick a server first just a number (1-8) or *all*.  Correct usage is \` po <server#>\``)
-                .catch((err)=>{internal_error(err); return})
+                .catch((err) => { internal_error(err); return })
             console.log(`players online by ${author} incorrect server number`);
         }
     }

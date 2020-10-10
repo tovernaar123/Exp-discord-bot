@@ -8,7 +8,7 @@ module.exports = {
     required_role: 'staff',
     usage: `<num of posts>`,
     execute(msg, args, rcons, internal_error) {
-        const bulknum = args[0];
+        const bulknum = Number(args[0]);
         if (!bulknum) {
             msg.channel.send('please pick a number first');
             console.log(`wanted to delete but did not tell us how many posts`);
