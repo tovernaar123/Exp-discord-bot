@@ -67,17 +67,25 @@ client.on("message", msg => {
     //Ends msg early if author is a bot, or if the command does not start with a prefix
     if (msg.author.bot) return;
 
-    if (msg.content.indexOf(prefix) !== 0) return;
+    if (!msg.content.startsWith(prefix)) return;
 
+    // remove the .exp then removes the spaces in the beging and end then splits it up into args
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
+
+    //gets the command in lower case
     const commandName = args.shift().toLowerCase();
 
+    // get the command or its aka
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aka && cmd.aka.includes(commandName));
+
+    // if no command dont do anything
     if (!command) return;
 
     if (command.guildOnly && msg.channel.type !== 'text') {
         return msg.reply('Sorry - I can\'t do that in a DM');
     }
+
+    // 260843215836545025 test server 762249085268656178 exp
     if (command.guildOnly && (guild != `762249085268656178` && guild != `260843215836545025`)) {
         console.log(`Not correct guild`);
         return msg.reply(`Wrong guild`);
@@ -86,7 +94,7 @@ client.on("message", msg => {
     let req_role = command.required_role
     if (req_role) {
         let all_roles = Array.from(guild.roles.cache)
-        roles_required = all_roles.find(role_obj => role_obj[1].name === req_role)
+        let roles_required = all_roles.find(role_obj => role_obj[1].name === req_role)
         let allowed = msg.member.roles.highest.comparePositionTo(roles_required[1]) >= 0;
         if (!allowed) {
             console.log(`Unauthorized `);
@@ -104,7 +112,7 @@ client.on("message", msg => {
     }
 
     try {
-        command.execute(msg, args, internal_error);
+        command.execute(msg, args, rcons, internal_error);
     } catch (error) {
         console.log(error);
         msg.reply(`there was an error trying to execute that command!`);

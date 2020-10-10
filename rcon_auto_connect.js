@@ -8,6 +8,7 @@ const rconpw = process.env.RCONPASS;
     @returns {object} Object that contains send (to send commands) and connected (to check the connection).
 */
 exports.rcon_connect = async function(port, i) {
+    
     const client = new rcon_client.Rcon({
         host: "localhost",
         port: port,

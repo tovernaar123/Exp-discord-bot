@@ -8,7 +8,7 @@ module.exports = {
     helpLevel: 'staff',
     required_role: 'staff',
     usage: `<#> <username> <reason>`,
-    execute(msg, args) {
+    execute(msg, args, rcons, internal_error) {
         const Rcon = require('rcon-client');
         const rconpw = process.env.RCONPASS;
         const server = args[0];

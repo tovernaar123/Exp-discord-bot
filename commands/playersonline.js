@@ -30,7 +30,7 @@ module.exports = {
     guildOnly: true,
     args: true,
     usage: ` <server#>`,
-    execute(msg, args, internal_error) {
+    execute(msg, args, rcons, internal_error) {
         const author = msg.author.username; //find author
         const server =  Number(args[0]) || args[0];
 

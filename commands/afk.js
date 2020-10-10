@@ -9,7 +9,7 @@ module.exports = {
     args: true,
     required_role: 'staff',
     usage: `<#>`,
-    execute(msg, args, internal_error) {
+    execute(msg, args, rcons, internal_error) {
         const server = Number(args[0]) || args[0];
 
         let rconport = Number(server) + baseport

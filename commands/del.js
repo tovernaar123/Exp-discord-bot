@@ -7,7 +7,7 @@ module.exports = {
     helpLevel: 'admin',
     required_role: 'staff',
     usage: `<num of posts>`,
-    execute(msg, args) {
+    execute(msg, args, rcons, internal_error) {
         const bulknum = args[0];
         if (!bulknum) {
             msg.channel.send('please pick a number first');

@@ -7,7 +7,7 @@ module.exports = {
     guildOnly: true,
     args: true,
     usage: `<#>`,
-    execute(msg, args) {
+    execute(msg, args, rcons, internal_error) {
         const rconpw = process.env.RCONPASS;
         const rconToSend = `/sc local admins, ctn = {}, 0 for _, p in ipairs(game.connected_players) do if p.admin then ctn = ctn + 1 admins[ctn] = p.name end end rcon.print('Online: '..ctn..': '..table.concat(admins, ', '))`; //get Admins, then add count, then display.
         const server = args[0];
@@ -27,8 +27,9 @@ module.exports = {
             await rcon.connect();
 
             let responses1 = await rcon.send(rconToSend);
-
-            msg.channel.send(responses1);
+            if(responses1 && responses1 != ""){
+                msg.channel.send(responses1);
+            }
 
             console.log(responses1);
 
