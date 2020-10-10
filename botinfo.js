@@ -54,7 +54,7 @@ client.on("ready", () => {
     console.log(`${date_string}: I am ready!`)
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
 });
-}); // when bot boots up prints the time along with the ready notice. 
+
 
 
 
