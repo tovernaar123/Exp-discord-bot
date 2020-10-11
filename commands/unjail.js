@@ -5,8 +5,8 @@ module.exports = {
     description: 'jail any user (Admin/Mod only command)',
     guildOnly: true,
     args: true,
-    helpLevel: 'staff',
-    required_role: 'staff',
+    helpLevel: role.staff,
+    required_role: role.staff,
     usage: `<#> <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
         const Rcon = require('rcon-client');

@@ -5,7 +5,7 @@ module.exports = {
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
-    required_role: 'staff', //board
+    required_role: role.staff, 
     usage: ` <server#> <lines>`,
     execute(msg, args, rcons, internal_error) {
         const readLastLines = require(`read-last-lines`);

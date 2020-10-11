@@ -9,6 +9,14 @@ const baseport = 34228;
 const prefix = `.exp`
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 let rcons = {};
+//global for all commands to use this object
+role = {
+    staff: "762264452611440653",
+    admin: "764526097768644618",
+    mod: "762260114186305546",
+}
+
+
 //array for all ofline servers
 let offline_servers = [2, 7]
 
@@ -66,7 +74,7 @@ client.on("ready", () => {
 
 
 
-client.on("message", msg => {
+client.on("message", async (msg) => {
     //Ends msg early if author is a bot
     function internal_error(err) {
         console.log(err)
@@ -103,12 +111,11 @@ client.on("message", msg => {
     // Check to see if you the role you need or a higher one
     let req_role = command.required_role
     if (req_role) {
-        let all_roles = Array.from(guild.roles.cache)
-        let roles_required = all_roles.find(role_obj => role_obj[1].name === req_role)
-        let allowed = msg.member.roles.highest.comparePositionTo(roles_required[1]) >= 0;
+        let role = await msg.guild.roles.fetch(req_role)
+        let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
             console.log(`Unauthorized `);
-            msg.channel.send(`You do not have ${roles_required[1]}`);
+            msg.channel.send(`You do not have ${role.name}`);
             return;
         };
     }

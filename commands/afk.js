@@ -5,7 +5,7 @@ module.exports = {
     description: 'how many players are online?',
     guildOnly: true,
     args: true,
-    required_role: 'staff',
+    required_role: role.staff,
     usage: `<#>`,
     execute(msg, args, rcons, internal_error) {
         const server = Number(args[0]) || args[0];

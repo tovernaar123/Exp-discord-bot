@@ -6,7 +6,7 @@ module.exports = {
     guildOnly: true,
     args: true,
     helpLevel: 'canKick',
-    required_role: 'staff',
+    required_role: role.staff,
     usage: ` <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
         const Rcon = require('rcon-client');
