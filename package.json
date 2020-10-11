@@ -2,7 +2,7 @@
   "name": "botinfo",
   "version": "1.0.0",
   "description": "discord bot test for game info",
-  "main": "botinfo.js",
+  "main": "infoBot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

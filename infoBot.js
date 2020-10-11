@@ -14,6 +14,7 @@ role = {
     staff: "762264452611440653",
     admin: "764526097768644618",
     mod: "762260114186305546",
+    board: "478962844604301312"
 }
 
 
@@ -74,7 +75,7 @@ client.on("ready", () => {
 
 
 
-client.on("message", msg => {
+client.on("message", async msg => {
     
     function internal_error(err) {
         console.log(err)

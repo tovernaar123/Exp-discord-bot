@@ -1,6 +1,24 @@
-const Rcon = require('rcon-client');
-const rconpw = process.env.RCONPASS;
-const baseport = `34228`;
+/**
+ * 
+ * @param {Number} server 
+ * @param {Rcon} rcon 
+ * @param {Discord.Message} msg 
+ * @param {string} reason 
+*/
+async function runcommand(server, rcon, msg, reason) {
+    if(!rcon.connected){
+        await msg.channel.send(`S${server} is not connected the bot.`)
+        return;
+    }
+    let res  = await rcon.send(`/jail ${tojail} ${reason}`)
+    if(res === "Command Complete\n"){
+        await msg.channel.send(`**${tojail}** has been jailed on S${server} for *${reason}*.`);
+        console.log(`${msg.author.username} has jailed ${tojail} on S${server} for *${reason}*`);
+    }else{
+        await msg.channel.send(`Command might have failed result: \`\`\`${res}\`\`\``);
+    }
+}
+
 module.exports = {
     name: 'jail',
     aka: ['jails'],
@@ -34,23 +52,10 @@ module.exports = {
             runcommand(server, rcons[server], msg, reason)
                 .catch((err) => { internal_error(err); return })
         }else {
-            msg.reply(`Please pick a server first just a number (1-8). Correct usage is \` .exp jail <server#> <username> <reason>\``)
+            msg.reply(`Server number can\'t be bigger then 8 or smaller then 1. Correct usage is \` .exp jail <server#> <username> <reason>\``)
                 .catch((err) => { internal_error(err); return })
             console.log(`jail by ${msg.author.username} incorrect server number`);
             return;
-        }
-        async function runcommand(server, rcon, msg, reason) {
-            if(!rcon.connected){
-                await msg.channel.send(`S${server} is not connected the bot.`)
-                return;
-            }
-            let res  = await rcon.send(`/jail ${tojail} ${reason}`)
-            if(res === "Command Complete\n"){
-                await msg.channel.send(`**${tojail}** has been jailed on S${server} for *${reason}*.`);
-                console.log(`${msg.author.username} has jailed ${tojail} on S${server} for *${reason}*`);
-            }else{
-                await msg.channel.send(`Command might have failed result: \`\`\`${res}\`\`\``);
-            }
         }
     },
 };
