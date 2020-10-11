@@ -20,7 +20,7 @@ role = {
 //array for all ofline servers
 let offline_servers = [2, 7]
 
-//standart embed settings like color and footer
+//standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed
 Discord.MessageEmbed = function () {
     let discord_embed = new real_discord_embed()
@@ -74,16 +74,17 @@ client.on("ready", () => {
 
 
 
-client.on("message", async (msg) => {
-    //Ends msg early if author is a bot
+client.on("message", msg => {
+    
     function internal_error(err) {
         console.log(err)
         msg.channel.send('Internal error in the command plz contact and admin')
     }
+    //Ends msg early if author is a bot
     const guild = msg.guild;
     if (msg.author.bot) return;
+   
     //Ends msg  code early if the command does not start with a prefix
-
     if (!msg.content.startsWith(prefix)) return;
 
     // remove the .exp then removes the spaces in the beging and end then splits it up into args
@@ -108,7 +109,7 @@ client.on("message", async (msg) => {
         return msg.reply(`Wrong guild`);
     }
     
-    // Check to see if you the role you need or a higher one
+    // Check to see if you have the role you need or a higher one
     let req_role = command.required_role
     if (req_role) {
         let role = await msg.guild.roles.fetch(req_role)
