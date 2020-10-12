@@ -10,23 +10,23 @@ const prefix = `.exp`
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 let rcons = {};
 //global for all commands to use this object
-// Test server
+/* Test server
 role = {
     staff: "762264452611440653",
     admin: "764526097768644618",
     mod: "762260114186305546",
     board: "478962844604301312"
 }
-//
+*/
 // prod server
-/*
+//
 role = {
     staff: "482924291084779532",
     admin: "290940523844468738",
     mod: "260893080968888321",
     board: "478962844604301312"
 }
-*/
+//
 
 //array for all ofline servers
 let offline_servers = [2, 7]
