@@ -31,8 +31,8 @@ module.exports = {
             msg.channel.send(`Using standart amount of lines (${defaultSize}):`)
                 .catch((err) => { internal_error(err); return });
         }else if(size > sizeLimit){
-            size = sizeLimit;
-            msg.channel.send(`Cant not get more then 50 lines, will get 50 instead`)
+            size = defaultSize;
+            msg.channel.send(`Cant not get more then 50 lines, will get ${defaultSize} instead`)
                 .catch((err) => { internal_error(err); return });
         }else if(size <= 0){
             size = defaultSize;
