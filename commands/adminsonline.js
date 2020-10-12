@@ -71,8 +71,12 @@ module.exports = {
     required_role: role.staff,
     usage: `<#>`,
     execute(msg, args, rcons, internal_error) {
-        const server = Number(args[0]) || args[0]
+        let server = Number(args[0]) || args[0]
         const extra = args[1]; // nothing extra please for this command
+
+        if(!isNaN(server)){
+            server = Math.floor(args[0])
+        }
 
         if (!server) { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
             msg.channel.send(`Please pick a server. Just the number - ie S1 would be \`1\` (Currently 1-8). Correct usage is \`ao <Server#>\``)

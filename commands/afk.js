@@ -8,7 +8,7 @@ module.exports = {
     required_role: role.staff,
     usage: `<#>`,
     execute(msg, args, rcons, internal_error) {
-        const server = Number(args[0]) || args[0];
+        const server = Math.floor(Number(args[0]));
         let extra = args.slice(1).join(" "); // cant have any of this here for afk
         let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`; //send afk chat bot
 

@@ -68,7 +68,11 @@ module.exports = {
     usage: ` <server#>`,
     execute(msg, args, rcons, internal_error) {
         const author = msg.author.username; //find author
-        const server = Number(args[0]) || args[0];
+        let server = Number(args[0]) || args[0];
+
+        if(!isNaN(server)){
+            server = Math.floor(args[0])
+        }
 
         if (!server) { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
             msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`')

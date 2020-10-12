@@ -1,16 +1,20 @@
 
 const Discord = require('discord.js');
 async function runCommand(server, rcon, msg, toKick, reason) {
+    if(!rcon.connected){
+        await msg.channel.send(`S${server} is not connected the bot.`)
+        return;
+    }
     await rcon.send(`/kick ${toKick} ${reason}`);
-    await msg.channel.send(`User **${toKick}** has been kicked for *${reason}*, check with someone to be sure S${server}`);
+    await msg.channel.send(`User **${toKick}** has been kicked for *${reason}*, check with someone on S${server} to be sure `);
     const Embed = Discord.MessageEmbed()
     Embed.addField('Kick', `A player has been kicked`, false);
     Embed.addField(`Server Details`, `server: S${server}`, false);
     Embed.addField(`Player`, `${toKick}`, true);
     Embed.addField(`By`, `${msg.author.username}`, true);
     Embed.addField(`Reason`, `${reason}`, true);
-    Embed.setColor("53380");
-    let reportChan = msg.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp
+    Embed.setColor("0xb40e0e");
+    let reportChan = msg.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp
     await reportChan.send(Embed);
 }
 
@@ -26,7 +30,7 @@ module.exports = {
     usage: ` <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
         const author = msg.author.username; //find author
-        const server = Number(args[0]) || args[0];
+        const server = Math.floor(Number(args[0]));
 
         let reason = args.slice(2).join(" ");
         let toKick = args[1];

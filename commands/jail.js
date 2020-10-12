@@ -1,20 +1,22 @@
+const Discord = require('discord.js');
 /**
  * 
  * @param {Number} server 
  * @param {Rcon} rcon 
  * @param {Discord.Message} msg 
  * @param {string} reason 
+ * @param {string} tojail
 */
-async function runcommand(server, rcon, msg, reason) {
-    if(!rcon.connected){
+async function runcommand(server, rcon, msg, reason, tojail) {
+    if (!rcon.connected) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res  = await rcon.send(`/jail ${tojail} ${reason}`)
-    if(res === "Command Complete\n"){
+    let res = await rcon.send(`/jail ${tojail} ${reason}`)
+    if (res === "Command Complete\n") {
         await msg.channel.send(`**${tojail}** has been jailed on S${server} for *${reason}*.`);
         console.log(`${msg.author.username} has jailed ${tojail} on S${server} for *${reason}*`);
-    }else{
+    } else {
         await msg.channel.send(`Command might have failed result: \`\`\`${res}\`\`\``);
     }
 }
@@ -29,7 +31,7 @@ module.exports = {
     required_role: role.staff,
     usage: `<#> <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
-        const server = Number(args[0]);
+        const server = Math.floor(Number(args[0]));
         let reason = args.slice(2).join(" ");
         let tojail = args[1];
         if (!server) {
@@ -49,9 +51,9 @@ module.exports = {
         }
         if (server < 9 && server > 0) {
             console.log('Server is 1-8');
-            runcommand(server, rcons[server], msg, reason)
+            runcommand(server, rcons[server], msg, reason, tojail)
                 .catch((err) => { internal_error(err); return })
-        }else {
+        } else {
             msg.reply(`Server number can\'t be bigger then 8 or smaller then 1. Correct usage is \` .exp jail <server#> <username> <reason>\``)
                 .catch((err) => { internal_error(err); return })
             console.log(`jail by ${msg.author.username} incorrect server number`);
