@@ -15,14 +15,6 @@ async function runcommand(server, rcon, msg, to_un_jail) {
     let res = await rcon.send(`/unjail ${to_un_jail}`)
     if (res === "Command Complete\n") {
         await msg.channel.send(`**${to_un_jail}** has been unjailed on S${server}`);
-        const Embed = Discord.MessageEmbed()
-        Embed.addField('UnJail', `A player has been Unjailed`, false);
-        Embed.addField(`Server Details`, `server: S${server}`, false);
-        Embed.addField(`Player`, `${to_un_jail}`, true);
-        Embed.addField(`By`, `${msg.author.username}`, true);
-        Embed.setColor("0xb40e0e");
-        let reportChan = msg.guild.channels.cache.get('764881627893334047');
-        await reportChan.send(Embed);
         console.log(`${msg.author.username} has unjailed ${to_un_jail} on S${server}.`);
     } else {
         await msg.channel.send(`Command might have failed result: \`\`\`${res}\`\`\``);
