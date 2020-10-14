@@ -1,63 +1,54 @@
+const readLastLines = require(`read-last-lines`);
+async function get_logs(server, size, msg) {
+    readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, size) //D:\\programing\\lua\\factorio\\servers\\s${server}\\data\\console.log
+        .then((lines) => msg.channel.send(lines, { split: true })) // lines gets returned with last X (see above) lines and sent to same channel as command
+        .then(console.log(`The last ${size} lines of the log for server #${server} posted in ${msg.channel.name}. (asked for ${size})`)) // logs the command in the console log
+        .catch((err) => { internal_error(err); return });
+}
+
 module.exports = {
     name: 'log',
     aka: ['dlchat', 'logs'],
-    description: 'get chat (last 10 lines) (Admin/Mod only command)',
+    description: 'get chat (last 10 lines) (Board+ command)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
-    required_role: 'staff', //board
+    required_role: role.board,
     usage: ` <server#> <lines>`,
-    execute(msg, args) {
-        const readLastLines = require(`read-last-lines`);
-        const server = args[0];
-        let extra = args.slice(2).join(" ");
+    execute(msg, args, _, internal_error) {
+        const server = Math.floor(Number(args[0]));
         let size = args[1];
-        let snum = [`1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`];
         let sizeLimit = 50;
         let defaultSize = 10;
 
         if (!server) {
-            msg.channel.send('Please pick a server first just a number (1-8)');
+            msg.channel.send('Please pick a server first. Just the number (1-8)')
+                .catch((err) => { internal_error(err); return });
             return;
         }
-        if (snum.indexOf(server) === -1) {
-            msg.channel.send(`Please pick a server first just a number (1-8).  Correct usage is jail \`<#> <username> <reason>\``);
+        if (!size) {
+            size = defaultSize;
+            msg.channel.send(`Using standard amount of lines (${defaultSize}):`)
+                .catch((err) => { internal_error(err); return });
+        }else if(size > sizeLimit){
+            size = defaultSize;
+            msg.channel.send(`Cannot get more than 50 lines, will get ${defaultSize} instead`)
+                .catch((err) => { internal_error(err); return });
+        }else if(size <= 0){
+            size = defaultSize;
+            msg.channel.send(`Cannot be negative or 0, using standard amount of lines (${defaultSize}):`)
+                .catch((err) => { internal_error(err); return });
+        }
+        if (server < 9 && server > 0) {
+            console.log(`Server is ${server}`);
+            get_logs(server, size, msg)
+                .catch((err) => { internal_error(err); return })
+        } else {
+            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
+                .catch((err) => { internal_error(err); return })
+            console.log(`log look up by ${msg.author.username} incorrect server number`);
             return;
         }
-        if (extra) {
-            msg.channel.send(`Correct usage is log \`<#>\``);
-            return;
-        }
-
-        function newSize() {
-            newerSize = defaultSize;
-            if (size > 0 && size < sizeLimit) {
-                newerSize = size;
-            }
-            console.log(`newsize = ${newerSize}`)
-            return newerSize
-        }
-        newSize();
-        function newSizeHelper() {
-            sizeWarn = `Last ${defaultSize} lines fetched from *S${server}* \n**This is the default number of last lines fetched.** \nPlease be reasonable in your request. - Max: ${sizeLimit - 1}`;
-            sizeHelper = sizeWarn;
-            if (size > 0 && size < sizeLimit) {
-                sizeHelper = `Last ${newerSize} lines fetched from *Server S${server}*`;
-            }
-            console.log(`sizeHelper`);
-
-            return sizeHelper
-        }
-        newSizeHelper();
-
-        readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, newerSize)
-            .then(msg.channel.send(sizeHelper + "."))
-            .then((lines) => msg.channel.send(lines, { split: true })) // lines gets returned with last X (see above) lines and sent to same channel as command
-            //.then(sntmsg => {sntmsg.delete({ timeout: timeOut })}) // done in MS 60,000 = 60 sec = 1 min
-            //.then(msg.channel.send(`Chat was posted then deleted after 60 seconds to save space.`)) // this message gests sent too earl for some reason, then is confusing me right now.
-            //.catch(msg.channel.send(`Error. Can't Delete Chat after x seconds`))) // removed command to catch errors not currently needed
-            .then(console.log(`The last ${newerSize} lines of the log for server #${server} posted in ${msg.channel.name}. (asked for ${size})`)); // logs the command in the console log
-        //.catch(msg.channel.send(`Error. Can't Delete Chat after X seconds`)); // removed command to catch errors not currently used
 
     },
 };
