@@ -18,7 +18,7 @@ module.exports = {
             console.log(`AFK was given too many arguments`);
             return;
         }
-        if (!server) { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
+        if (!server) { // Checks to see if the person specified a server number.
             msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`')
                 .catch((err) => { internal_error(err); return })
             console.log(`Kick-Did not have server number`);
