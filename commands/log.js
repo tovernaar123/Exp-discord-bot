@@ -9,11 +9,11 @@ async function get_logs(server, size, msg) {
 module.exports = {
     name: 'log',
     aka: ['dlchat', 'logs'],
-    description: 'get chat (last 10 lines) (Admin/Mod only command)',
+    description: 'get chat (last 10 lines) (Board+ command)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
-    required_role: role.staff,
+    required_role: role.board,
     usage: ` <server#> <lines>`,
     execute(msg, args, _, internal_error) {
         const server = Math.floor(Number(args[0]));
@@ -22,21 +22,21 @@ module.exports = {
         let defaultSize = 10;
 
         if (!server) {
-            msg.channel.send('Please pick a server first just a number (1-8)')
+            msg.channel.send('Please pick a server first. Just the number (1-8)')
                 .catch((err) => { internal_error(err); return });
             return;
         }
         if (!size) {
             size = defaultSize;
-            msg.channel.send(`Using standart amount of lines (${defaultSize}):`)
+            msg.channel.send(`Using standard amount of lines (${defaultSize}):`)
                 .catch((err) => { internal_error(err); return });
         }else if(size > sizeLimit){
             size = defaultSize;
-            msg.channel.send(`Cant not get more then 50 lines, will get ${defaultSize} instead`)
+            msg.channel.send(`Cannot get more than 50 lines, will get ${defaultSize} instead`)
                 .catch((err) => { internal_error(err); return });
         }else if(size <= 0){
             size = defaultSize;
-            msg.channel.send(`Cant be negative or 0, using standart amount of lines (${defaultSize}):`)
+            msg.channel.send(`Cannot be negative or 0, using standard amount of lines (${defaultSize}):`)
                 .catch((err) => { internal_error(err); return });
         }
         if (server < 9 && server > 0) {
@@ -44,9 +44,9 @@ module.exports = {
             get_logs(server, size, msg)
                 .catch((err) => { internal_error(err); return })
         } else {
-            msg.reply(`Server number can\'t be bigger then 8 or smaller then 1. Correct usage is \` .exp unjail <server#> <username>\``)
+            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
                 .catch((err) => { internal_error(err); return })
-            console.log(`jail by ${msg.author.username} incorrect server number`);
+            console.log(`log look up by ${msg.author.username} incorrect server number`);
             return;
         }
 

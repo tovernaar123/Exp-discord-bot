@@ -89,7 +89,7 @@ client.on("message", async msg => {
     
     function internal_error(err) {
         console.log(err)
-        msg.channel.send('Internal error in the command plz contact and admin')
+        msg.channel.send('Internal error in the command. Please contact an admin.')
     }
     //Ends msg early if author is a bot
     const guild = msg.guild;
@@ -148,4 +148,3 @@ client.on("message", async msg => {
         msg.reply(`there was an error trying to execute that command!`);
     }
 })
-

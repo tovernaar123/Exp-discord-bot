@@ -14,7 +14,7 @@ async function runCommand(server, rcon, msg, toKick, reason) {
     Embed.addField(`By`, `${msg.author.username}`, true);
     Embed.addField(`Reason`, `${reason}`, true);
     Embed.setColor("0xb40e0e");
-    let reportChan = msg.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp
+    let reportChan = msg.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
     await reportChan.send(Embed);
 }
 

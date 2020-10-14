@@ -14,7 +14,7 @@ async function runcommand(server, rcon, msg, to_un_jail) {
     }
     let res = await rcon.send(`/unjail ${to_un_jail}`)
     if (res === "Command Complete\n") {
-        await msg.channel.send(`**${to_un_jail}** has been jailed on S${server} for.`);
+        await msg.channel.send(`**${to_un_jail}** has been unjailed on S${server}`);
         const Embed = Discord.MessageEmbed()
         Embed.addField('UnJail', `A player has been Unjailed`, false);
         Embed.addField(`Server Details`, `server: S${server}`, false);
@@ -23,7 +23,7 @@ async function runcommand(server, rcon, msg, to_un_jail) {
         Embed.setColor("0xb40e0e");
         let reportChan = msg.guild.channels.cache.get('764881627893334047');
         await reportChan.send(Embed);
-        console.log(`${msg.author.username} has jailed ${to_un_jail} on S${server} for`);
+        console.log(`${msg.author.username} has unjailed ${to_un_jail} on S${server}.`);
     } else {
         await msg.channel.send(`Command might have failed result: \`\`\`${res}\`\`\``);
     }
@@ -56,9 +56,9 @@ module.exports = {
             runcommand(server, rcons[server], msg, to_un_jail)
                 .catch((err) => { internal_error(err); return })
         } else {
-            msg.reply(`Server number can\'t be bigger then 8 or smaller then 1. Correct usage is \` .exp unjail <server#> <username>\``)
+            msg.reply(`Please pick a valid server first. Just the number (currently 1-8). Correct usage is \` unjail <server#> <username>\``)
                 .catch((err) => { internal_error(err); return })
-            console.log(`jail by ${msg.author.username} incorrect server number`);
+            console.log(`unjail by ${msg.author.username} used the incorrect server number`);
             return;
         }
     },

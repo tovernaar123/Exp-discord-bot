@@ -54,7 +54,7 @@ module.exports = {
             runcommand(server, rcons[server], msg, reason, tojail)
                 .catch((err) => { internal_error(err); return })
         } else {
-            msg.reply(`Server number can\'t be bigger then 8 or smaller then 1. Correct usage is \` .exp jail <server#> <username> <reason>\``)
+            msg.reply(`Please pick a server first just a number (Currently 1-8). Correct usage is \` .exp jail <server#> <username> <reason>\``)
                 .catch((err) => { internal_error(err); return })
             console.log(`jail by ${msg.author.username} incorrect server number`);
             return;
