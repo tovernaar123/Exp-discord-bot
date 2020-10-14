@@ -26,7 +26,7 @@ module.exports = {
         }
 
         if (server < 9 && server > 0) {
-            console.log('Server is 1-8');
+            console.log(`Server is ${server}`);
             runCommand(server, rcons[server], msg, internal_error)
                 .catch((err) => { internal_error(err); return })
         } else {
