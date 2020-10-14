@@ -64,7 +64,7 @@ async function all_servers(rcons, msg) {
 
 module.exports = {
     name: 'ao',
-    aka: ['adminonline', 'adminsonline'],
+    aka: ['adminonline', 'adminsonline', 'admins'],
     description: 'how many players are online?',
     guildOnly: true,
     args: true,
