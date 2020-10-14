@@ -40,7 +40,7 @@ module.exports = {
                 .catch((err) => { internal_error(err); return });
         }
         if (server < 9 && server > 0) {
-            console.log('Server is 1-8');
+            console.log(`Server is ${server}`);
             get_logs(server, size, msg)
                 .catch((err) => { internal_error(err); return })
         } else {

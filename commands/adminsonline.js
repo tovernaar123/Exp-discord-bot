@@ -78,7 +78,7 @@ module.exports = {
             server = Math.floor(args[0])
         }
 
-        if (!server) { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
+        if (!server) {// Checks to see if the person specified a server number
             msg.channel.send(`Please pick a server. Just the number - ie S1 would be \`1\` (Currently 1-8). Correct usage is \`ao <Server#>\``)
                 .catch((err) => { internal_error(err); return });
             console.log(`AO Check does not have server number`);
@@ -91,7 +91,7 @@ module.exports = {
             console.log(`AFK was given too many arguments`);
         }
         if (server < 9 && server > 0) {
-            console.log('Server is 1-8');
+            console.log(`Server is ${server}`);
             runCommand(server, rcons[server], msg)
                 .catch((err) => { internal_error(err); return })
         } else if (server === 'all') {

@@ -35,7 +35,7 @@ module.exports = {
         let reason = args.slice(2).join(" ");
         let toKick = args[1];
 
-        if (!server) { // Checks to see if the person specified a server number, then checks to see if the server number is part of the array of the servers it could be (1-8 currently)
+        if (!server) { // Checks to see if the person specified a server number
             msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`');
             console.log(`Kick-Did not have server number`);
             return;
@@ -51,7 +51,7 @@ module.exports = {
             return;
         }
         if (server < 9 && server > 0) {
-            console.log('Server is 1-8');
+            console.log(`Server is ${server}`);
             runCommand(server, rcons[server], msg, toKick, reason)
                 .catch((err) => { internal_error(err); return })
         } else {

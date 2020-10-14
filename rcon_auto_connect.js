@@ -38,8 +38,8 @@ exports.rcon_connect = async function(port, i) {
             //Reconnect if the attempt failed
         }).catch(err => {
             console.log(`Connecting to S${i} failed:`, err.message);
-            console.log("Reconnecting in 10 seconds");
-            setTimeout(connect, 10e3).unref();
+            console.log("Reconnecting in 30 seconds");
+            setTimeout(connect, 30e3).unref();
         });
     }
 
@@ -47,9 +47,9 @@ exports.rcon_connect = async function(port, i) {
         //Reconnect if a successfull connection was made.
         if (connected) {
             console.log(`Lost connection with S${i}`);
-            console.log("Reconnecting in 10 seconds");
+            console.log("Reconnecting in 30 seconds");
             connected = false;
-            setTimeout(connect, 10e3).unref();
+            setTimeout(connect, 30e3).unref();
         }
     });
 

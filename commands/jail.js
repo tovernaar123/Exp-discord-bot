@@ -50,7 +50,7 @@ module.exports = {
             return;
         }
         if (server < 9 && server > 0) {
-            console.log('Server is 1-8');
+            console.log(`Server is ${server}`);
             runcommand(server, rcons[server], msg, reason, tojail)
                 .catch((err) => { internal_error(err); return })
         } else {
