@@ -12,7 +12,8 @@ async function runcommand(server, rcon, msg, reason, tojail) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res = await rcon.send(`/jail ${tojail} ${reason}`)
+    //let res = await rcon.send(`/jail ${tojail} ${reason}`)
+    let res = await rcon.send(`/interface require("modules.control.jail").jail_player(${tojail}, ${msg.author.username}, ${reason})`)
     if (res === "Command Complete\n") {
         await msg.channel.send(`**${tojail}** has been jailed on S${server} for *${reason}*.`);
         console.log(`${msg.author.username} has jailed ${tojail} on S${server} for *${reason}*`);
