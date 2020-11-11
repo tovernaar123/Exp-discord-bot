@@ -4,8 +4,6 @@ const Discord = require('discord.js');
  * @param {Number} server 
  * @param {Rcon} rcon 
  * @param {Discord.Message} msg 
- * @param {string} reason 
- * @param {string} tojail
 */
 async function runcommand(server, rcon, msg, newSpeed) {
     if (!rcon.connected) {
