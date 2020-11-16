@@ -1,3 +1,5 @@
+const { Role } = require("discord.js");
+
 module.exports = {
     name: 'del',
     aka: ['delete', 'dels'],
@@ -5,10 +7,10 @@ module.exports = {
     guildOnly: true,
     args: true,
     helpLevel: 'admin',
-    required_role: 'staff',
+    required_role: role.admin,
     usage: `<num of posts>`,
-    execute(msg, args) {
-        const bulknum = args[0];
+    execute(msg, args, _, internal_error) {
+        const bulknum = Math.floor(Number(args[0]));
         if (!bulknum) {
             msg.channel.send('please pick a number first');
             console.log(`wanted to delete but did not tell us how many posts`);
@@ -30,9 +32,8 @@ module.exports = {
         }
 
         msg.channel.messages.fetch({ limit: bulknum }).then(messages => { // finds (feteches) messages
-            msg.channel.bulkDelete(messages // Bulk deletes all messages that have been fetched (new messages only 14 day limit @discordAPI)
-            )
-        });
+            msg.channel.bulkDelete(messages).catch((err) => { internal_error(err); return });
+        }).catch((err) => { internal_error(err); return });
 
     },
 };
