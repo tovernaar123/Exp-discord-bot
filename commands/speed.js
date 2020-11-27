@@ -4,15 +4,18 @@ const Discord = require('discord.js');
  * @param {Number} server 
  * @param {Rcon} rcon 
  * @param {Discord.Message} msg 
+ * @param {string} reason 
+ * @param {string} tojail
 */
 async function runcommand(server, rcon, msg, newSpeed) {
     if (!rcon.connected) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
+    //let res = await rcon.send(`/jail ${tojail} ${reason}`)
     let res = await rcon.send(`/c game.speed = ${newSpeed}`)
     if (!res) { // this command should not get a reply from the server. The new game speed should have printed in the map though.
-        rcon.send(`The server speed has been set by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
+        rcon.send(`The server speed has been set by ${msg.member.displayName}. Please @admin on the discord if this was done by mistake.`);
         await msg.channel.send(`No Error - Thus a new speed of **${newSpeed}** should have been set on S${server}. Speed requested by *${msg.member.displayName}*.`);
         console.log(`${msg.author.displayName} has set a new game speed on the server*`);
     } else {
