@@ -10,25 +10,25 @@ const prefix = `.exp`
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 let rcons = {};
 //global for all commands to use this object
-/*Test server
+
 role = {
     staff: "762264452611440653",
     admin: "764526097768644618",
     mod: "762260114186305546",
     board: "765920803006054431"
 }
-*/
-// prod server
+
+/* prod server
 role = {
     staff: "482924291084779532",
     admin: "290940523844468738",
     mod: "260893080968888321",
     board: "478962844604301312"
 }
-
+*/
 
 //array for all ofline servers
-let offline_servers = [2, 7]
+let offline_servers = [1, 2, 3, 4, 5, 6, 7, 8]
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed
