@@ -34,7 +34,13 @@ module.exports = {
             let canAdmin = msg.member.hasPermission('ADMINISTRATOR');
                 data.push( `Only commands you have access to will be listed: (Your permissions ->): *Board:${isBoard}, Staff:${isStaff}, Mod:${isMod} , Admin:${isAdmin}, Senior Admin:${isSadmin}* `);
                 data.push('\nHere\'s a list of all my commands:\n**Public Commands**');
-                let commandList = commands.filter(command => command.required_role != role.board).filter(command => command.required_role != role.staff).filter(command => command.required_role != role.admin).filter(command => command.helpLevel != "owner").map(command =>command.name).join(', ');
+                let commandList = commands
+                .filter(command => command.required_role != role.board)
+                .filter(command => command.required_role != role.staff)
+                .filter(command => command.required_role != role.admin)
+                .filter(command => command.helpLevel != "owner")
+                .map(command =>command.name).join(', ');
+
                 data.push(`\`${commandList}\``);
                     //Board+//
                     if (isBoard || isStaff) 
