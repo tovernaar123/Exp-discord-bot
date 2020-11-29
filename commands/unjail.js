@@ -27,7 +27,7 @@ module.exports = {
     description: 'jail any user (Admin/Mod only command)',
     guildOnly: true,
     args: true,
-    helpLevel: 'staff',
+    helpLevel: 'role.staff', //helplevel must be in quotes to work,
     required_role: role.staff,
     usage: `<#> <username> <reason>`,
     execute(msg, args, rcons, internal_error) {

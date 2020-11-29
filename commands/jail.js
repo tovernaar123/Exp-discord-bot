@@ -13,7 +13,7 @@ async function runcommand(server, rcon, msg, reason, tojail) {
         return;
     }
     //let res = await rcon.send(`/jail ${tojail} ${reason}`)
-    let res = await rcon.send(`/interface require("modules.control.jail").jail_player(${tojail}, ${msg.author.username}, ${reason})`)
+    let res = await rcon.send(`/interface require("modules.control.jail").jail_player("${tojail}", "${msg.member.displayName}", "${reason}")`)
     if (res === "Command Complete\n") {
         await msg.channel.send(`**${tojail}** has been jailed on S${server} for *${reason}*.`);
         console.log(`${msg.author.username} has jailed ${tojail} on S${server} for *${reason}*`);
@@ -33,7 +33,8 @@ module.exports = {
     usage: `<#> <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
         const server = Math.floor(Number(args[0]));
-        let reason = args.slice(2).join(" ");
+        let rea = args.slice(2).join(" ");
+        let reason = `${rea} Via Discord by ${msg.author.username}`;
         let tojail = args[1];
         if (!server) {
             msg.channel.send('Please pick a server first just a number (1-8)')
