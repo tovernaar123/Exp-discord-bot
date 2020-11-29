@@ -16,10 +16,11 @@ async function run_command(msg, args, internal_error) {
     let branch = args[0]
     if (branch) {
         shell.stdin.write(`git reset --hard origin/${branch}\n`);
-        shell.stdin.write(`pm2 restart infoBot\n`);
         shell.stdin.write(`git clean -fd\n`);
+        await msg.reply('Updating bot will restart now')
+        shell.stdin.write(`pm2 restart infoBot\n`);
     }else{
-        msg.reply('need a branch.')
+        await msg.reply('need a branch.')
     }
 }
 
