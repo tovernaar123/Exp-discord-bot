@@ -1,5 +1,5 @@
 let { spawn } = require("child_process");
-let shell = spawn('C:\\Windows\\System32\\bash.exe')
+let shell = spawn('/bin/bash')
 
 shell.stdout.on('data', data => {
     console.log(`stdout:\n${data}`);
@@ -14,11 +14,12 @@ shell.stderr.on('data', data => {
 
 async function run_command(msg, args, internal_error) {
     let branch = args[0]
-    shell.stdin.write('mkdir ./temp\n')
     if (branch) {
-        shell.stdin.write(`git clone https://github.com/tovernaar123/Exp-discord-bot.git --branch ${branch}\n`)
+        shell.stdin.write(`git reset --hard origin/${branch}\n`);
+        shell.stdin.write(`pm2 restart infoBot\n`);
+        shell.stdin.write(`git clean -fd\n`);
     }else{
-        shell.stdin.write('git clone https://github.com/tovernaar123/Exp-discord-bot.git\n')
+        msg.reply('need a branch.')
     }
 }
 
