@@ -126,7 +126,7 @@ client.on("message", async msg => {
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
             console.log(`Unauthorized `);
-            msg.channel.send(`You do not have ${role.name}`);
+            msg.channel.send(`You do not have ${role.name} permission.`);
             return;
         };
     }
