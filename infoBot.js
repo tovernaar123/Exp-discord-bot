@@ -95,7 +95,7 @@ client.on("message", async msg => {
     if (msg.author.bot) return;
    
     //Ends msg  code early if the command does not start with a prefix
-    if (!msg.content.startsWith(prefix)) return;
+    if (!msg.content.toLowerCase().startsWith(prefix)) return;
 
     // remove the .exp then removes the spaces in the beging and end then splits it up into args
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
