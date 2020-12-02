@@ -14,14 +14,14 @@ var msg_n = [];
 for (let i = 0; i < msg.length; i++) {
     if (type == '') {
         if (i > sl) {
-            msg_n.push(msg[i])
+            msg_n.push(msg[i]);
         }
     }
 
     else if (type == 'chat') {
         if ((msg[i].indexOf('[CHAT]') != -1)) {
             if (i > sl) {
-                msg_n.push(msg[i])
+                msg_n.push(msg[i]);
             }
         }
     }
@@ -29,7 +29,7 @@ for (let i = 0; i < msg.length; i++) {
     else if (type == 'event') {
         if ((msg[i].indexOf('[CHAT]') == -1)) {
             if (i > sl) {
-                msg_n.push(msg[i])
+                msg_n.push(msg[i]);
             }
         }
     }
