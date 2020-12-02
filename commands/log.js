@@ -1,3 +1,44 @@
+/*
+todo: 
+put this logic in code
+reject starting line (sl) with the same logic as ending line
+only accept type empty, chat, or event.
+
+var msg = '';
+var type = 'chat';
+var sl = 0;
+
+msg = msg.split('\n');
+var msg_n = [];
+
+for (let i = 0; i < msg.length; i++) {
+    if (type == '') {
+        if (i > sl) {
+            msg_n.push(msg[i]);
+        }
+    }
+
+    else if (type == 'chat') {
+        if ((msg[i].indexOf('[CHAT]') != -1)) {
+            if (i > sl) {
+                msg_n.push(msg[i]);
+            }
+        }
+    }
+
+    else if (type == 'event') {
+        if ((msg[i].indexOf('[CHAT]') == -1)) {
+            if (i > sl) {
+                msg_n.push(msg[i]);
+            }
+        }
+    }
+}
+
+console.log(msg_n.join('\n'));
+
+*/
+
 const readLastLines = require(`read-last-lines`);
 async function get_logs(server, size, msg) {
     readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, size) //D:\\programing\\lua\\factorio\\servers\\s${server}\\data\\console.log
@@ -9,12 +50,12 @@ async function get_logs(server, size, msg) {
 module.exports = {
     name: 'log',
     aka: ['dlchat', 'logs'],
-    description: 'get chat (last 10 lines) (Board+ command)',
+    description: 'get previous chat log (last 10 lines) (Board+ command)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
     required_role: role.board,
-    usage: ` <server#> <lines>`,
+    usage: ` <server#> <ending line> <starting line> <type>`,
     execute(msg, args, _, internal_error) {
         const server = Math.floor(Number(args[0]));
         let size = args[1];
