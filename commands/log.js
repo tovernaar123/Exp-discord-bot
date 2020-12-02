@@ -1,27 +1,41 @@
 /*
-var msg = ``;
+todo: 
+put this logic in code
+reject starting line (sl) with the same logic as ending line
+only accept type empty, chat, or event.
+
+var msg = '';
 var type = 'chat';
+var sl = 0;
 
 msg = msg.split('\n');
 var msg_n = [];
 
 for (let i = 0; i < msg.length; i++) {
     if (type == '') {
-        msg_n.push(msg[i])
-    }
-    else if (type == 'chat') {
-        if ((msg[i].indexOf('[CHAT]') != -1)) {
+        if (i > sl) {
             msg_n.push(msg[i])
         }
     }
+
+    else if (type == 'chat') {
+        if ((msg[i].indexOf('[CHAT]') != -1)) {
+            if (i > sl) {
+                msg_n.push(msg[i])
+            }
+        }
+    }
+
     else if (type == 'event') {
         if ((msg[i].indexOf('[CHAT]') == -1)) {
-            msg_n.push(msg[i])
+            if (i > sl) {
+                msg_n.push(msg[i])
+            }
         }
     }
 }
 
-console.log(msg_n);
+console.log(msg_n.join('\n'));
 
 */
 
@@ -41,8 +55,7 @@ module.exports = {
     args: true,
     helpLevel: 'staff',
     required_role: role.board,
-    usage: ` <server#> <lines> <type>`,
-    // usage: ` <server#> <ending lines> <starting lines> <type>`,
+    usage: ` <server#> <ending line> <starting line> <type>`,
     execute(msg, args, _, internal_error) {
         const server = Math.floor(Number(args[0]));
         let size = args[1];
