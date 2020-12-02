@@ -1,3 +1,30 @@
+/*
+var msg = ``;
+var type = 'chat';
+
+msg = msg.split('\n');
+var msg_n = [];
+
+for (let i = 0; i < msg.length; i++) {
+    if (type == '') {
+        msg_n.push(msg[i])
+    }
+    else if (type == 'chat') {
+        if ((msg[i].indexOf('[CHAT]') != -1)) {
+            msg_n.push(msg[i])
+        }
+    }
+    else if (type == 'event') {
+        if ((msg[i].indexOf('[CHAT]') == -1)) {
+            msg_n.push(msg[i])
+        }
+    }
+}
+
+console.log(msg_n);
+
+*/
+
 const readLastLines = require(`read-last-lines`);
 async function get_logs(server, size, msg) {
     readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, size) //D:\\programing\\lua\\factorio\\servers\\s${server}\\data\\console.log
@@ -9,12 +36,13 @@ async function get_logs(server, size, msg) {
 module.exports = {
     name: 'log',
     aka: ['dlchat', 'logs'],
-    description: 'get chat (last 10 lines) (Board+ command)',
+    description: 'get previous chat log (last 10 lines) (Board+ command)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
     required_role: role.board,
-    usage: ` <server#> <lines>`,
+    usage: ` <server#> <lines> <type>`,
+    // usage: ` <server#> <ending lines> <starting lines> <type>`,
     execute(msg, args, _, internal_error) {
         const server = Math.floor(Number(args[0]));
         let size = args[1];
