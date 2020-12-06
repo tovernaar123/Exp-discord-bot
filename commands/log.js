@@ -67,12 +67,12 @@ function log_chat(msg, type, sl) {
                             }
                         }
                     }
-                    msg_6.push([msg_5[i], msg_7])
+                    msg_6.push([msg_5[i], msg_7]);
                 }
 
                 for (let i = 0; i < msg_6.length; i++) {
-                    for (let j = 0; j < msg_6[i][1].length/2; j++){
-                        var k = 2 * j
+                    for (let j = 0; j < msg_6[i][1].length/2; j++) {
+                        var k = 2 * j;
                         var flag = 0;
 
                         if (j == 0) {
@@ -97,7 +97,7 @@ function log_chat(msg, type, sl) {
                                 var l3 = new Date(l1.substr(0, 4), l1.substr(5, 2)-1, l1.substr(8, 2), l2[0], l2[1], l2[2]);
                                 var t3 = (l3-j3) / 1000;
                     
-                                msg_9.push([msg_6[i][0], j1.substr(0, 4)+"-"+j1.substr(5, 2)+"-"+j1.substr(8, 2), j2[0]+':'+j2[1]+':'+j2[2], t3])
+                                msg_9.push([msg_6[i][0], j1.substr(0, 4)+"-"+j1.substr(5, 2)+"-"+j1.substr(8, 2), j2[0]+':'+j2[1]+':'+j2[2], t3]);
                     
                             } catch(e) {
                                 // pass
@@ -115,32 +115,32 @@ function log_chat(msg, type, sl) {
                     if (msg_10 != msg_9[i][0]) {
                         // New user
                         msg_10 = msg_9[i][0];
-                        msg_11.push('\n' + msg_9[i][0] + ':')
+                        msg_11.push('\n' + msg_9[i][0] + ':');
                     }
                     
-                    const pad = (num, places) => String(num).padStart(places, '0')
+                    const pad = (num, places) => String(num).padStart(places, '0');
                     // OOO was online for 0 hrs 20 minutes on 2020-12-05.
 
                     if (h3 > 0) {
-                        msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + pad(h3, 2) + ':' + pad(m3, 2) + ':' + pad(s3, 2))
-                        // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + h3 + ' hrs ' + m3 + ' min ' + s3 + ' sec.')
-                        //    msg_11.push(msg_9[i][0] + ' was online for ' + h3 + ' hr ' + m3 + ' min ' + s3 +' sec on ' + msg_9[i][1])
+                        msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + pad(h3, 2) + ':' + pad(m3, 2) + ':' + pad(s3, 2));
+                        // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + h3 + ' hrs ' + m3 + ' min ' + s3 + ' sec.');
+                        // msg_11.push(msg_9[i][0] + ' was online for ' + h3 + ' hr ' + m3 + ' min ' + s3 +' sec on ' + msg_9[i][1]);
                     } else if (m3 > 0) {
-                        msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + pad(h3, 2) + ':' + pad(m3, 2) + ':' + pad(s3, 2))
-                        // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + m3 + ' min ' + s3 + ' sec.')
-                        // msg_11.push(msg_9[i][0] + ' was online for ' + m3 + ' min ' + s3 +' sec on ' + msg_9[i][1])
+                        msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + pad(h3, 2) + ':' + pad(m3, 2) + ':' + pad(s3, 2));
+                        // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + m3 + ' min ' + s3 + ' sec.');
+                        // msg_11.push(msg_9[i][0] + ' was online for ' + m3 + ' min ' + s3 +' sec on ' + msg_9[i][1]);
                     } else {
-                        msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + pad(h3, 2) + ':' + pad(m3, 2) + ':' + pad(s3, 2))
-                        // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + s3 + ' sec.')
-                        // msg_11.push(msg_9[i][0] + ' was online for ' + s3 +' sec on ' + msg_9[i][1])
+                        msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + pad(h3, 2) + ':' + pad(m3, 2) + ':' + pad(s3, 2));
+                        // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + s3 + ' sec.');
+                        // msg_11.push(msg_9[i][0] + ' was online for ' + s3 +' sec on ' + msg_9[i][1]);
                     }
                 }
-                msg_n = msg_11
+                msg_n = msg_11;
             }
         }
-        return msg_n.join('\n')
+        return msg_n.join('\n');
     } else {
-        return 'Error - type unspecified'
+        return 'Error - type unspecified';
     }
 }
 
