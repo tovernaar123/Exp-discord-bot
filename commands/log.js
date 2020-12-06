@@ -167,7 +167,12 @@ module.exports = {
         const server = Math.floor(Number(args[0]));
         let size = args[1];
         
-        if (args.length > 2) {
+        if (args.length == 3) {
+            let sl = 0;
+            let type = '';
+        }
+        
+        if (args.length > 3) {
             if (Number.isInteger(args[2])) {
                 if (args[2] < args[1]) {
                     let sl = args[2];
@@ -177,7 +182,7 @@ module.exports = {
             }
         }
         
-        if (args.length > 3) {
+        if (args.length ? 4) {
             let type = args[3];
         }
         
