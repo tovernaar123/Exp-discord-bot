@@ -108,7 +108,7 @@ function log_chat(msg, type, sl) {
                 }
 
                 for (let i = 0; i < msg_9.length; i++) {
-                    var h3 = Math.floor(msg_9[i][3] % 216000 / 3600);
+                    var h3 = Math.floor(msg_9[i][3] / 3600);
                     var m3 = Math.floor(msg_9[i][3] % 3600 / 60);
                     var s3 = msg_9[i][3] % 60;
 
