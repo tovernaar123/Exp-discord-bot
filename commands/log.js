@@ -119,12 +119,11 @@ function log_chat(msg, type, sl) {
                     }
                     
                     const pad = (num, places) => String(num).padStart(places, '0')
-                    
                     // OOO was online for 0 hrs 20 minutes on 2020-12-05.
 
                     if (h3 > 0) {
-                        // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + h3 + ' hrs ' + m3 + ' min ' + s3 + ' sec.')
                         msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + pad(h3, 2) + ':' + pad(m3, 2) + ':' + pad(s3, 2))
+                        // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + h3 + ' hrs ' + m3 + ' min ' + s3 + ' sec.')
                         //    msg_11.push(msg_9[i][0] + ' was online for ' + h3 + ' hr ' + m3 + ' min ' + s3 +' sec on ' + msg_9[i][1])
                     } else if (m3 > 0) {
                         msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + pad(h3, 2) + ':' + pad(m3, 2) + ':' + pad(s3, 2))
