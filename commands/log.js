@@ -67,7 +67,6 @@ function log_chat(msg, type, sl) {
                             }
                         }
                     }
-
                     msg_6.push([msg_5[i], msg_7])
                 }
 
@@ -136,13 +135,9 @@ function log_chat(msg, type, sl) {
                         // msg_11.push(msg_9[i][1] + ' ' + msg_9[i][2] + ' - ' + s3 + ' sec.')
                         // msg_11.push(msg_9[i][0] + ' was online for ' + s3 +' sec on ' + msg_9[i][1])
                     }
-
                 }
-
                 msg_n = msg_11
-
             }
-
         }
         return msg_n.join('\n')
     } else {
