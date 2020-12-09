@@ -10,7 +10,7 @@ const prefix = `.exp`
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 let rcons = {};
 //global for all commands to use this object
-/*Test server
+/*
 role = {
     staff: "762264452611440653",
     admin: "764526097768644618",
@@ -18,17 +18,18 @@ role = {
     board: "765920803006054431"
 }
 */
-// prod server
+//prod server
 role = {
     staff: "482924291084779532",
     admin: "290940523844468738",
     mod: "260893080968888321",
-    board: "478962844604301312"
+    board: "693500936491892826",
+    sadmin: "446066482007244821"
 }
 
 
 //array for all ofline servers
-let offline_servers = [2, 7]
+let offline_servers = [2, 7, 6]
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed
@@ -78,6 +79,10 @@ client.on("ready", () => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, '')     // delete the dot and everything after
     console.log(`${date_string}: I am ready!`)
+    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice bots # ${offline_servers} are set to be offline. To enable the bot for thoes servers please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice bots # ${offline_servers} are set to be offline. To enable the bot for thoes servers please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+
+    
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
 });
 
@@ -95,7 +100,7 @@ client.on("message", async msg => {
     if (msg.author.bot) return;
    
     //Ends msg  code early if the command does not start with a prefix
-    if (!msg.content.startsWith(prefix)) return;
+    if (!msg.content.toLowerCase().startsWith(prefix)) return;
 
     // remove the .exp then removes the spaces in the beging and end then splits it up into args
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
@@ -126,7 +131,7 @@ client.on("message", async msg => {
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
             console.log(`Unauthorized `);
-            msg.channel.send(`You do not have ${role.name}`);
+            msg.channel.send(`You do not have ${role.name} permission.`);
             return;
         };
     }
