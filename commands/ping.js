@@ -9,7 +9,7 @@ module.exports = {
 	
 	
 	execute(msg, args) {
-        msg.channel.send('Ping?, Ping what?... \n I mean Pong.');
+        msg.channel.send('Ping?, Ping what?... \n I mean Pong..');
         console.log ('"Pong"')
 	},
 };
