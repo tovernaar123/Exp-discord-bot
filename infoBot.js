@@ -18,17 +18,17 @@ role = {
     board: "765920803006054431"
 }
 */
-// prod server
+//prod server
 role = {
     staff: "482924291084779532",
     admin: "290940523844468738",
     mod: "260893080968888321",
     board: "478962844604301312"
 }
-
+//
 
 //array for all ofline servers
-let offline_servers = [2, 7]
+let offline_servers = [2,7]
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed

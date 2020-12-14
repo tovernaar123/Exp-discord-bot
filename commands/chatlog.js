@@ -1,23 +1,41 @@
-const readLastLines = require(`read-last-lines`);
+const fs = require('fs');
+const util = require('util');
 
-async function get_logs(server, size, msg, internal_error) {
-    readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, size) //D:\\programing\\lua\\factorio\\servers\\s${server}\\data\\console.log
-        .then((lines) => {
-            lines = lines.replace(/```/g, ',,,');
-            lines = lines.match(/[\s\S]{1,1500}/g);
-            for (let i = 0; i < lines.length; i++) {
-                msg.channel.send(`\`\`\`${lines[i]}\`\`\``)
-                    .catch((err) => { internal_error(err); return });
-            }
-        }) // lines gets returned with last X (see above) lines and sent to same channel as command
-        .then(console.log(`The last ${size} lines of the log for server #${server} posted in ${msg.channel.name}. (asked for ${size})`)) // logs the command in the console log
-        .catch((err) => { internal_error(err); return });
+//Make readifle a promise. 
+const readFile = util.promisify(fs.readFile);
+
+
+function parse_log(log) {
+    /*
+        Regex explanation:
+        .*? means get any charter until what comes next (\[CHAT\]).
+        Just a not the ? in .*? makes the * operator non greedy which is to make sure it does not just grab everything.
+        Then we have \[CHAT\] the only thing here is that ] and [ are regex chartes
+        so we have to esacpe with \
+        Then we have .*?\n which agains get any charter until \n and then it stops as it shood.
+    */
+    let chat = log.match(/.*?\[CHAT\].*?\n/g);
+    return chat.join('');
+}
+async function get_logs(server, size, msg) {
+    let lines = await readFile(`/home/factorio/servers/eu-0${server}/console.log`);
+    lines = lines.toString();
+    lines = parse_log(lines.replace(/```/g, ',,,'));
+    lines = lines.split('\n');
+    lines = lines.reverse();
+    lines.length = size;
+    lines = lines.reverse();
+    lines = lines.join('\n');
+    lines = lines.match(/[\s\S]{1,1500}/g); 
+    for (let i = 0; i < lines.length; i++) {
+        await msg.channel.send(`\`\`\`${lines[i]}\`\`\``)
+    }
 }
 
 module.exports = {
-    name: 'log',
-    aka: ['dlchat', 'logs'],
-    description: 'get previous chat log (last 10 lines) (Board+ command)',
+    name: 'chatlog',
+    aka: ['chat', 'log-chat'],
+    description: 'get previous chatlog (last 10 lines) (Board+ command)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
@@ -57,9 +75,9 @@ module.exports = {
             get_logs(server, size, msg, internal_error)
                 .catch((err) => { internal_error(err); return })
         } else {
-            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp log <server#> <#lines>\``)
+            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp chatlog ${module.exports.usage}\``)
                 .catch((err) => { internal_error(err); return })
-            console.log(`log look up by ${msg.author.username} incorrect server number`);
+            console.log(`chatlog look up by ${msg.author.username} incorrect server number`);
             return;
         }
 
