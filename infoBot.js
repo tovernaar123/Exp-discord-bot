@@ -10,7 +10,7 @@ const prefix = `.exp`
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 let rcons = {};
 //global for all commands to use this object
-/*Test server
+/*
 role = {
     staff: "762264452611440653",
     admin: "764526097768644618",
@@ -18,7 +18,7 @@ role = {
     board: "765920803006054431"
 }
 */
-// prod server
+//prod server
 role = {
     staff: "482924291084779532",
     admin: "290940523844468738",
