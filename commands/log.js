@@ -64,7 +64,7 @@ module.exports = {
             sl = defaultSl;
         } else if (sl > sizeLimit) {
             sl = defaultSl;
-            msg.channel.send(`Cannot get more than ${sizeLimit} lines, will get 1 instead`)
+            msg.channel.send(`Cannot get more than ${sizeLimit} lines, will get ${defaultSl} instead`)
                 .catch((err) => {internal_error(err); return});
         } else if (sl > size) {
             sl = defaultSl;
@@ -75,7 +75,6 @@ module.exports = {
             msg.channel.send(`Cannot be negative or 0, using standard starting line (${defaultSl}):`)
                 .catch((err) => {internal_error(err); return});
         }
-        
 
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
