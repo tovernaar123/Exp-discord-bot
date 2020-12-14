@@ -34,7 +34,7 @@ async function get_logs(server, size, msg) {
 
 module.exports = {
     name: 'chatlog',
-    aka: ['chats', 'log-chat'],
+    aka: ['chat', 'chats', 'log-chat'],
     description: 'get previous chatlog (last 10 lines) (Board+ command)',
     guildOnly: true,
     args: true,
