@@ -165,31 +165,31 @@ module.exports = {
 
         if (!server) {
             msg.channel.send('Please pick a server first. Just the number (1-8)')
-                .catch((err) => { internal_error(err); return });
+                .catch((err) => {internal_error(err); return});
             return;
         }
         
         if (!size) {
             size = defaultSize;
             msg.channel.send(`Using standard amount of lines (${defaultSize}):`)
-                .catch((err) => { internal_error(err); return });
+                .catch((err) => {internal_error(err); return});
         } else if (size > sizeLimit) {
             size = defaultSize;
             msg.channel.send(`Cannot get more than ${sizeLimit} lines, will get ${defaultSize} instead`)
-                .catch((err) => { internal_error(err); return });
+                .catch((err) => {internal_error(err); return});
         } else if (size <= 0) {
             size = defaultSize;
             msg.channel.send(`Cannot be negative or 0, using standard amount of lines (${defaultSize}):`)
-                .catch((err) => { internal_error(err); return });
+                .catch((err) => {internal_error(err); return});
         }
         
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             get_logs(server, size, msg, internal_error)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
         } else {
-            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp chatlog ${module.exports.usage}\``)
-                .catch((err) => { internal_error(err); return })
+            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp sessions ${module.exports.usage}\``)
+                .catch((err) => {internal_error(err); return})
             console.log(`chatlog look up by ${msg.author.username} incorrect server number`);
             return;
         }
