@@ -4,7 +4,6 @@ const util = require('util');
 //Make readifle a promise.   
 const readFile = util.promisify(fs.readFile);
 
-
 function parse_log(log) {
     let data = log.split('\n');
     let final_message = '';
@@ -16,6 +15,7 @@ function parse_log(log) {
     }
     return final_message;
 }
+
 async function get_logs(server, size, msg) {
     let lines = await readFile(`/home/factorio/servers/eu-0${server}/console.log`);
     lines = lines.toString();
@@ -30,7 +30,6 @@ async function get_logs(server, size, msg) {
         await msg.channel.send(`\`\`\`${lines[i]}\`\`\``)
     }
 }
-
 
 module.exports = {
     name: 'eventlog',
@@ -57,6 +56,7 @@ module.exports = {
                 .catch((err) => { internal_error(err); return });
             return;
         }
+        
         if (!size) {
             size = defaultSize;
             msg.channel.send(`Using standard amount of lines (${defaultSize}):`)
@@ -70,6 +70,7 @@ module.exports = {
             msg.channel.send(`Cannot be negative or 0, using standard amount of lines (${defaultSize}):`)
                 .catch((err) => { internal_error(err); return });
         }
+        
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             get_logs(server, size, msg, internal_error)
@@ -80,6 +81,5 @@ module.exports = {
             console.log(`chatlog look up by ${msg.author.username} incorrect server number`);
             return;
         }
-
     },
 };
