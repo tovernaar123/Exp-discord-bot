@@ -64,7 +64,7 @@ module.exports = {
             sl = defaultSl;
         } else if (sl > size) {
             sl = defaultSl;
-            msg.channel.send(`Starting line cannot be larger than ending line, will get ${defaultSl} instead`)
+            msg.channel.send(`Starting line cannot be larger than ending line, will use default starting line ${defaultSl} instead`)
                 .catch((err) => {internal_error(err); return});
         } else if (sl <= 0) {
             sl = defaultSl;
