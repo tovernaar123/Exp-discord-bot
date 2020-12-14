@@ -5,7 +5,7 @@ async function get_logs(server, size, sl, msg, internal_error) {
         .then((lines) => {
             lines = lines.replace(/```/g, ',,,');
             lines = lines.split('\n');
-            lines = lines.slice(start-1, end+1);
+            lines = lines.slice(sl-1, size+1);
             lines = lines.join('\n');
             lines = lines.match(/[\s\S]{1,1500}/g);
 
