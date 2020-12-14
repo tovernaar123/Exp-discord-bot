@@ -1,4 +1,3 @@
-require('dotenv').config()
 let prefix = process.env.PREFIX;
 module.exports = {
     name: 'help',
