@@ -39,7 +39,7 @@ module.exports = {
     args: true,
     helpLevel: 'staff',
     required_role: role.board,
-    usage: ` <server#> <amount of lines> <filter>`,
+    usage: ` <server#> <amount of lines>`,
     execute(msg, args, _, internal_error) {
         const server = Math.floor(Number(args[0]));
         let size = Math.floor(Number(args[1]));
