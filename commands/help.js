@@ -1,3 +1,4 @@
+let prefix = process.env.PREFIX;
 module.exports = {
     name: 'help',
     aka: ['helpme', 'h', 'a'],
