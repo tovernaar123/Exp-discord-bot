@@ -1,6 +1,6 @@
 const readLastLines = require(`read-last-lines`);
 
-async function get_logs(server, size, msg, internal_error) {
+async function get_logs(server, size, sl, msg, internal_error) {
     readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, size) //D:\\programing\\lua\\factorio\\servers\\s${server}\\data\\console.log
         .then((lines) => {
             lines = lines.replace(/```/g, ',,,');
@@ -75,7 +75,7 @@ module.exports = {
 
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
-            get_logs(server, size, msg, internal_error)
+            get_logs(server, size, sl, msg, internal_error)
                 .catch((err) => {internal_error(err); return})
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp log <server#> <#lines>\``)
