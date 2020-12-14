@@ -4,10 +4,11 @@ async function get_logs(server, size, msg, internal_error) {
     readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, size) //D:\\programing\\lua\\factorio\\servers\\s${server}\\data\\console.log
         .then((lines) => {
             lines = lines.replace(/```/g, ',,,');
-            lines = lines[0].split('\n');
+            lines = lines.split('\n');
             lines = lines.slice(start-1, end+1);
+            lines = lines.join('\n');
             lines = lines.match(/[\s\S]{1,1500}/g);
-            
+
             for (let i = 0; i < lines.length; i++) {
                 msg.channel.send(`\`\`\`${lines[i]}\`\`\``)
                     .catch((err) => {internal_error(err); return});
