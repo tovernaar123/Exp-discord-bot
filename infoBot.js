@@ -10,7 +10,7 @@ const prefix = `.exp`
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 let rcons = {};
 //global for all commands to use this object
-/*Test server
+/*
 role = {
     staff: "762264452611440653",
     admin: "764526097768644618",
@@ -23,12 +23,13 @@ role = {
     staff: "482924291084779532",
     admin: "290940523844468738",
     mod: "260893080968888321",
-    board: "478962844604301312"
+    board: "693500936491892826",
+    sadmin: "446066482007244821"
 }
 //
 
 //array for all ofline servers
-let offline_servers = [2,7]
+let offline_servers = [2, 6, 7]
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed
@@ -78,6 +79,10 @@ client.on("ready", () => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, '')     // delete the dot and everything after
     console.log(`${date_string}: I am ready!`)
+    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice bots # ${offline_servers} are set to be offline. To enable the bot for thoes servers please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice bots # ${offline_servers} are set to be offline. To enable the bot for thoes servers please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+
+    
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
 });
 

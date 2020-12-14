@@ -6,7 +6,7 @@ module.exports = {
     description: 'delete posts (Admin/Mod only command)',
     guildOnly: true,
     args: true,
-    helpLevel: 'admin',
+    helpLevel: 'role.admin',
     required_role: role.admin,
     usage: `<num of posts>`,
     execute(msg, args, _, internal_error) {

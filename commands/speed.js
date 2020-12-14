@@ -10,6 +10,7 @@ async function runcommand(server, rcon, msg, newSpeed) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
+    //let res = await rcon.send(`/jail ${tojail} ${reason}`)
     let res = await rcon.send(`/c game.speed = ${newSpeed}`)
     if (!res) { // this command should not get a reply from the server. The new game speed should have printed in the map though.
         rcon.send(`The server speed has been set by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
