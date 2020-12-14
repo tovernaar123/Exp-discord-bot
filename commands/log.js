@@ -39,6 +39,7 @@ module.exports = {
                 .catch((err) => { internal_error(err); return });
             return;
         }
+        
         if (!size) {
             size = defaultSize;
             msg.channel.send(`Using standard amount of lines (${defaultSize}):`)
@@ -52,6 +53,7 @@ module.exports = {
             msg.channel.send(`Cannot be negative or 0, using standard amount of lines (${defaultSize}):`)
                 .catch((err) => { internal_error(err); return });
         }
+        
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             get_logs(server, size, msg, internal_error)
@@ -62,6 +64,5 @@ module.exports = {
             console.log(`log look up by ${msg.author.username} incorrect server number`);
             return;
         }
-
     },
 };
