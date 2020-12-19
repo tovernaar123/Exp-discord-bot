@@ -66,7 +66,7 @@ module.exports = {
     guildOnly: true,
     args: true,
     usage: ` <server#>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const author = msg.author.username; //find author
         let server = Number(args[0]) || args[0];
 

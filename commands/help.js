@@ -6,7 +6,7 @@ module.exports = {
     usage: '[command name]',
     guildOnly: false,
     cooldown: 5,
-    execute(msg, args) {
+    async execute(msg, args) {
         const data = [];
         const { commands } = msg.client;
         if (!args.length && msg.channel.type == "text") {

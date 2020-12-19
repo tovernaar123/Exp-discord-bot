@@ -30,7 +30,7 @@ module.exports = {
     helpLevel: 'role.staff', //helplevel must be in quotes to work,
     required_role: role.staff,
     usage: `<#> <username> <reason>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const server = Math.floor(Number(args[0]));
         let to_un_jail = args[1];
         if (!server) {

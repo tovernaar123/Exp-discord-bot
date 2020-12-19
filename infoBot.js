@@ -50,18 +50,21 @@ async function start() {
         //add it to the list 
         client.commands.set(command.name, command);
     }
-    
+
     //9 cause 8 < 9 and we want to inculde 8 and we start at 1 cuase theirs no s0
     for (let i = 1; i < 9; i++) {
         //if servers is offline dont try and connect to it
-        if(offline_servers.includes(i)){ 
-            rcons[i] = {"connected": false}
-            continue; 
+        if (offline_servers.includes(i)) {
+            rcons[i] = { "connected": false }
+            continue;
         }
+
         //port starts at baseport 34228 and its it server num so s1 is 34229 etc.
         let port_to_use = baseport + i
+
         //Use the auto rcon connect
         rcon = await rcon_connect(port_to_use, i)
+
         //add to the list
         rcons[i] = rcon
     }
@@ -69,7 +72,7 @@ async function start() {
     client.login(process.env.DISCORD_TOKEN);
 }
 
-start().catch((err)=>{
+start().catch((err) => {
     console.log(err)
 });
 
@@ -95,10 +98,11 @@ client.on("message", async msg => {
         console.log(err)
         msg.channel.send('Internal error in the command. Please contact an admin.')
     }
+
     //Ends msg early if author is a bot
     const guild = msg.guild;
     if (msg.author.bot) return;
-   
+
     //Ends msg  code early if the command does not start with a prefix
     if (!msg.content.toLowerCase().startsWith(prefix)) return;
 
@@ -107,25 +111,28 @@ client.on("message", async msg => {
 
     //gets the command in lower case
     const commandName = args.shift().toLowerCase();
+
     // get the command or its aka
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aka && cmd.aka.includes(commandName));
 
     // if no command dont do anything
     if (!command) return;
-    
+
     // disallows commands in dm's to run as commands in dms if it is set to guild only
     if (command.guildOnly && msg.channel.type !== 'text') 
     {
         return msg.reply('Sorry - I can\'t do that in a DM');
     }
+
     // only runs if below Guild id's (EXP = `260843215836545025`) 762249085268656178 is testing server
     if (command.guildOnly && (guild != `762249085268656178` && guild != `260843215836545025`)) {
         console.log(`Not correct guild`);
         return msg.reply(`Wrong guild`);
     }
-    
+
     // Check to see if you have the role you need or a higher one
     let req_role = command.required_role
+
     if (req_role) {
         let role = await msg.guild.roles.fetch(req_role)
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
@@ -139,6 +146,7 @@ client.on("message", async msg => {
     // If command requires an argument, decline to run if none is provided. Request arguments in the main export of the command file. 
     if (command.args && !args.length) {
         let reply = `You didn't provide any arguments, ${msg.author}!`;
+
         if (command.usage) {
             reply += `\nThe proper usage would be: \`${prefix} ${command.name} ${command.usage}\``;
         }
@@ -146,7 +154,8 @@ client.on("message", async msg => {
     }
 
     try {
-        command.execute(msg, args, rcons, internal_error);
+        command.execute(msg, args, rcons, internal_error)
+            .catch((err) => { internal_error(err); return })
     } catch (error) {
         console.log(error);
         msg.reply(`there was an error trying to execute that command!`);

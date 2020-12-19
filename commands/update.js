@@ -32,7 +32,7 @@ module.exports = {
     helpLevel: 'staff',
     required_role: role.staff,
     usage: `<branch>`,
-    execute(msg, args, _, internal_error) {
+    async execute(msg, args, _, internal_error) {
         run_command(msg, args, internal_error)
             .catch((err) => { internal_error(err); return })
     }

@@ -14,8 +14,8 @@ module.exports = {
     args: true,
     helpLevel: 'staff',
     required_role: role.board,
-    usage: ` <server#> <lines>`,
-    execute(msg, args, _, internal_error) {
+    usage: ` <server#> <amount of lines> <starting from line>`,
+    async execute(msg, args, _, internal_error) {
         const server = Math.floor(Number(args[0]));
         let size = args[1];
         let sizeLimit = 50;
