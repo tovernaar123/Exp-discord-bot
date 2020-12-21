@@ -44,7 +44,7 @@ module.exports = {
             get_logs(server, size, msg)
                 .catch((err) => { internal_error(err); return })
         } else {
-            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
+            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp log <server#> <#oflines> <optionalStartingLine#>\``)
                 .catch((err) => { internal_error(err); return })
             console.log(`log look up by ${msg.author.username} incorrect server number`);
             return;
