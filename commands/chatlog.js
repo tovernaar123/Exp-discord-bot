@@ -45,7 +45,7 @@ async function get_logs(server, size, msg) {
     lines = lines.join('\n');
     lines = lines.match(/[\s\S]{1,1500}/g);
     for (let i = 0; i < lines.length; i++) {
-        await msg.channel.send(`\`\`\`${lines[i]}\`\`\``)
+        await msg.channel.send(`\`\`\`log\n${lines[i] \n}\`\`\``)
     }
 }
 
