@@ -110,7 +110,7 @@ module.exports = {
                 .catch((err) => {internal_error(err); return})
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.reply(`Please pick a server fsrst just a number (1-8).  Correct usage is \` ao <server#>\``)
+            msg.reply(`Please pick a server first just a number (1-8).  Correct usage is \` ao <server#>\``)
                 .catch((err) => {internal_error(err); return})
             console.log(`players online by ${author} incorrect server number`);
         }
