@@ -6,7 +6,7 @@ async function runCommand(server, rcon, msg, toBan, reason) {
         return;
     }
     await rcon.send(`/ban ${toBan} ${reason}`);
-    await msg.channel.send(`User **${toBan}** has been Baned for *${reason}*, check with someone on S${server} to be sure `);
+    await msg.channel.send(`User **${toBan}** has been Banned for *${reason}*, check with someone on S${server} to be sure `);
     const Embed = Discord.MessageEmbed()
     Embed.addField('Ban', `A player has been Banned`, false);
     Embed.addField(`Server Details`, `server: S${server}`, false);
