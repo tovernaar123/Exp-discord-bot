@@ -26,25 +26,30 @@ module.exports = {
                 .map(command => command.name).join(', ');
 
             data.push(`\`${commandList}\``);
+
             //Board+//
             if (isBoard || isStaff) {
                 data.push(`**Board Member(s) Commands:**`);
                 let boardStuff = commands.filter(command => command.required_role === role.board).map(command => command.name).join(', ');
                 data.push(`\`${boardStuff}\``);
-
             }
+
             if (canKick || isStaff || isAdmin || isMod || isSadmin) {
                 data.push(`**Staff (role) Commands:**`);
                 //data.push(commands.filter(command => command.required_role === "bob").map(command =>command.name).join('\n'));
                 //data.push(commands.filter(command => command.required_role === role.admin).map(command =>command.name).join('\n'));
                 let staffStuff = commands.filter(command => command.required_role === role.staff).map(command => command.name).join(', ');
                 data.push(`\`${staffStuff}\``)
-            } if (isAdmin || isSadmin) {
+            } 
+            
+            if (isAdmin || isSadmin) {
                 data.push(`**Amdin (role) Commands:**`);
                 let adminStuff = commands.filter(command => command.required_role === role.admin).map(command => command.name).join(', ');
                 data.push(`\`${adminStuff}\``);
             }
+
             data.push(`\nYou can send \`${prefix} help [command name]\` to get info on a specific command!`);
+
             return msg.author.send(data, { split: true })// + `K${canKick},S${isStaff},A${isAdmin},B${isBoard} ... \n Check:`+ role.staff +"staff", { split: true })
                 .then(() => {
                     if (msg.channel.type === 'dm') return;
@@ -72,6 +77,6 @@ module.exports = {
 
         data.push(`**Cooldown:** ${command.cooldown || 30} second(s)`);
 
-        msg.channel.send(data, { split: true });
+        msg.channel.send(data, {split: true});
     },
 };

@@ -22,18 +22,19 @@ module.exports = {
             console.log(`Not a number`);
             return;
         }
+
         if (bulknum > 20) {
             msg.reply('You can`t delete more than 20 messages at once!'); // makes sure less than 20 posts
             return;
         }
+
         if (bulknum < 1) {
             msg.reply('You have to delete at least 1 message!'); // makes sure 1 or more posts  
             return;
         }
 
         msg.channel.messages.fetch({ limit: bulknum }).then(messages => { // finds (feteches) messages
-            msg.channel.bulkDelete(messages).catch((err) => { internal_error(err); return });
-        }).catch((err) => { internal_error(err); return });
-
+            msg.channel.bulkDelete(messages).catch((err) => {internal_error(err); return});
+        }).catch((err) => {internal_error(err); return});
     },
 };

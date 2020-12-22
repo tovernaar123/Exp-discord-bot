@@ -125,6 +125,7 @@ function parse_log(log) {
             final_message += create_session(joins[i], leaves[i]);
         }
     }
+    
     return final_message
 }
 
@@ -138,6 +139,7 @@ async function get_logs(server, size, msg) {
     lines = lines.reverse();
     lines = lines.join('\n');
     lines = lines.match(/[\s\S]{1,1500}/g);
+
     for (let i = 0; i < lines.length; i++) {
         await msg.channel.send(`\`\`\`${lines[i]}\`\`\``)
     }
@@ -153,7 +155,13 @@ module.exports = {
     required_role: role.board,
     usage: ` <server#> <amount of lines>`,
     execute(msg, args, _, internal_error) {
-        const server = Math.floor(Number(args[0]));
+        let server = args[0].replace(/server|s/i, '');
+        server = Number(server) || server;
+
+        if(!isNaN(server)){
+            server = Math.floor(args[0]);
+        }
+
         let size = Math.floor(Number(args[1]));
         if (isNaN(size)) {
             msg.reply(`Please give the amount of lines you want`)

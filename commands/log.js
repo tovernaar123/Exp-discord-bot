@@ -28,9 +28,15 @@ module.exports = {
     required_role: role.board,
     usage: ` <server#> <amount of lines> <starting from line>`,
     execute(msg, args, _, internal_error) {
-        const server = Math.floor(Number(args[0]));
         let size = Math.floor(Number(args[1]));
         let sl = Math.floor(Number(args[2]));
+
+        let server = args[0].replace(/server|s/i, '');
+        server = Number(server) || server;
+
+        if(!isNaN(server)){
+            server = Math.floor(args[0]);
+        }
 
         if (isNaN(size)) {
             msg.reply(`Please give the amount of lines you want`)

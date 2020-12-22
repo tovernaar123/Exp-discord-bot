@@ -10,14 +10,17 @@ const rconToSend = `/sc local admins, ctn = {}, 0 for _, p in ipairs(game.connec
  */
 async function runCommand(server, rcon, msg) {
     let response;
+
     if (rcon.connected) {
         response = await rcon.send(rconToSend);
     } else {
         response = `Connection to S${server} is down.`
     }
+
     if (!msg) {
         return response
     }
+
     // If Responses is blank (not normal ao) then runs function called respNone found below.
     if (!response) {
         await msg.channel.send(`AO - There was no response from the server, this is not normal for this command please ask an admin to check the logs.`);
@@ -33,6 +36,7 @@ async function runCommand(server, rcon, msg) {
         console.log(`S${server} checked admins online: ${response}`)
     }
 }
+
 /**
  * 
  * @param {Rcon} rcons 
@@ -46,6 +50,7 @@ async function all_servers(rcons, msg) {
 
     //adds fields for every server
     let amount_of_fields = 0;
+
     for (let i = 1; i < 9; i++) {
         let rcon = rcons[i]
         let res = await runCommand(i, rcon)
@@ -55,10 +60,12 @@ async function all_servers(rcons, msg) {
 
     //adds empty fields to make the grid look good
     let amount_of_empty_spaces = 3 - (amount_of_fields % 3)
+
     for (let i = 0; i < amount_of_empty_spaces; i++) {
         //add and empty to make it look nice 
         Embed.addField(`\u200B`, `\u200B`, true)
     }
+
     await msg.channel.send(Embed)
 }
 
@@ -71,8 +78,10 @@ module.exports = {
     required_role: role.staff,
     usage: `<#>`,
     execute(msg, args, rcons, internal_error) {
-        let server = Number(args[0]) || args[0]
         const extra = args[1]; // nothing extra please for this command
+
+        let server = args[0].replace(/server|s/i, '');
+        server = Number(server) || server;
 
         if(!isNaN(server)){
             server = Math.floor(args[0])
@@ -80,29 +89,29 @@ module.exports = {
 
         if (!server) {// Checks to see if the person specified a server number
             msg.channel.send(`Please pick a server. Just the number - ie S1 would be \`1\` (Currently 1-8). Correct usage is \`ao <Server#>\``)
-                .catch((err) => { internal_error(err); return });
+                .catch((err) => {internal_error(err); return});
             console.log(`AO Check does not have server number`);
             return;
         }
 
         if (extra) {
             msg.channel.send(`No reasons (or extra arguments) needed - Please remove "${extra}". Correct usage: \`ao <Server#>\``)
-                .catch((err) => { internal_error(err); return });
+                .catch((err) => {internal_error(err); return});
             console.log(`AFK was given too many arguments`);
         }
+
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             runCommand(server, rcons[server], msg)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
         } else if (server === 'all') {
             all_servers(rcons, msg)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.reply(`Please pick a server first just a number (1-8).  Correct usage is \` ao <server#>\``)
-                .catch((err) => { internal_error(err); return })
+            msg.reply(`Please pick a server fsrst just a number (1-8).  Correct usage is \` ao <server#>\``)
+                .catch((err) => {internal_error(err); return})
             console.log(`players online by ${msg.author.username} incorrect server number`);
         }
-
     },
 };

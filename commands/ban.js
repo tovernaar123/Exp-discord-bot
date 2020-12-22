@@ -30,7 +30,12 @@ module.exports = {
     usage: ` <#server> <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
         const author = msg.author.username; //find author
-        const server = Math.floor(Number(args[0]));
+        let server = args[0].replace(/server|s/i, '');
+        server = Number(server) || server;
+
+        if(!isNaN(server)){
+            server = Math.floor(args[0]);
+        }
 
         let reason = args.slice(2).join(" ");
         let toBan = args[1];
@@ -40,24 +45,27 @@ module.exports = {
             console.log(`Ban-Did not have server number`);
             return;
         }
+
         if (!toBan) { // if no 2nd argument returns without running with error
             msg.channel.send(`You need to tell us who you would like to Ban for us to be able to Ban them. \`<#> <username> <reason>\``);
             console.log(`Ban-Did not have name`);
             return;
         }
+
         if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
             msg.channel.send(`Please put a reason, you can always reBan or reban later with a better one.\`<#> <username> <reason>\``);
             console.log(`Ban-Did not have reason`);
             return;
         }
+
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             runCommand(server, rcons[server], msg, toBan, reason)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
             msg.reply(`Please pick a server first just a number (1-8) or *all*.  Correct usage is \`.exp ban <server#>\``)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
             console.log(`players online by ${author} incorrect server number`);
         }
     },
