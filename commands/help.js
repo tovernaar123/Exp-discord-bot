@@ -43,7 +43,7 @@ module.exports = {
             } 
             
             if (isAdmin || isSadmin) {
-                data.push(`**Amdin (role) Commands:**`);
+                data.push(`**Admin (role) Commands:**`);
                 let adminStuff = commands.filter(command => command.required_role === role.admin).map(command => command.name).join(', ');
                 data.push(`\`${adminStuff}\``);
             }
