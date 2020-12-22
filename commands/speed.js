@@ -34,6 +34,7 @@ module.exports = {
     required_role: role.staff,
     usage: `<#> <NewGameSpeed> (.10-1.0)`,
     execute(msg, args, rcons, internal_error) {
+        const author = msg.member.displayName;
         //let reason = args.slice(2).join(" ");
         let newSpeed = args[1];
         let server = args[0].replace(/server|s/i, '');
@@ -70,7 +71,7 @@ module.exports = {
         } else {
             msg.reply(`Please pick a server first just a number (Currently 1-8). Correct usage is \` .exp jail <server#> <username> <reason>\``)
                 .catch((err) => {internal_error(err); return})
-            console.log(`jail by ${msg.author.username} incorrect server number`);
+            console.log(`jail by ${author} incorrect server number`);
             return;
         }
     },

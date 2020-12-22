@@ -18,7 +18,7 @@ async function runcommand(server, rcon, msg, to_un_jail) {
 
     if (res === "Command Complete\n") {
         await msg.channel.send(`**${to_un_jail}** has been unjailed on S${server}`);
-        console.log(`${msg.author.username} has unjailed ${to_un_jail} on S${server}.`);
+        console.log(`${msg.member.displayName} has unjailed ${to_un_jail} on S${server}.`);
     } else {
         await msg.channel.send(`Command might have failed result: \`\`\`${res}\`\`\``);
     }
@@ -34,6 +34,7 @@ module.exports = {
     required_role: role.staff,
     usage: `<#> <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
+        const author = msg.member.displayName;
         let to_un_jail = args[1];
 
         let server = args[0].replace(/server|s/i, '');
@@ -62,7 +63,7 @@ module.exports = {
         } else {
             msg.reply(`Please pick a valid server first. Just the number (currently 1-8). Correct usage is \` unjail <server#> <username>\``)
                 .catch((err) => {internal_error(err); return})
-            console.log(`unjail by ${msg.author.username} used the incorrect server number`);
+            console.log(`unjail by ${author} used the incorrect server number`);
             return;
         }
     },

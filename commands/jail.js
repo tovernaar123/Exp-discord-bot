@@ -17,7 +17,7 @@ async function runcommand(server, rcon, msg, reason, tojail) {
     let res = await rcon.send(`/interface require("modules.control.jail").jail_player("${tojail}", "${msg.member.displayName}", "${reason}")`)
     if (res === "Command Complete\n") {
         await msg.channel.send(`**${tojail}** has been jailed on S${server} for *${reason}*.`);
-        console.log(`${msg.author.username} has jailed ${tojail} on S${server} for *${reason}*`);
+        console.log(`${msg.member.displayName} has jailed ${tojail} on S${server} for *${reason}*`);
     } else {
         await msg.channel.send(`Command might have failed result: \`\`\`${res}\`\`\``);
     }
@@ -33,6 +33,7 @@ module.exports = {
     required_role: role.staff,
     usage: `<#> <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
+        const author = msg.member.displayName;
         let server = args[0].replace(/server|s/i, '');
         server = Number(server) || server;
 
@@ -41,7 +42,7 @@ module.exports = {
         }
 
         let rea = args.slice(2).join(" ");
-        let reason = `${rea} Via Discord by ${msg.author.username}`;
+        let reason = `${rea} Via Discord by ${author}`;
         let tojail = args[1];
 
         if (!server) {
@@ -65,11 +66,11 @@ module.exports = {
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             runcommand(server, rcons[server], msg, reason, tojail)
-                .catch((err) => { internal_error(err); return})
+                .catch((err) => {internal_error(err); return})
         } else {
             msg.reply(`Please pick a server first just a number (Currently 1-8). Correct usage is \` .exp jail <server#> <username> <reason>\``)
                 .catch((err) => {internal_error(err); return})
-            console.log(`jail by ${msg.author.username} incorrect server number`);
+            console.log(`jail by ${author} incorrect server number`);
             return;
         }
     },

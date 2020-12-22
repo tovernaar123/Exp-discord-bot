@@ -11,7 +11,7 @@ async function runCommand(server, rcon, msg, toBan, reason) {
     Embed.addField('Ban', `A player has been Baned`, false);
     Embed.addField(`Server Details`, `server: S${server}`, false);
     Embed.addField(`Player`, `${toBan}`, true);
-    Embed.addField(`By`, `${msg.author.username}`, true);
+    Embed.addField(`By`, `${msg.member.displayName}`, true);
     Embed.addField(`Reason`, `${reason}`, true);
     Embed.setColor("0xb40e0e");
     let reportChan = msg.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
@@ -29,7 +29,7 @@ module.exports = {
     required_role: role.staff,
     usage: ` <#server> <username> <reason>`,
     execute(msg, args, rcons, internal_error) {
-        const author = msg.author.username; //find author
+        const author = msg.member.displayName; //find author
         let server = args[0].replace(/server|s/i, '');
         server = Number(server) || server;
 

@@ -30,7 +30,7 @@ async function runCommand(server, rcon, msg) {
     // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message 
     if (response) {
         const Embed = Discord.MessageEmbed()
-        Embed.addField('Online Admins', `request by ${msg.author.username} \n \u200B`, false)
+        Embed.addField('Online Admins', `request by ${msg.member.displayName} \n \u200B`, false)
         Embed.addField(`S${server}`, response, true)
         await msg.channel.send(Embed)
         console.log(`S${server} checked admins online: ${response}`)
@@ -46,7 +46,7 @@ async function runCommand(server, rcon, msg) {
 async function all_servers(rcons, msg) {
     await msg.channel.send("Asked for all online admins: Awaiting reply from servers...")
     const Embed = Discord.MessageEmbed()
-    Embed.addField('Online Admins', `request by ${msg.author.username}`, false)
+    Embed.addField('Online Admins', `request by ${msg.member.displayName}`, false)
 
     //adds fields for every server
     let amount_of_fields = 0;
@@ -78,6 +78,7 @@ module.exports = {
     required_role: role.staff,
     usage: `<#>`,
     execute(msg, args, rcons, internal_error) {
+        const author = msg.member.displayName;
         const extra = args[1]; // nothing extra please for this command
 
         let server = args[0].replace(/server|s/i, '');
@@ -111,7 +112,7 @@ module.exports = {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
             msg.reply(`Please pick a server fsrst just a number (1-8).  Correct usage is \` ao <server#>\``)
                 .catch((err) => {internal_error(err); return})
-            console.log(`players online by ${msg.author.username} incorrect server number`);
+            console.log(`players online by ${author} incorrect server number`);
         }
     },
 };

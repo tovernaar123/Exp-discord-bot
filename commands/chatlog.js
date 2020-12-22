@@ -42,6 +42,7 @@ module.exports = {
     required_role: role.board,
     usage: ` <server#> <amount of lines>`,
     execute(msg, args, _, internal_error) {
+        const author = msg.member.displayName;
         const server = Math.floor(Number(args[0]));
         let size = Math.floor(Number(args[1]));
         
@@ -80,7 +81,7 @@ module.exports = {
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp chats ${module.exports.usage}\``)
                 .catch((err) => {internal_error(err); return})
-            console.log(`chatlog look up by ${msg.author.username} incorrect server number`);
+            console.log(`chatlog look up by ${author} incorrect server number`);
             return;
         }
     },

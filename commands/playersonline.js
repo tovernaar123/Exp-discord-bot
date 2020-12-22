@@ -23,7 +23,7 @@ async function oneCommand(servernum, rcon, msg, client) {
         return res
     } else {
         const Embed = Discord.MessageEmbed()
-        Embed.addField('Online Players', `request by ${msg.author.username} \n \u200B`, false)
+        Embed.addField('Online Players', `request by ${msg.member.displayName} \n \u200B`, false)
         Embed.addField(`S${servernum}`, res, true)
         await msg.channel.send(Embed)
     }
@@ -38,7 +38,7 @@ async function allCommand(msg, rcons) {
     await msg.channel.send("Asked for all online players: Awaiting reply from servers...")
 
     const Embed = Discord.MessageEmbed()
-    Embed.addField('Online Players', `request by ${msg.author.username}`, false)
+    Embed.addField('Online Players', `request by ${msg.member.displayName}`, false)
 
     //adds field for every server
     let amount_of_fields = 0;
@@ -67,7 +67,7 @@ module.exports = {
     args: true,
     usage: ` <server#>`,
     execute(msg, args, rcons, internal_error) {
-        const author = msg.author.username; //find author
+        const author = msg.member.displayName; //find author
         let server = args[0].replace(/server|s/i, '');
         server = Number(server) || server;
 
