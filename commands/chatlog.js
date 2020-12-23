@@ -19,7 +19,7 @@ function getLines(server) {
         let lines = []
 
         const rl = readline.createInterface({
-            input: fs.createReadStream(`/home/factorio/servers/eu-0${server}/console.log`),
+            input: fs.createReadStream(`/mnt/d/programing/lua/factorio/servers/s${server}/data/console.log`),
         })
 
         rl.on('line', line => {
@@ -38,14 +38,15 @@ function getLines(server) {
 
 async function get_logs(server, size, msg) {
     let lines = await getLines(server);
-    lines = lines.join('\n')
+    lines = lines.reverse();
+    lines = lines.join('\n');
     lines = parse_log(lines.replace(/```/g, ',,,'));
     lines = lines.split('\n');
     lines = lines.slice(0, size);
     lines = lines.join('\n');
     lines = lines.match(/[\s\S]{1,1500}/g);
     for (let i = 0; i < lines.length; i++) {
-        await msg.channel.send(`\`\`\`log\n${lines[i] \n}\`\`\``)
+        await msg.channel.send(`\`\`\`log\n${lines[i]} \n\`\`\``)
     }
 }
 
