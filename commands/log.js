@@ -1,11 +1,38 @@
-const readLastLines = require(`read-last-lines`);
-async function get_logs(server, size, msg) {
-    readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, size) //D:\\programing\\lua\\factorio\\servers\\s${server}\\data\\console.log
-        .then((lines) => { let finalLines = lines.replace(/```/g, ',,,'); msg.channel.send(`\`\`\`${finalLines}\`\`\``, { split: true }) }) // lines gets returned with last X (see above) lines and sent to same channel as command
-        .then(console.log(`The last ${size} lines of the log for server #${server} posted in ${msg.channel.name}. (asked for ${size})`)) // logs the command in the console log
-        .catch((err) => { internal_error(err); return });
+const readline = require('readline');
+const fs = require('fs');
+function getLines(server) {
+    return new Promise((resolve, reject) => {
+        let lines = []
+
+        const rl = readline.createInterface({
+            input:fs.createReadStream(`/home/factorio/servers/eu-0${server}/console.log`),
+        })
+
+        rl.on('line', line => {
+            lines.push(line)
+            if (line.startsWith('=')) {
+                lines = []
+            }
+        })
+
+        rl.on('close', () => {
+            resolve(lines)
+        })
+
+    })
 }
 
+async function get_logs(server, size, msg) {
+    let lines = await getLines(server);
+    lines = lines.slice(0, size);
+    lines = lines.reverse();
+    lines = lines.join('\n');
+    lines = lines.replace(/```/g, ',,,');
+    lines = lines.match(/[\s\S]{1,1500}/g);
+    for (let i = 0; i < lines.length; i++) {
+        await msg.channel.send(`\`\`\`log\n${lines[i]} \n\`\`\``);
+    }
+}
 module.exports = {
     name: 'log',
     aka: ['dlchat', 'logs'],

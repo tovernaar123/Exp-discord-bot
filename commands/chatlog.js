@@ -19,7 +19,7 @@ function getLines(server) {
         let lines = []
 
         const rl = readline.createInterface({
-            input: fs.createReadStream(`/mnt/d/programing/lua/factorio/servers/s${server}/data/console.log`),
+            input:fs.createReadStream(`/home/factorio/servers/eu-0${server}/console.log`),
         })
 
         rl.on('line', line => {
