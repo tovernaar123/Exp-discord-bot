@@ -77,8 +77,7 @@ module.exports = {
     args: true,
     required_role: role.staff,
     usage: `<#>`,
-    execute(msg, args, rcons, internal_error) {
-        const author = msg.member.displayName;
+    async execute(msg, args, rcons, internal_error) {
         const extra = args[1]; // nothing extra please for this command
 
         let server = args[0].replace(/server|s/i, '');

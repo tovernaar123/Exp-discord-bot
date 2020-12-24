@@ -29,7 +29,7 @@ module.exports = {
     helpLevel: 'canKick',
     required_role: role.staff,
     usage: ` <username> <reason>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const author = msg.member.displayName; //find author
         let server = args[0].replace(/server|s/i, '');
         server = Number(server) || server;

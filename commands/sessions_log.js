@@ -1,8 +1,3 @@
-const fs = require('fs');
-const util = require('util');
-
-//Make readifle a promise.   
-const readFile = util.promisify(fs.readFile);
 
 function Millisec_Converter(mill) {
     let hrs = Math.floor(mill / 3600000); // hours
@@ -71,7 +66,7 @@ function parse_log(log) {
         And then to finnalize it we do .*?\n to stop at a enter.
     */
     let name_regex = /(.*?) (.*?) (\[JOIN\]|\[LEAVE\]) (.*?) .*?\n/
-    
+    if(!join_and_leave){ return 'No joins or leaves'}
     for (let i = 0; i < join_and_leave.length; i++) {
         //Line like: 2020-12-07 17:41:34 [JOIN] tovernaar123 joined the game
         let event = join_and_leave[i]
@@ -128,24 +123,45 @@ function parse_log(log) {
     
     return final_message
 }
+const readline = require('readline');
+const fs = require('fs');
+function getLines(server) {
+    return new Promise((resolve, reject) => {
+        let lines = []
+
+        const rl = readline.createInterface({
+            input: fs.createReadStream(`/home/factorio/servers/eu-0${server}/console.log`),
+        })
+
+        rl.on('line', line => {
+            lines.push(line)
+            if (line.startsWith('=')) {
+                lines = []
+            }
+        })
+
+        rl.on('close', () => {
+            resolve(lines)
+        })
+
+    })
+}
 
 async function get_logs(server, size, msg) {
-    let lines = await readFile(`/home/factorio/servers/eu-0${server}/console.log`);
-    lines = lines.toString();
+    let lines = await getLines(server);
+    lines = lines.reverse();
+    lines = lines.join('\n');
     lines = parse_log(lines.replace(/```/g, ',,,'));
     lines = lines.split('\n');
-    lines = lines.reverse();
-    lines.length = size;
-    lines = lines.reverse();
+    lines = lines.slice(0, size);
     lines = lines.join('\n');
     lines = lines.match(/[\s\S]{1,1500}/g);
 
     for (let i = 0; i < lines.length; i++) {
-        await msg.channel.send(`\`\`\`${lines[i]}\`\`\``)
+        await msg.channel.send(`\`\`\`log\n${lines[i]} \n\`\`\``)
     }
 }
-
-module.exports = {
+module.exports = {   
     name: 'sessions',
     aka: ['joins', 'log-sessions'],
     description: 'get previous sessions (last 10 lines) (Board+ command)',
@@ -154,7 +170,7 @@ module.exports = {
     helpLevel: 'staff',
     required_role: role.board,
     usage: ` <server#> <amount of lines>`,
-    execute(msg, args, _, internal_error) {
+    async execute(msg, args, _, internal_error) {
         const author = msg.member.displayName;
         let server = args[0].replace(/server|s/i, '');
         server = Number(server) || server;

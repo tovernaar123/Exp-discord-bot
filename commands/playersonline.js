@@ -66,10 +66,11 @@ module.exports = {
     guildOnly: true,
     args: true,
     usage: ` <server#>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const author = msg.member.displayName; //find author
         let server = args[0].replace(/server|s/i, '');
         server = Number(server) || server;
+
 
         if(!isNaN(server)){
             server = Math.floor(args[0]);

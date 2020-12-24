@@ -29,7 +29,7 @@ module.exports = {
     helpLevel: 'role.staff', //helplevel must be in quotes to work
     required_role: role.staff,
     usage: ` <username> <reason>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const author = msg.member.displayName; //find author
 
         let server = args[0].replace(/server|s/i, '');
@@ -38,6 +38,7 @@ module.exports = {
         if(!isNaN(server)){
             server = Math.floor(args[0]);
         }
+
 
         let reason = args.slice(2).join(" ");
         let toUnBan = args[1];

@@ -33,8 +33,9 @@ module.exports = {
     helpLevel: 'role.staff', //helplevel must be in quotes to work,
     required_role: role.staff,
     usage: `<#> <username> <reason>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const author = msg.member.displayName;
+
         let to_un_jail = args[1];
 
         let server = args[0].replace(/server|s/i, '');

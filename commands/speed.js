@@ -33,8 +33,9 @@ module.exports = {
     helpLevel: 'staff',
     required_role: role.staff,
     usage: `<#> <NewGameSpeed> (.10-1.0)`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const author = msg.member.displayName;
+
         //let reason = args.slice(2).join(" ");
         let newSpeed = args[1];
         let server = args[0].replace(/server|s/i, '');
