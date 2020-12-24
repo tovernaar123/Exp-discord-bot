@@ -20,9 +20,9 @@ async function runCommand(server, rcon, msg, toClear, reason) {
 
 
 module.exports = {
-    name: 'clearall',
-    aka: ['clear,clear-all'],
-    description: 'Clear reports/warnings on ingame users (Admin/Mod only command)',
+    name: 'clear-reports',
+    aka: ['clearreports'],
+    description: 'Clear reports on ingame users (Admin/Mod only command)',
     guildOnly: true,
     args: true,
     helpLevel: 'role.staff',
@@ -37,17 +37,17 @@ module.exports = {
 
         if (!server) { // Checks to see if the person specified a server number
             msg.channel.send('Please pick a server first (**just the number 1-8**). \`<Server#> <username> <reason>\`');
-            console.log(`Clear-all- Did not have server number`);
+            console.log(`Clear Reports- Did not have server number`);
             return;
         }
         if (!toClear) { // if no 2nd argument returns without running with error
             msg.channel.send(`You need to tell us who you would like to clear for us to be able to clear-all \`<#> <username> <reason>\``);
-            console.log(`Clear-all - Did not have name`);
+            console.log(`Clear Reports - Did not have name`);
             return;
         }
         if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
             msg.channel.send(`Please put a reason for the report chan. \`<#> <username> <reason>\``);
-            console.log(`Clear-all -Did not have reason`);
+            console.log(`Clear Reports -Did not have reason`);
             return;
         }
         if (server < 9 && server > 0) {
