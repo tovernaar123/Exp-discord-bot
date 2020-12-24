@@ -5,8 +5,10 @@ async function runCommand(server, rcon, msg, toClear, reason) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res = await rcon.send(`/clear-reports ${toClear}`); //${reason} - I dont think we need the reason here, keeping here for a few mins while I check ;)
-    await msg.channel.send(`${res} \nUser **${toClear}** has had their reports cleared for *${reason}*`);
+    let res = await rcon.send(`/interface require("modules.control.reports").remove_all(${toClear}, ${msg.member.displayName})`)
+  
+  //  let res = await rcon.send(`/clear-reports ${toClear}`); //${reason} - I dont think we need the reason here, keeping here for a few mins while I check ;)
+    await msg.channel.send(`Reply: ${res}`)//User **${toClear}** has had their reports cleared for *${reason}*`);
    // const Embed = Discord.MessageEmbed()
     //Embed.addField('Clear', `A player has been `, false);
     //Embed.addField(`Server Details`, `server: S${server}`, false);
