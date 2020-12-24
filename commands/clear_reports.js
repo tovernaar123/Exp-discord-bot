@@ -5,8 +5,8 @@ async function runCommand(server, rcon, msg, toClear, reason) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    await rcon.send(`/clear-reports ${toClear}`); //${reason} - I dont think we need the reason here, keeping here for a few mins while I check ;)
-    await msg.channel.send(`User **${toClear}** has had their reports cleared for *${reason}*`);
+    let res = await rcon.send(`/clear-reports ${toClear}`); //${reason} - I dont think we need the reason here, keeping here for a few mins while I check ;)
+    await msg.channel.send(`${res} \nUser **${toClear}** has had their reports cleared for *${reason}*`);
    // const Embed = Discord.MessageEmbed()
     //Embed.addField('Clear', `A player has been `, false);
     //Embed.addField(`Server Details`, `server: S${server}`, false);
@@ -21,7 +21,7 @@ async function runCommand(server, rcon, msg, toClear, reason) {
 
 module.exports = {
     name: 'clear-reports',
-    aka: ['clearreports,cr'],
+    aka: ['clearreports','cr','clear_reports','clear-report'],
     description: 'Clear reports on ingame users (Admin/Mod only command)',
     guildOnly: true,
     args: true,
