@@ -43,8 +43,10 @@ module.exports = {
                 .catch((err) => { internal_error(err); return })
             console.log(`players online by ${author} incorrect server number`);
         }
+
         async function runCommand(server, rcon, msg, internal_error) {
             let json_data
+
             try {
                 if (!rcon.connected){
                     const Embed = Discord.MessageEmbed()
@@ -66,22 +68,26 @@ module.exports = {
             } catch (err) {
                 return internal_error(err)
             }
+
             // If Responses is blank (not normal).
             if (!json_data) {
                 await msg.channel.send(`There was no response from the server, this is not normal for this command please ask an admin to check the logs.`)
                 console.log(`Rcon: There was no response from the server, this is not normal for this command please ask an admin to check the logs.`);
                 return;
             };
+
             // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
             if (json_data) {
                 const Embed = Discord.MessageEmbed()
                 let length = Object.keys(json_data).length
+
                 if (length === 0) {
                     Embed.addField(`AFK players S${server}`, `request by ${author}`, false)
                     Embed.addField(`No players online`, `\u200B`, false);
                 } else {
                     Embed.addField(`AFK players S${server}`, `request by ${author} \n \u200B`, false)
                 }
+
                 for (let name in json_data) {
                     let time = json_data[name] / 60;
                     let hours = Math.floor(time / 3600);
@@ -94,9 +100,9 @@ module.exports = {
                         Embed.addField(`${name}:`, `${minutes}m and ${seconds}s`, false);
                     }
                 }
+
                 await msg.channel.send(Embed)
             }
-
         }
     },
 };
