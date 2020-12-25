@@ -6,17 +6,9 @@ async function runCommand(server, rcon, msg, toClear, reason) {
         return;
     }
     let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${toClear}", "${msg.member.displayName}")`)
-    await msg.channel.send(`*Please make sure you have the correct username and a report was issued in #reports. Server replies sucess even if user does not exist. Server replied: ${res} \n By: ${msg.member.displayName} becasue: *${reason}*`);
-    console.log(`A users tried to Clear ${toClear}'s reports... \n    Server replied: ${res} \n    By: ${msg.member.displayName}/${msg.member.id} \n    Becasue: *${reason}*`);
-    // const Embed = Discord.MessageEmbed()
-    //Embed.addField('Clear', `A player has been `, false);
-    //Embed.addField(`Server Details`, `server: S${server}`, false);
-    //Embed.addField(`Player`, `${toClear}`, true);
-    //Embed.addField(`By`, `${msg.author.username}`, true);
-    //Embed.addField(`Reason`, `${reason}`, true);
-    //Embed.setColor("0xffa500");
+    await msg.channel.send(`*Please make sure you have the correct username and a report was issued in #reports.* Server replies complete even if user does not exist. Server replied: ${res} By: ${msg.member.displayName} becasue: *${reason}*`);
+    console.log(`A user tried to Clear ${toClear}'s reports... \n    Server replied: ${res}    By: ${msg.member.displayName}/${msg.member.id} \n    Becasue: *${reason}*`);
     let reportChan = msg.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    //await reportChan.send(Embed);
 }
 
 
