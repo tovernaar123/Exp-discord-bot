@@ -9,6 +9,7 @@ const Discord = require('discord.js');
 */
 async function oneCommand(servernum, rcon, msg, client) {
     let res;
+
     if (rcon.connected) {
         res = await rcon.send('/p o')
     } else if(msg){
@@ -19,6 +20,7 @@ async function oneCommand(servernum, rcon, msg, client) {
     }else{
         res = `S${servernum} is not connected to the bot`
     }
+
     if (!msg) {
         return res
     } else {
@@ -28,6 +30,7 @@ async function oneCommand(servernum, rcon, msg, client) {
         await msg.channel.send(Embed)
     }
 }
+
 /**
  * 
  * @param {Discord.Message} msg the message that excute this command
