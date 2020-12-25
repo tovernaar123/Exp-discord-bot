@@ -9,7 +9,7 @@ module.exports = {
     cooldown: 5,
     async execute(msg, args) {
         const data = [];
-        const { commands } = msg.client;
+        const {commands} = msg.client;
         if (!args.length && msg.channel.type == "text") {
             let canKick = msg.member.hasPermission('KICK_MEMBERS');
             let isStaff = msg.member.roles.cache.has(role.staff);
