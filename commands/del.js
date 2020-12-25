@@ -1,4 +1,4 @@
-const { Role } = require("discord.js");
+const {Role} = require("discord.js");
 
 module.exports = {
     name: 'del',
