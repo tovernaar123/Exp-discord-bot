@@ -8,7 +8,6 @@ async function runCommand(server, rcon, msg, toClear, reason) {
     let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${toClear}", "${msg.member.displayName}")`)
     await msg.channel.send(`*Please make sure you have the correct username and a report was issued in #reports.* Server replies complete even if user does not exist. Server replied: ${res} By: ${msg.member.displayName} becasue: *${reason}*`);
     console.log(`A user tried to Clear ${toClear}'s reports... \n    Server replied: ${res}    By: ${msg.member.displayName}/${msg.member.id} \n    Becasue: *${reason}*`);
-    let reportChan = msg.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
 }
 
 
