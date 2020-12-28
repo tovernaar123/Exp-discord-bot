@@ -7,6 +7,7 @@ const Discord = require('discord.js');
  * @param {Discord.Message} send_message if given will send the result in an embed to the channel
  * @returns {string} the players that are online on the server
 */
+    let prefix = process.env.PREFIX;
 async function oneCommand(servernum, rcon, msg, client) {
     let res;
     if (rcon.connected) {
