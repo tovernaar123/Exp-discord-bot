@@ -28,17 +28,20 @@ module.exports = {
         let toClear = args[1];
 
         if (!server) { // Checks to see if the person specified a server number
-            msg.channel.send('Please pick a server first (**just the number 1-8**). \`<Server#> <username> <reason>\`');
+            msg.channel.send('Please pick a server first (**just the number 1-8**). \`<Server#> <username> <reason>\`')
+            .catch((err) => { internal_error(err); return });
             console.log(`Clear Reports- Did not have server number`);
             return;
         }
         if (!toClear) { // if no 2nd argument returns without running with error
-            msg.channel.send(`You need to tell us who you would like to clear for us to be able to clear-all \`<#> <username> <reason>\``);
+            msg.channel.send(`You need to tell us who you would like to clear for us to be able to clear-all \`<#> <username> <reason>\``)
+            .catch((err) => { internal_error(err); return });
             console.log(`Clear Reports - Did not have name`);
             return;
         }
         if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
-            msg.channel.send(`Please put a reason for the report chan. \`<#> <username> <reason>\``);
+            msg.channel.send(`Please put a reason for the report chan. \`<#> <username> <reason>\``)
+            .catch((err) => { internal_error(err); return });
             console.log(`Clear Reports -Did not have reason`);
             return;
         }
