@@ -21,7 +21,7 @@ module.exports = {
     required_role: role.staff,
     usage: ` <username> <reason>`,
     async execute(msg, args, rcons, internal_error) {
-        const author = msg.author.username; //find author
+        const author = msg.author.displayName; //find author
         const server = Math.floor(Number(args[0]));
 
         let reason = args.slice(2).join(" ");
