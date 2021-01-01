@@ -25,7 +25,7 @@ function getLines(server) {
 async function get_logs(server, size, msg) {
     let lines = await getLines(server);
     lines = lines.slice(0, size);
-    lines = lines.reverse();
+ \\   lines = lines.reverse();
     lines = lines.join('\n');
     lines = lines.replace(/```/g, ',,,');
     lines = lines.match(/[\s\S]{1,1500}/g);
