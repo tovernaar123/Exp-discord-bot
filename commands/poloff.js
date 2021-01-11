@@ -11,20 +11,20 @@ async function runcommand(server, rcon, msg, extra) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res = await rcon.send(`/c game.surfaces[1].clear_pollution()`) // Send command to clear pollution
+    let res = await rcon.send(`/c game.map_settings.pollution.enabled = false`) // Send command to turn off pollution
     if (!res) { // this command should not get a reply from the server. The command should print on the ingame server though.
-        rcon.send(`The server had pollution **REMOVED** by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
-        await msg.channel.send(`No Error - Thus pollution should have been **removed** on S${server}. Command Requested by *${msg.member.displayName}*.`);
-        console.log(`${msg.author.displayName} has turned OFF polution*`);
+        rcon.send(`The server had pollution **DISABLED** by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
+        await msg.channel.send(`No Error - Thus pollution should have been **disabled** on S${server}. Command Requested by *${msg.member.displayName}*.`);
+        console.log(`${msg.member.displayName} has turned OFF polution*`);
     } else {
         await msg.channel.send(`Command might have failed result: \`\`\` ${res} \`\`\``);
     } 
 }
  
 module.exports = {
-    name: 'polclear',
-    aka: ['clearpollution','clearpollution','clear-pollution',`clearpol`,'remove-pollution'],
-    description: 'Clears Pollution (Currently Admin/Mod only command)',
+    name: 'poloff',
+    aka: ['pollutionoff','pollution-off','no-pollution',`nopollution`,'disable-pollution'],
+    description: 'Turns off pollution (Currently Admin/Mod only command)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
@@ -41,13 +41,13 @@ module.exports = {
             return;
         }
         if (extra) {
-            msg.channel.send(`No additional arguments needed. Correct usage: \`${prefix} <#>\` (Server Number only)\n **Command Not Run** `)
+            msg.channel.send(`No additional arguments needed. Correct usage: \`${prefix} poloff <#>\` (Server Number only)\n **Command Not Run** `)
                 .catch((err) => { internal_error(err); return })
             return;
         }
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
-            console.log(`Server Polution turned off`)
+            console.log(`Server Pollution turned off`)
             runcommand(server, rcons[server], msg)
                 .catch((err) => { internal_error(err); return })
         } else {
