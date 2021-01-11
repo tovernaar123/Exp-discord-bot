@@ -47,13 +47,13 @@ module.exports = {
         }
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
-            console.log(`Server Polution turned off`)
+            console.log(`Server Pollution cleared`)
             runcommand(server, rcons[server], msg)
                 .catch((err) => { internal_error(err); return })
         } else {
             msg.reply(`Please pick a server first just a number (Currently 1-8). Correct usage is \`${prefix} poloff <server#>\``)
                 .catch((err) => { internal_error(err); return })
-            console.log(`pol disable (poloff) ${msg.author.username} incorrect server number`);
+            console.log(`pollution clear (polclear) ${msg.author.username} incorrect server number`);
             return;
         }
     },
