@@ -45,12 +45,6 @@ module.exports = {
                 .catch((err) => { internal_error(err); return })
             return;
         }
-//        if (newSpeed > 1 || newSpeed < 0.1) {
-//            //console.log(`Speed to set (newSpeed) is ${newSpeed}`);
-//            msg.channel.send(`You need to tell us what speed to use (0.10-1.0)`)
-//                .catch((err) => { internal_error(err); return })
-//            return;
-//        }
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             console.log(`Server Polution turned off`)
