@@ -11,7 +11,7 @@ async function runcommand(server, rcon, msg, extra) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res = await rcon.send(`/c game.players[1].surface.clear_pollution()`) // Send command to clear pollution
+    let res = await rcon.send(`/c game.surfaces[1].clear_pollution()`) // Send command to clear pollution
     if (!res) { // this command should not get a reply from the server. The command should print on the ingame server though.
         rcon.send(`The server had pollution **REMOVED** by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
         await msg.channel.send(`No Error - Thus pollution should have been **removed** on S${server}. Command Requested by *${msg.member.displayName}*.`);
