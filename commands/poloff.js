@@ -6,12 +6,12 @@ const Discord = require('discord.js');
  * @param {Rcon} rcon 
  * @param {Discord.Message} msg 
 */
-async function runcommand(server, rcon, msg, newSpeed) {
+async function runcommand(server, rcon, msg, extra) {
     if (!rcon.connected) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res = await rcon.send(`/c game.map_settings.pollution.enabled = false`) // Send command to turn off polution
+    let res = await rcon.send(`/c game.players[1].surface.clear_pollution()`) // Send command to clear pollution
     if (!res) { // this command should not get a reply from the server. The command should print on the ingame server though.
         rcon.send(`The server had pollution **Disabled** by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
         await msg.channel.send(`No Error - Thus pollution should have been **disabled** on S${server}. Command Requested by *${msg.member.displayName}*.`);
@@ -22,9 +22,9 @@ async function runcommand(server, rcon, msg, newSpeed) {
 }
  
 module.exports = {
-    name: 'poloff',
-    aka: ['pollutionoff','pollution-off','no-pollution',`nopollution`,'disable-pollution'],
-    description: 'Disable Polution (Currently Admin/Mod only command)',
+    name: 'polclear',
+    aka: ['clearpollution','clearpollution','clear-pollution',`clearpol`,'remove-pollution'],
+    description: 'Clears Pollution (Currently Admin/Mod only command)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
