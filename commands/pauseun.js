@@ -12,11 +12,11 @@ async function runcommand(server, rcon, msg) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res = await rcon.send(`/c game.tick_paused = false`) // Send command to unpause the game
+    let res = await rcon.send(`/sc game.tick_paused = false`) // Send command to unpause the game
     if (!res) { // this command should not get a reply from the server. The command should print on the ingame server though.
         rcon.send(`The server was unpaused remotly by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
         await msg.channel.send(`No Error - Thus the game should have been **UN**paused on S${server}. Command Requested by *${msg.member.displayName}*.`);
-        console.log(`${msg.member.displayName} has paused S${server}`);
+        console.log(`${msg.member.displayName} has UNpaused S${server}`);
     } else {
         await msg.channel.send(`Command might have failed result: \`\`\` ${res} \`\`\``);
     } 
