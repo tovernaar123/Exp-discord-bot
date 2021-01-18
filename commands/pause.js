@@ -12,11 +12,11 @@ async function runcommand(server, rcon, msg) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res = await rcon.send(`/c game.tick_paused = true`) // Send command to clear pollution
+    let res = await rcon.send(`/c game.tick_paused = true`) // Send command to pause the server
     if (!res) { // this command should not get a reply from the server. The command should print on the ingame server though.
         rcon.send(`The server IS PAUSED BY A REMOTE ADMIN. - ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
         await msg.channel.send(`No Error - Thus the game should have been **paused** on S${server}. Command Requested by *${msg.member.displayName}*.\n to unpause run \`${prefix} unpause <#>\``);
-        console.log(`${msg.author.displayName} has paused S${server}`);
+        console.log(`${msg.member.displayName} has paused S${server}`);
     } else {
         await msg.channel.send(`Command might have failed result: \`\`\` ${res} \`\`\``);
     } 
@@ -25,7 +25,7 @@ async function runcommand(server, rcon, msg) {
 module.exports = {
     name: 'pause',
     aka: ['paused','stop'],
-    description: 'Clears Pollution (Currently Admin/Mod only command)',
+    description: 'Pauses the game (Currently Admin/Mod only command)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
@@ -48,13 +48,13 @@ module.exports = {
         }
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
-            console.log(`Server PAUSED cleared`)
+            console.log(`Server ${server} PAUSED by ${msg.member.displayName}`)
             runcommand(server, rcons[server], msg)
                 .catch((err) => { internal_error(err); return })
         } else {
             msg.reply(`Please pick a server first just a number (Currently 1-8). Correct usage is \`${prefix} pause <server#>\``)
                 .catch((err) => { internal_error(err); return })
-            console.log(`Server Pause ${msg.author.username} incorrect server number`);
+            console.log(`Server Pause ${msg.member.username} incorrect server number`);
             return;
         }
     },
