@@ -24,7 +24,7 @@ async function runcommand(server, rcon, msg) {
  
 module.exports = {
     name: 'unpause',
-    aka: ['pausedun','unstop','resume'],
+    aka: ['pausedun','unstop','resume','pauseun'],
     description: 'Unpauses the game (Currently Admin/Mod only command)',
     guildOnly: true,
     args: true,
