@@ -1,4 +1,4 @@
-
+ 
 const Discord = require('discord.js');
 async function runCommand(server, rcon, msg, toClear, reason) {
     if(!rcon.connected){
