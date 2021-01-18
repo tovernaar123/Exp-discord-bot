@@ -6,6 +6,7 @@ const Discord = require('discord.js');
  * @param {Rcon} rcon 
  * @param {Discord.Message} msg 
 */
+let prefix = process.env.PREFIX;
 async function runcommand(server, rcon, msg) {
     if (!rcon.connected) {
         await msg.channel.send(`S${server} is not connected the bot.`)
@@ -31,7 +32,7 @@ module.exports = {
     required_role: role.staff,
     usage: `\`<#>\` (Server Number, number only)`,
     execute(msg, args, rcons, internal_error) {
-        let prefix = process.env.PREFIX;
+        
         const server = Math.floor(Number(args[0]));
         //let reason = args.slice(2).join(" ");
         let extra = args[1];
