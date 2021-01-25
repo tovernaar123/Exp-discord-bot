@@ -12,9 +12,9 @@ async function oneCommand(servernum, rcon, msg, client) {
     if (rcon.connected) {
         res = await rcon.send('/p o')
     } else if(msg){
-        const Embed = Discord.MessageEmbed()
-        Embed.addField(`S${servernum} is not connected to the bot`, `S${servernum} offline`, false)
-        await msg.channel.send(Embed);
+       // const Embed = Discord.MessageEmbed()
+       // Embed.addField(`S${servernum} is not connected to the bot`, `S${servernum} offline`, false)
+       // await msg.channel.send(Embed);
         return
     }else{
         res = `S${servernum} is not connected to the bot`
