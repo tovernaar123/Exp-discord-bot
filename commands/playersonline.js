@@ -17,7 +17,12 @@ async function oneCommand(servernum, rcon, msg, client) {
        // await msg.channel.send(Embed);
         return
     }else{
-        res = `S${servernum} is not connected to the bot`
+        if (res.contains == "is not connect to the bot") 
+            {
+                return
+            }
+        else
+      
     }
     if (!msg) {
         return res
