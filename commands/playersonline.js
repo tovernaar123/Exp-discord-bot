@@ -22,6 +22,9 @@ async function oneCommand(servernum, rcon, msg, client) {
                 return
             }
         else
+        {
+            res = `potential coding issue`
+        }
       
     }
     if (!msg) {
