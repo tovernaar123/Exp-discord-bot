@@ -15,8 +15,10 @@ async function oneCommand(servernum, rcon, msg, client) {
        // const Embed = Discord.MessageEmbed()
        // Embed.addField(`S${servernum} is not connected to the bot`, `S${servernum} offline`, false)
        // await msg.channel.send(Embed);
+       msg.reply('one (or all) of your servers are off line');
         return
     }else{
+        res = `S${servernum} is not connected to the bot`
         if (res.contains("is not connect to the bot")) 
             {
                 return
