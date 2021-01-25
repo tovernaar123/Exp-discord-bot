@@ -22,6 +22,10 @@ async function oneCommand(servernum, rcon, msg, client) {
     if (!msg) {
         return res
     } else {
+        if (res.contains == "is not connect to the bot") 
+            {
+                return msg.channel.send('all servers requested offline');
+            } 
         const Embed = Discord.MessageEmbed()
         Embed.addField('Online Players', `request by ${msg.author.username} \n \u200B`, false)
         Embed.addField(`S${servernum}`, res, true)
