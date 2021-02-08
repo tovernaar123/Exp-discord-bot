@@ -63,9 +63,14 @@ module.exports = {
     usage: ` <server#> <amount of lines>`,
     async execute(msg, args, _, internal_error) {
         const author = msg.member.displayName;
-
-        const server = Math.floor(Number(args[0]));
         let size = Math.floor(Number(args[1]));
+        let server = args[0].replace(/server|s/i, '');
+        server = Number(server) || server;
+
+        if(!isNaN(server)){
+            server = Math.floor(args[0]);
+        }
+
         if (isNaN(size)) {
             msg.reply(`Please give the amount of lines you want`)
                 .catch((err) => { internal_error(err); return })

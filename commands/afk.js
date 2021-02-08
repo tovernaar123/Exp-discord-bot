@@ -18,15 +18,17 @@ module.exports = {
 
         let extra = args.slice(1).join(" "); // cant have any of this here for afk
         let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`; //send afk chat bot
-
-        if (extra) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        
+        // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        if (extra) {
             msg.channel.send(`Please remove "${extra}". Correct usage: \`.exp afk <Server#>\``)
                 .catch((err) => {internal_error(err); return})
             console.log(`AFK was given too many arguments`);
             return;
         }
 
-        if (!server) { // Checks to see if the person specified a server number.
+        // Checks to see if the person specified a server number
+        if (!server) { 
             msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`')
                 .catch((err) => {internal_error(err); return})
             console.log(`Kick-Did not have server number`);
@@ -76,7 +78,8 @@ module.exports = {
                 return;
             };
 
-            // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
+            // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response
+            // instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong syntax
             if (json_data) {
                 const Embed = Discord.MessageEmbed()
                 let length = Object.keys(json_data).length
