@@ -7,6 +7,7 @@ const Discord = require('discord.js');
  * @param {Discord.Message} send_message if given will send the result in an embed to the channel
  * @returns {string} the players that are online on the server
 */
+    let prefix = process.env.PREFIX;
 async function oneCommand(servernum, rcon, msg, client) {
     let res;
     if (rcon.connected) {
@@ -75,13 +76,13 @@ module.exports = {
         }
 
         if (!server) { // Checks to see if the person specified a server number
-            msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`')
+            msg.channel.send(`Please pick a server first just a number (1-8). Usage: \`${prefix} po <server#>\` or \`${prefix} po all\``)
                 .catch((err) => { internal_error(err); return })
             console.log(`po-Did not have server number`);
             return;
         }
         if (args[1]) {
-            msg.channel.send('No second argument is needed (1-8). correct usage: \`<#> <username> <reason>\`')
+            msg.channel.send(`No second argument is needed (1-8). correct usage: \`${prefix} po <server#>\` or \`${prefix} po all\``)
                 .catch((err) => { internal_error(err); return })
             console.log(`To many args not have server number`);
             return
