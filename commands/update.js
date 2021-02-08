@@ -31,7 +31,13 @@ module.exports = {
     required_role: role.staff,
     usage: `<branch>`,
     execute(msg, args, _, internal_error) {
-        run_command(msg, args, internal_error)	
-        .catch((err) => { internal_error(err); return })
+        
+        if(msg.member.roles.cache.find(r => r.id === "678245941639381010") || msg.member.roles.cache.find(r => r.id === "290940523844468738") || msg.member.roles.cache.find(r => r.id === "764526097768644618")) // if Contributing Dev (PROD), Admin (PROD), Admin (test server)
+        {
+            run_command(msg, args, internal_error)
+                .catch((err) => { internal_error(err); return })   
+        }
+    else{msg.channel.send(`You do not seem to have the right role`); console.log('someone (${msg.member.displayName}) Tried to update the bot but does not have access')}
+        
     }
 }
