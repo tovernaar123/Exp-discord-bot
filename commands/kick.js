@@ -30,7 +30,8 @@ module.exports = {
     required_role: role.staff,
     usage: ` <username> <reason>`,
     async execute(msg, args, rcons, internal_error) {
-        const author = msg.member.displayName; //find author
+        //find author
+        const author = msg.member.displayName;
         let server = args[0].replace(/server|s/i, '');
         server = Number(server) || server;
 
@@ -40,20 +41,23 @@ module.exports = {
 
         let reason = args.slice(2).join(" ");
         let toKick = args[1];
-
-        if (!server) { // Checks to see if the person specified a server number
+        
+        // Checks to see if the person specified a server number
+        if (!server) {
             msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`');
             console.log(`Kick-Did not have server number`);
             return;
         }
-
-        if (!toKick) { // if no 2nd argument returns without running with error
+        
+        // if no 2nd argument returns without running with error
+        if (!toKick) {
             msg.channel.send(`You need to tell us who you would like to kick for us to be able to kick them. \`<#> <username> <reason>\``);
             console.log(`Kick-Did not have name`);
             return;
         }
 
-        if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        if (!reason) {
             msg.channel.send(`Please put a reason, you can always rekick or reban later with a better one.\`<#> <username> <reason>\``);
             console.log(`Kick-Did not have reason`);
             return;
@@ -64,7 +68,8 @@ module.exports = {
             runCommand(server, rcons[server], msg, toKick, reason)
                 .catch((err) => {internal_error(err); return})
         } else {
-            // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
+            // If a person DID give a server number but did NOT give the correct one it will return without running
+            // is the server number is part of the array of the servers it could be (1-8 currently)
             msg.reply(`Please pick a server first just a number (1-8) or *all*.  Correct usage is \`.exp kick <server#>\``)
                 .catch((err) => {internal_error(err); return})
             console.log(`players online by ${author} incorrect server number`);

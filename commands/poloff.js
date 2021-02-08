@@ -1,5 +1,5 @@
-
 const Discord = require('discord.js');
+
 /**
  * 
  * @param {Number} server 
@@ -32,19 +32,28 @@ module.exports = {
     usage: `\`<#>\` (Server Number, number only)`,
     execute(msg, args, rcons, internal_error) {
         let prefix = process.env.PREFIX;
-        const server = Math.floor(Number(args[0]));
-        //let reason = args.slice(2).join(" ");
         let extra = args[1];
+        //let reason = args.slice(2).join(" ");
+        const author = msg.member.displayName;
+        let server = args[0].replace(/server|s/i, '');
+        server = Number(server) || server;
+
+        if(!isNaN(server)){
+            server = Math.floor(args[0]);
+        }
+
         if (!server) {
             msg.channel.send('Please pick a server first just a number (1-8)')
                 .catch((err) => { internal_error(err); return });
             return;
         }
+
         if (extra) {
             msg.channel.send(`No additional arguments needed. Correct usage: \`${prefix} poloff <#>\` (Server Number only)\n **Command Not Run** `)
                 .catch((err) => { internal_error(err); return })
             return;
         }
+
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             console.log(`Server Pollution turned off`)
