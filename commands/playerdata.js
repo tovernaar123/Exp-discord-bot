@@ -27,7 +27,7 @@ module.exports = {
               let mydata = JSON.parse(rawdata);
               key1 = `${name}`; // in dataFile
               key2 = `Statistics`;
-              let final data {mydata["PlayerData"][key1]["Statistics"]}
+              let finaldata = mydata["PlayerData"][key1]["Statistics"]
               //console.log(mydata[rawdata][PlayerData][key1][Statistics]);
               try { console.log(mydata["PlayerData"][key1]["Statistics"])}
               catch{ internal_error(err); msg.channel.send(`Name not valid.`); return; }
