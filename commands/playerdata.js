@@ -29,6 +29,11 @@ module.exports = {
               if(mydata["PlayerData"][key1] )
               {
                 finaldata = mydata["PlayerData"][key1]["Statistics"];
+                
+                let regex1 = ([a-z])([A-Z])
+                let string = finaldata
+                let finalfinal = str.replace(regex1, $1 $2')
+                
                 msg.channel.send(`${name}:\n\`\`\`json \n${JSON.stringify(finaldata, null, 2)}\`\`\``);
               }
              else{msg.channel.send('name error'); return}
