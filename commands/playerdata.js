@@ -28,12 +28,14 @@ module.exports = {
               let finaldata = mydata["PlayerData"][key1]["Statistics"];
               //console.log(mydata[rawdata][PlayerData][key1][Statistics]);
               //finaldata.catch(msg.channel.send(`Something is not valid`);
-              if ((finaldata.Error)/*typeof checkdata === 'undefined'*/) {msg.channel.send(`Something is not valid, please check the name and try again`);return }
+              if ((finaldata.error)/*typeof checkdata === 'undefined'*/) {msg.channel.send(`Something is not valid, please check the name and try again`);return }
               try { console.log(finaldata)}
-              catch{
-                  msg.channel.send(`Name not valid.`);
+              catch (error)
+                    {
+                  msg.channel.send(`Name not valid. ${error}`);
                   //internal_error(err);
-                  return; }
+                  return; 
+                    }
               //console.log(mydata["PlayerData"][key1]["Statistics"])
             // .catch((err) => { internal_error(err); msg.channel.send(`Name not valid.`); return; });
               
