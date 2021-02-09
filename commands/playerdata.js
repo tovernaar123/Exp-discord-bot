@@ -25,8 +25,8 @@ module.exports = {
               const fs  = require('fs');
               let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
               let mydata = JSON.parse(rawdata);
-              key1 = `PlayerData.${name}`; // in dataFile
-              console.log(mydata[rawdata].PlayerData.${name}.Statistics);
+              key1 = `${name}`; // in dataFile
+              console.log(mydata[rawdata][PlayerData][key1][Statistics]);
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
                 .catch((err) => { internal_error(err); return })
