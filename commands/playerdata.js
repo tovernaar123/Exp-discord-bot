@@ -30,7 +30,7 @@ module.exports = {
               //finaldata.catch(msg.channel.send(`Something is not valid`);
               if ((finaldata.error)/*typeof checkdata === 'undefined'*/) {msg.channel.send(`Something is not valid, please check the name and try again`);return }
               msg.channel.send(finaldata)
-                  .catch((err) => { internal_error(err); msg.channel.send(`Name not valid.`); return; })}
+                  .catch((err) => { internal_error(err); msg.channel.send(`Name not valid.`); return; })
               //console.log(mydata["PlayerData"][key1]["Statistics"])
             // .catch((err) => { internal_error(err); msg.channel.send(`Name not valid.`); return; });
               
