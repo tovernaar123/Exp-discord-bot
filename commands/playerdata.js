@@ -20,12 +20,6 @@ module.exports = {
          if (name) 
          {
               const fs  = require('fs');
-
-
-
-
-
-
              let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
              let mydata = JSON.parse(rawdata);
               key1 = `${name}`; // in dataFile
@@ -35,6 +29,7 @@ module.exports = {
               if(mydata["PlayerData"][key1] )
               {
                 finaldata = mydata["PlayerData"][key1]["Statistics"];
+                msg.channel.send(`\`\`\`${finaldata}\`\`\``);
               }
              else{msg.channel.send('name error'); return}
              
