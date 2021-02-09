@@ -29,7 +29,7 @@ module.exports = {
               key2 = `Statistics`;
               let finaldata = mydata["PlayerData"][key1]["Statistics"]
               //console.log(mydata[rawdata][PlayerData][key1][Statistics]);
-              try { console.log(mydata["PlayerData"][key1]["Statistics"])}
+              try { console.log(finaldata)}
               catch{ internal_error(err); msg.channel.send(`Name not valid.`); return; }
               //console.log(mydata["PlayerData"][key1]["Statistics"])
             // .catch((err) => { internal_error(err); msg.channel.send(`Name not valid.`); return; });
