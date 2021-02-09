@@ -29,16 +29,12 @@ module.exports = {
               //console.log(mydata[rawdata][PlayerData][key1][Statistics]);
               //finaldata.catch(msg.channel.send(`Something is not valid`);
               if ((finaldata.error)/*typeof checkdata === 'undefined'*/) {msg.channel.send(`Something is not valid, please check the name and try again`);return }
-              try { msg.channel.send(finaldata)}
-              catch (error)
-                    {
-                  msg.channel.send(`Name not valid. ${error}`);
-                  //internal_error(err);
-                  return; 
-                    }
+              msg.channel.send(finaldata)
+                  .catch((err) => { internal_error(err); msg.channel.send(`Name not valid.`); return; })}
               //console.log(mydata["PlayerData"][key1]["Statistics"])
             // .catch((err) => { internal_error(err); msg.channel.send(`Name not valid.`); return; });
               
+        
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
                 .catch((err) => { internal_error(err); return })
