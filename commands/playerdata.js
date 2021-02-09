@@ -29,7 +29,7 @@ module.exports = {
               //console.log(mydata[rawdata][PlayerData][key1][Statistics]);
               //finaldata.catch(msg.channel.send(`Something is not valid`);
               if ((finaldata.error)/*typeof checkdata === 'undefined'*/) {msg.channel.send(`Something is not valid, please check the name and try again`);return }
-              try { console.log(finaldata)}
+              try { msg.channel.send(finaldata)}
               catch (error)
                     {
                   msg.channel.send(`Name not valid. ${error}`);
