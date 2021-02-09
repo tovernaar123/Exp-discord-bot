@@ -28,7 +28,7 @@ module.exports = {
               key1 = `${name}`; // in dataFile
               key2 = `Statistics`;
               //console.log(mydata[rawdata][PlayerData][key1][Statistics]);
-              console.log(mydata[key1].Statistics);
+              console.log(mydata[key1]);
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
                 .catch((err) => { internal_error(err); return })
