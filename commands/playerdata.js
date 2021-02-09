@@ -26,7 +26,7 @@ module.exports = {
               let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
               let mydata = JSON.parse(rawdata);
               key1 = `${name}`; // in dataFile
-              console.log(mydata[key1].settings);
+              console.log(PlayerData.mydata[key1].Statistics);
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
                 .catch((err) => { internal_error(err); return })
