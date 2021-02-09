@@ -29,7 +29,7 @@ module.exports = {
               if(mydata["PlayerData"][key1] )
               {
                 finaldata = mydata["PlayerData"][key1]["Statistics"];
-                msg.channel.send(`\`\`\`${JSON.stringify(finaldata)}\`\`\``);
+                msg.channel.send(`${name}:\n\`\`\`json \n${JSON.stringify(finaldata, null, 2)}\`\`\``);
               }
              else{msg.channel.send('name error'); return}
              
