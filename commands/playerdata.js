@@ -32,7 +32,7 @@ module.exports = {
                 
                 let regex1 = ([a-z])([A-Z])
                 let string = JSON.stringify(finaldata, null, 2)
-                let finalfinal = str.replace(regex1)
+                let finalfinal = finaldata.replace(regex1)
                 
                 msg.channel.send(`${name}:\n\`\`\`json \n${finalfinal}\`\`\``);
               }
