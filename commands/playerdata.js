@@ -20,15 +20,17 @@ module.exports = {
                 .catch((err) => { internal_error(err); return });
             return;
         }
-          if (name) 
-          {
+         if (name) 
+         {
               const fs  = require('fs');
               let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
               let mydata = JSON.parse(rawdata);
               key1 = `${name}`; // in dataFile
               key2 = `Statistics`;
               //console.log(mydata[rawdata][PlayerData][key1][Statistics]);
-              console.log(mydata["PlayerData"][key1]["Statistics"]);
+              console.log(mydata["PlayerData"][key1]["Statistics"])
+             .catch((err) = > { internal_error(err); msg.channel.send(`Name not valid.`);
+              
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
                 .catch((err) => { internal_error(err); return })
