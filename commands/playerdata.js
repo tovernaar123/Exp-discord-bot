@@ -1,8 +1,5 @@
 //player data storage access
 
-
-
-
 module.exports = {
     name: 'playerdata',
     aka: ['pd', 'userdata'],
@@ -30,10 +27,13 @@ module.exports = {
               let checkdata = mydata["PlayerData"][key1];
               let finaldata = mydata["PlayerData"][key1]["Statistics"];
               //console.log(mydata[rawdata][PlayerData][key1][Statistics]);
-             //finaldata.catch(msg.channel.send(`Something is not valid`);
+              //finaldata.catch(msg.channel.send(`Something is not valid`);
               if ((finaldata.Error)/*typeof checkdata === 'undefined'*/) {msg.channel.send(`Something is not valid, please check the name and try again`);return }
               try { console.log(finaldata)}
-              catch{msg.channel.send(`Name not valid.`);internal_error(err);  return; }
+              catch{
+                  msg.channel.send(`Name not valid.`);
+                  //internal_error(err);
+                  return; }
               //console.log(mydata["PlayerData"][key1]["Statistics"])
             // .catch((err) => { internal_error(err); msg.channel.send(`Name not valid.`); return; });
               
