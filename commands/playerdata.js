@@ -30,7 +30,7 @@ module.exports = {
               {
                 finaldata = mydata["PlayerData"][key1]["Statistics"];
                 
-                let regex1 = ([a-z])([A-Z])
+                let regex1 = `([a-z])([A-Z])`
                 let string = JSON.stringify(finaldata, null, 2)
                 let finalfinal = finaldata.replace(regex1)
                 
