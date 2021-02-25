@@ -140,9 +140,7 @@ client.on("message", async msg => {
                             msg.channel.send(`You do not have ${role.name} permission.`);
                             return;
                         }
-            console.log(`Unauthorized `);
-            msg.channel.send(`You do not have ${role.name} permission.`);
-            return;
+            
         };
     }
 
