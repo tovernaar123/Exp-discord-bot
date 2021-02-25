@@ -12,6 +12,20 @@ module.exports = {
     execute(msg, args, _, internal_error) {
         let name = args[0];
         
+            // Check (FOR THIS COMMAND ONLY) to see if you have the role you need or a higher one
+            let req_role = role.board
+            if (req_role) {
+                let role = await msg.guild.roles.fetch(req_role)
+                let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0 || args[0] == msg.member.displayName;
+                if (!allowed) {
+                    console.log(`Unauthorized `);
+                    msg.channel.send(`You do not have ${role.name} permission.`);
+                    return;
+                };
+            }
+        
+        
+        
         if (!name) {
             msg.channel.send('Please pick a name first. Just the name - CAPS COUNT')
                 .catch((err) => { internal_error(err); return });
