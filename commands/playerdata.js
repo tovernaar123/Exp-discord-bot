@@ -16,8 +16,8 @@ module.exports = {
             let req_role = 765920803006054431 //board
             if (req_role) {
                 //let role = msg.guild.roles.fetch(req_role)
-                let role = req_role
-                let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
+                //let role = req_role
+                let allowed = msg.member.roles.highest.comparePositionTo(765920803006054431) >= 0;
                 if (!allowed) {
                     if(args[0] == msg.member.displayName)
                         {
