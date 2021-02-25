@@ -12,28 +12,7 @@ module.exports = {
     execute(msg, args, _, internal_error) {
         let name = args[0];
         
-           /* kill the block ->
-           
-           // Check (FOR THIS COMMAND ONLY) to see if you have the role you need or a higher one
-            let req_role = 765920803006054431 //board
-            if (req_role) {
-                //let role = msg.guild.roles.fetch(req_role)
-                //let role = req_role
-                let allowed = msg.member.roles.highest.comparePositionTo(765920803006054431) >= 0;
-                if (!allowed) {
-                    if(args[0] == msg.member.displayName)
-                        {
-                            console.log('Self look up by ${msg.memmber.displayName}');
-                        } // exception for self lookup
-                    else    
-                        {
-                            console.log(`Unauthorized playerdata lookup`);
-                            msg.channel.send(`You do not have ${role.name} permission.`);
-                            return;
-                        }
-                };
-            }
-        */
+
         
         
         if (!name) {
