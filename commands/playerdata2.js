@@ -123,7 +123,7 @@ module.exports = {
             let result = profile(item);
             let lookup = key1;
 
-            channel.send(`\`\`\`Player Data\nRequested by ${msg.author.username}\nUsername: ${lookup}\n\`\`\``);
+            channel.send(`\`\`\`Player Data\nRequested by ${msg.member.displayName}\nUsername: ${lookup}\n\`\`\``);
 
             const Embed = new Discord.MessageEmbed();
             Embed.setColor("0x00ff00");
