@@ -7,12 +7,14 @@ module.exports = {
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
-    //required_role: role.board,
+    required_role: role.board,
     usage: ` <name>`,
     execute(msg, args, _, internal_error) {
         let name = args[0];
         
-            // Check (FOR THIS COMMAND ONLY) to see if you have the role you need or a higher one
+           /* kill the block ->
+           
+           // Check (FOR THIS COMMAND ONLY) to see if you have the role you need or a higher one
             let req_role = 765920803006054431 //board
             if (req_role) {
                 //let role = msg.guild.roles.fetch(req_role)
@@ -31,7 +33,7 @@ module.exports = {
                         }
                 };
             }
-        
+        */
         
         
         if (!name) {
