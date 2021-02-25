@@ -33,9 +33,9 @@ module.exports = {
               {
                 finaldata = mydata["PlayerData"][key1]["Statistics"];
                             
-                msg.channel.send(`${name}:\n\`\`\`json \n${JSON.stringify(finaldata, null, 2)}\`\`\``);
+                msg.channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
               }
-             else{msg.channel.send('name error'); return}
+             else{msg.channel.send('Name error: Name not found in datastore');console.log(`Name Not Found`); return;}
              
         
         } else {
