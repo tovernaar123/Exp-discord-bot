@@ -15,7 +15,7 @@ module.exports = {
             // Check (FOR THIS COMMAND ONLY) to see if you have the role you need or a higher one
             let req_role = role.board
             if (req_role) {
-                let role = await msg.guild.roles.fetch(req_role)
+                let role = msg.guild.roles.fetch(req_role)
                 let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0 || args[0] == msg.member.displayName;
                 if (!allowed) {
                     console.log(`Unauthorized `);
