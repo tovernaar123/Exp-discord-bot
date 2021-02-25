@@ -7,7 +7,7 @@ module.exports = {
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
-    required_role: role.board,
+    //required_role: role.board,
     usage: ` <name>`,
     execute(msg, args, _, internal_error) {
         let name = args[0];
