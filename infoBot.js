@@ -130,7 +130,7 @@ client.on("message", async msg => {
         let role = await msg.guild.roles.fetch(req_role)
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
-            if(command.name == playerdata && args[0] == msg.member.displayName)
+            if(command.name == `playerdata` && args[0] == msg.member.displayName)
                         {
                             console.log('Self look up by ${msg.memmber.displayName}');
                         } // exception for self lookup
