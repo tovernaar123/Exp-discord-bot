@@ -136,8 +136,16 @@ client.on("message", async msg => {
                         } // exception for self lookup
                     else    
                         {
+                            let roleError1 = `You do not have ${role.name} permission(s).`;
                             console.log(`Unauthorized playerdata lookup`);
-                            msg.channel.send(`You do not have ${role.name} permission.`);
+                            if(command.name == `playerdata`)
+                            {
+                                msg.channel.send(`${roleError1} Nor do you seem to be looking up your own data.`);
+                            }
+                            else
+                            {
+                                msg.channel.send(`You do not have ${role.name} permission.`);
+                            }
                             return;
                         }
             
