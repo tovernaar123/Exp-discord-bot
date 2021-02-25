@@ -10,6 +10,7 @@ module.exports = {
     required_role: role.board,
     usage: ` <name>`,
     execute(msg, args, _, internal_error) {
+        const Discord = require('discord.js');
         let name = args[0];
         
 
