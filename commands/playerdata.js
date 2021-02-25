@@ -17,11 +17,18 @@ module.exports = {
             if (req_role) {
                 //let role = msg.guild.roles.fetch(req_role)
                 let role = req_role
-                let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0 || args[0] == msg.member.displayName;
+                let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
                 if (!allowed) {
-                    console.log(`Unauthorized `);
-                    msg.channel.send(`You do not have ${role.name} permission.`);
-                    return;
+                    if(args[0] == msg.member.displayName;)
+                        {
+                            console.log('Self look up by ${msg.memmber.displayName}');
+                        } // exception for self lookup
+                    else    
+                        {
+                            console.log(`Unauthorized playerdata lookup`);
+                            msg.channel.send(`You do not have ${role.name} permission.`);
+                            return;
+                        }
                 };
             }
         
