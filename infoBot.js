@@ -132,7 +132,7 @@ client.on("message", async msg => {
         if (!allowed) {
             if(command.name == `playerdata` && args[0] == msg.member.displayName || command.name == `playerdata2` && args[0] == msg.member.displayName || command.name == `playerdata2` && !args[0])
                         {
-                            console.log(`Self look up by ${msg.memmber.displayName}`);
+                            console.log(`Self look up by ${msg.member.displayName}`);
                         } // exception for self lookup
                     else    
                         {
