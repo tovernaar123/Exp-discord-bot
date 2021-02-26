@@ -28,7 +28,8 @@ module.exports = {
 
             data.push(`\`${commandList}\``);
             //Semi Restricted Public Items//
-            let semiPublic = commands.filter(command => command.helpLevel === "all").map(command => command.name).join(', ');
+                data.push(`**Special (semi-public) Commands:**`);
+                let semiPublic = commands.filter(command => command.helpLevel === "all").map(command => command.name).join(', ');
                 data.push(`\`${semiPublic}\``);
             //Board+//
             if (isBoard || isStaff) {
