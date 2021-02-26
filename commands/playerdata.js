@@ -34,6 +34,7 @@ module.exports = {
                 finaldata = mydata["PlayerData"][key1]["Statistics"];
                             
                 msg.channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
+                console.log(`PD of ${name} by ${msg.member.displayName}`)
               }
              else{msg.channel.send('Name error: Name not found in datastore');console.log(`Name Not Found`); return;}
              

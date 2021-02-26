@@ -131,6 +131,7 @@ module.exports = {
                 let result = profile(item);
                 let lookup = key1;
 
+                console.log(`Player Data Requested by ${msg.member.displayName}\nUsername: ${lookup} `);
                 channel.send(`\`\`\`Player Data\nRequested by ${msg.member.displayName}\nUsername: ${lookup}\n\`\`\``);
 
                 const Embed = new Discord.MessageEmbed();
