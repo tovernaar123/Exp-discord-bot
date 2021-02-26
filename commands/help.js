@@ -28,6 +28,9 @@ module.exports = {
                 .map(command => command.name).join(', ');
 
             data.push(`\`${commandList}\``);
+            //Semi Restricted Public Items//
+            let semiPublic = commands.filter(command => command.helpLevel == "all").map(command => command.name).join(', ');
+                data.push(`\`${semiPublic}\``);
             //Board+//
             if (isBoard || isStaff) {
                 data.push(`**Board Member(s) Commands:**`);
