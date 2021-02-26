@@ -11,18 +11,20 @@ module.exports = {
     usage: ` <name>`,
     execute(msg, args, _, internal_error) {
         const Discord = require('discord.js');
-        let name = args[0];
+        let name;
+        name = msg.member.displayName;
+        name = args[0];
         
 
         
         
-        if (!name) {
-            msg.channel.send('Please pick a name first. Just the name - CAPS COUNT')
-                .catch((err) => { internal_error(err); return });
-            return;
-        }
-         if (name) 
-         { // start PHIDAS format feature
+       // if (!name) {
+       //     msg.channel.send('Please pick a name first. Just the name - CAPS COUNT')
+       //         .catch((err) => { internal_error(err); return });
+       //     return;
+       // }
+        if (1 == 1) 
+        { // start PHIDAS format feature
 
             function ts(x) {
                 if (x === undefined) {
