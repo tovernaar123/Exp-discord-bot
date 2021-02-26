@@ -5,7 +5,7 @@ module.exports = {
     aka: ['pd2', 'userdata2'],
     description: 'get datastore info from (Board+ command)',
     guildOnly: true,
-    args: true,
+    args: false,
     helpLevel: 'staff',
     required_role: role.board,
     usage: ` <name>`,
