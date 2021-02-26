@@ -24,6 +24,7 @@ module.exports = {
                 .filter(command => command.required_role != role.staff)
                 .filter(command => command.required_role != role.admin)
                 .filter(command => command.helpLevel != "owner")
+                .filter(command => command.helpLevel == "all")
                 .map(command => command.name).join(', ');
 
             data.push(`\`${commandList}\``);

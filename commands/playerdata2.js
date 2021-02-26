@@ -6,7 +6,7 @@ module.exports = {
     description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
     guildOnly: true,
     args: false,
-    //helpLevel: 'staff',
+    helpLevel: 'all',
     required_role: role.board,
     usage: ` <name>`,
     execute(msg, args, _, internal_error) {
