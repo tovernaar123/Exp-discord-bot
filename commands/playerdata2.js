@@ -16,7 +16,7 @@ module.exports = {
         //runs the command if the person supplied a name
         if(name){playerdata2command(name,msg,args)}
         //runs the command after setting the name to look up as the user who submitted the request
-        if(!name){let name = msg.member.displayName; playerdata2command(name,msg,args)}
+        if(!name){name = msg.member.displayName; playerdata2command(name,msg,args)}
         
          
        function playerdata2command(name,msg,args)
