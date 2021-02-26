@@ -24,12 +24,11 @@ module.exports = {
                 .filter(command => command.required_role != role.staff)
                 .filter(command => command.required_role != role.admin)
                 .filter(command => command.helpLevel != "owner")
-                .filter(command => command.helpLevel == "all")
                 .map(command => command.name).join(', ');
 
             data.push(`\`${commandList}\``);
             //Semi Restricted Public Items//
-            let semiPublic = commands.filter(command => command.helpLevel == "all").map(command => command.name).join(', ');
+            let semiPublic = commands.filter(command => command.helpLevel === "all").map(command => command.name).join(', ');
                 data.push(`\`${semiPublic}\``);
             //Board+//
             if (isBoard || isStaff) {
