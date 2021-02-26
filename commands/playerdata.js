@@ -3,12 +3,12 @@
 module.exports = {
     name: 'playerdata',
     aka: ['pd', 'userdata'],
-    description: 'get chat (last 10 lines) (Board+ command)',
+    description: 'Get stats (datastore info) for any user (Board+)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
     required_role: role.board,
-    usage: ` <name>`,
+    usage: ` <nameToLookup>`,
     execute(msg, args, _, internal_error) {
         let name = args[0];
         

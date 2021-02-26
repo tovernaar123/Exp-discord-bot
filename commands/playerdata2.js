@@ -3,30 +3,22 @@
 module.exports = {
     name: 'playerdata2',
     aka: ['pd2', 'userdata2'],
-    description: 'get datastore info from (Board+ command)',
+    description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
     guildOnly: true,
     args: false,
-    helpLevel: 'staff',
+    //helpLevel: 'staff',
     required_role: role.board,
     usage: ` <name>`,
     execute(msg, args, _, internal_error) {
         const Discord = require('discord.js');
         let name = args[0];
-        name = msg.member.displayName;
-        
-
-        
-        
-
+                
+        //runs the command if the person supplied a name
         if(name){playerdata2command(name,msg,args)}
+        //runs the command after setting the name to look up as the user who submitted the request
         if(!name){let name = msg.member.displayName; playerdata2command(name,msg,args)}
         
-       // if (!name) {
-       //     msg.channel.send('Please pick a name first. Just the name - CAPS COUNT')
-       //         .catch((err) => { internal_error(err); return });
-       //     return;
-       // }
-        
+         
        function playerdata2command(name,msg,args)
        {
         if (1 == 1) 
@@ -177,100 +169,7 @@ module.exports = {
                 channel.send(Embed2);
                 //channel.send();
                 return;
-            
 
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            /*
-              const fs  = require('fs');
-             let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
-             let mydata = JSON.parse(rawdata);
-              key1 = `${name}`; // in dataFile
-              key2 = `Statistics`;
-              let checkdata = mydata["PlayerData"][key1];
-              let finaldata;
-              if(mydata["PlayerData"][key1] )
-              {
-                finaldata = mydata["PlayerData"][key1]["Statistics"];
-                            
-                msg.channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
-              }
-             else{msg.channel.send('Name error: Name not found in datastore');console.log(`Name Not Found`); return;}
-             */
         
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp unjail <server#> <username>\``)
