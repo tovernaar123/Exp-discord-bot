@@ -174,7 +174,7 @@ module.exports = {
 
                 channel.send(Embed);
                 channel.send(Embed2);
-                channel.send();
+                //channel.send();
                 return;
             
 
