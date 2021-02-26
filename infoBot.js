@@ -79,8 +79,8 @@ client.on("ready", () => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, '')     // delete the dot and everything after
     console.log(`${date_string}: I am ready!`)
-    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice servers # ${offline_servers} are set to be offline. To enable the bot for it\/them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice servers # ${offline_servers} are set to be offline. To enable the bot for it\/them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice bots # ${offline_servers} are set to be offline. To enable the bot for thoes servers please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice bots # ${offline_servers} are set to be offline. To enable the bot for thoes servers please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
 
     
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
@@ -130,9 +130,9 @@ client.on("message", async msg => {
         let role = await msg.guild.roles.fetch(req_role)
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
-            if(command.name == `playerdata` && args[0] == msg.member.displayName || command.name == `playerdata2` && args[0] == msg.member.displayName || command.name == `playerdata2` && !args[0])
+            if(command.name == `playerdata` && args[0] == msg.member.displayName || command.name == `playerdata2` && args[0] == msg.member.displayName || command.name == `playerdata` && !args[0])
                         {
-                            console.log('Self look up by {$msg.memmber.displayName}');
+                            console.log(`Self look up by ${msg.memmber.displayName}`);
                         } // exception for self lookup
                     else    
                         {
