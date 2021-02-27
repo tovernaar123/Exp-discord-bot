@@ -35,7 +35,6 @@ module.exports = {
         {
             run_command(msg, args, internal_error)
                 .catch((err) => { internal_error(err); return })   
-        }
-        else {msg.channel.send(`You do not seem to have the right role`); console.log('someone (${msg.member.displayName}) Tried to update the bot but does not have access')}
+        } else {msg.channel.send(`You do not seem to have the right role`); console.log('someone (${msg.member.displayName}) Tried to update the bot but does not have access')}
     }
 }
