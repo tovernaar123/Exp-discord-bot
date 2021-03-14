@@ -41,6 +41,7 @@ exports.rcon_connect = async function(port, i) {
             Iconnected = true;
             //Reconnect if the attempt failed
         }).catch(err => {
+            Iconnected = false;
             console.log(`Connecting to S${i} failed:`, err.message);
             console.log("Reconnecting in 30 seconds");
             setTimeout(connect, 30e3).unref();
@@ -64,7 +65,7 @@ exports.rcon_connect = async function(port, i) {
     return {
         send: client.send,
         get connected(){
-            return client.socket && client.socket.writeable && client.authenticated && Iconnected
+            return (client.socket && client.socket.writeable && client.authenticated) || Iconnected
         }
     }
 };
