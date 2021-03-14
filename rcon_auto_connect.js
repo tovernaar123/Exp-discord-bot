@@ -15,11 +15,12 @@ exports.rcon_connect = async function(port, i) {
         password: rconpw,
     });
 
+    let Iconnected = false;
     //Show commands sent and their reply for debugging
     let real_send = client.send;
     client.send = function(cmd) {
         return real_send.call(client, cmd).then(res => {
-            if(!(client.socket && client.socket.writeable && client.authenticated && connected)){
+            if(!(client.socket && client.socket.writeable && client.authenticated && Iconnected)){
                 console.error(`[Rcon]: Not connected tried to send: ${cmd}`);
                 return;
             }
@@ -28,7 +29,6 @@ exports.rcon_connect = async function(port, i) {
         });
     };
 
-    let Iconnected = false;
     async function connect() {
         //Workaround for bug in rcon-client
         if (client.socket && !client.socket.writeable && !client.authenticated) {
@@ -65,7 +65,7 @@ exports.rcon_connect = async function(port, i) {
     return {
         send: client.send,
         get connected(){
-            return (client.socket && client.socket.writeable && client.authenticated) || Iconnected
+            return client.socket && client.socket.writeable && client.authenticated && Iconnected
         }
     }
 };
