@@ -44,13 +44,14 @@ async function allCommand(msg, rcons) {
 
     //adds field for every server
     let amount_of_fields = 0;
+    let res = null;
 
     for (let i = 1; i < 9; i++) {
         try {
-            let res = await oneCommand(i, rcons[i]);
+            res = await oneCommand(i, rcons[i]);
         }
         catch (e) {
-            let res = 'Error';
+            res = 'Error';
         }
 
         Embed.addField(`S${i}`, res, true)
