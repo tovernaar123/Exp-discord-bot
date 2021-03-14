@@ -10,16 +10,18 @@ const Discord = require('discord.js');
 let prefix = process.env.PREFIX;
 async function oneCommand(servernum, rcon, msg, client) {
     let res;
+
     if (rcon.connected) {
         res = await rcon.send('/p o')
-    } else if(msg){
+    } else if (msg) {
         const Embed = Discord.MessageEmbed()
         Embed.addField(`S${servernum} is not connected to the bot`, `S${servernum} offline`, false)
         await msg.channel.send(Embed);
         return
-    }else{
+    } else {
         res = `S${servernum} is not connected to the bot`
     }
+
     if (!msg) {
         return res
     } else {
