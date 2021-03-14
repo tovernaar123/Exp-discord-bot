@@ -21,6 +21,7 @@ exports.rcon_connect = async function(port, i) {
     client.send = function(cmd) {
         return real_send.call(client, cmd).then(res => {
             if(!(client.socket && client.socket.writeable && client.authenticated && Iconnected)){
+                console.error(client.socket && client.socket.writeable && client.authenticated && Iconnected);
                 console.error(`[Rcon]: Not connected tried to send: ${cmd}`);
                 return;
             }
@@ -65,6 +66,8 @@ exports.rcon_connect = async function(port, i) {
     return {
         send: client.send,
         get connected(){
+            console.error(client.socket, client.socket.writeable, client.authenticated, Iconnected);
+            console.error(client.socket && client.socket.writeable && client.authenticated && Iconnected);
             return client.socket && client.socket.writeable && client.authenticated && Iconnected
         }
     }
