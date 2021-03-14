@@ -31,7 +31,7 @@ exports.rcon_connect = async function(port, i) {
 
     async function connect() {
         //Workaround for bug in rcon-client
-        if (client.socket && !client.socket.writeable && !client.authenticated) {
+        if (client.socket && !client.socket.writable && !client.authenticated) {
             client.socket = null;
         }
 
