@@ -1,5 +1,5 @@
-
 const Discord = require('discord.js');
+
 async function runCommand(server, rcon, msg, toBan, reason) {
     if(!rcon.connected){
         await msg.channel.send(`S${server} is not connected the bot.`)
@@ -29,7 +29,8 @@ module.exports = {
     required_role: role.staff,
     usage: ` <#server> <username> <reason>`,
     async execute(msg, args, rcons, internal_error) {
-        const author = msg.member.displayName; //find author
+        //find author
+        const author = msg.member.displayName; 
         let server = args[0].replace(/server|s/i, '');
         server = Number(server) || server;
 
@@ -40,19 +41,22 @@ module.exports = {
         let reason = args.slice(2).join(" ");
         let toBan = args[1];
 
-        if (!server) { // Checks to see if the person specified a server number
+        // Checks to see if the person specified a server number
+        if (!server) { 
             msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`');
             console.log(`Ban-Did not have server number`);
             return;
         }
 
-        if (!toBan) { // if no 2nd argument returns without running with error
+        // if no 2nd argument returns without running with error
+        if (!toBan) { 
             msg.channel.send(`You need to tell us who you would like to Ban for us to be able to Ban them. \`<#> <username> <reason>\``);
             console.log(`Ban-Did not have name`);
             return;
         }
 
-        if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        if (!reason) { 
             msg.channel.send(`Please put a reason, you can always reBan or reban later with a better one.\`<#> <username> <reason>\``);
             console.log(`Ban-Did not have reason`);
             return;
