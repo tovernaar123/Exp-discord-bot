@@ -29,6 +29,7 @@ async function oneCommand(servernum, rcon, msg, client) {
         await msg.channel.send(Embed)
     }
 }
+
 /**
  * 
  * @param {Discord.Message} msg the message that excute this command
