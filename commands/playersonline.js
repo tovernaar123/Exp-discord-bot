@@ -46,7 +46,7 @@ async function allCommand(msg, rcons) {
 
     //adds field for every server
     let amount_of_fields = 0;
-    let res = null;
+    let res;
 
     for (let i = 1; i < 9; i++) {
         try {
@@ -62,7 +62,7 @@ async function allCommand(msg, rcons) {
 
     //adds empty fields to make the grid look good
     let amount_of_empty_spaces = 3 - (amount_of_fields % 3)
-    
+
     for (let i = 0; i < amount_of_empty_spaces; i++) {
         //add and empty to make it look nice 
         Embed.addField(`\u200B`, `\u200B`, true)
