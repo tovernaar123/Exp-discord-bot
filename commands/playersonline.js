@@ -43,8 +43,15 @@ async function allCommand(msg, rcons) {
 
     //adds field for every server
     let amount_of_fields = 0;
+
     for (let i = 1; i < 9; i++) {
-        let res = await oneCommand(i, rcons[i])
+        try {
+            let res = await oneCommand(i, rcons[i]);
+        }
+        catch (e) {
+            let res = 'Error';
+        }
+
         Embed.addField(`S${i}`, res, true)
         amount_of_fields += 1;
     }
@@ -77,29 +84,30 @@ module.exports = {
 
         if (!server) { // Checks to see if the person specified a server number
             msg.channel.send(`Please pick a server first just a number (1-8). Usage: \`${prefix} po <server#>\` or \`${prefix} po all\``)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
             console.log(`po-Did not have server number`);
             return;
         }
+
         if (args[1]) {
             msg.channel.send(`No second argument is needed (1-8). correct usage: \`${prefix} po <server#>\` or \`${prefix} po all\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`To many args not have server number`);
+                .catch((err) => {internal_error(err); return})
+            console.log(`Too many args not have server number`);
             return
         }
 
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             oneCommand(server, rcons[server], msg)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
         } else if (server === 'all') {
             console.log(`Server is all`);
             allCommand(msg, rcons, internal_error)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
             msg.reply(`Please pick a server first just a number (1-8) or *all*.  Correct usage is \` po <server#>\``)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => {internal_error(err); return})
             console.log(`players online by ${author} incorrect server number`);
         }
     }
