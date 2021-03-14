@@ -33,6 +33,7 @@ async function get_logs(server, size, msg) {
         await msg.channel.send(`\`\`\`log\n${lines[i]} \n\`\`\``);
     }
 }
+
 module.exports = {
     name: 'log',
     aka: ['dlchat', 'logs'],
@@ -67,6 +68,7 @@ module.exports = {
                 .catch((err) => { internal_error(err); return });
             return;
         }
+
         if (!size) {
             size = defaultSize;
             msg.channel.send(`Using standard amount of lines (${defaultSize}):`)
@@ -80,6 +82,7 @@ module.exports = {
             msg.channel.send(`Cannot be negative or 0, using standard amount of lines (${defaultSize}):`)
                 .catch((err) => { internal_error(err); return });
         }
+
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             get_logs(server, size, msg)
@@ -90,6 +93,5 @@ module.exports = {
             console.log(`log look up by ${author} incorrect server number`);
             return;
         }
-
     },
 };

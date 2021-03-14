@@ -161,6 +161,7 @@ async function get_logs(server, size, msg) {
         await msg.channel.send(`\`\`\`log\n${lines[i]} \n\`\`\``)
     }
 }
+
 module.exports = {   
     name: 'sessions',
     aka: ['joins', 'log-sessions'],

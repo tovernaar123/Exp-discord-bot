@@ -11,8 +11,12 @@ async function runcommand(server, rcon, msg) {
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
-    let res = await rcon.send(`/c game.map_settings.pollution.enabled = false`) // Send command to turn off pollution
-    if (!res) { // this command should not get a reply from the server. The command should print on the ingame server though.
+
+    // Send command to turn off pollution
+    let res = await rcon.send(`/c game.map_settings.pollution.enabled = false`) 
+
+    // this command should not get a reply from the server. The command should print on the ingame server though.
+    if (!res) { 
         rcon.send(`The server had pollution **DISABLED** by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
         await msg.channel.send(`No Error - Thus pollution should have been **disabled** on S${server}. Command Requested by *${msg.member.displayName}*.`);
         console.log(`${msg.member.displayName} has turned OFF polution*`);
