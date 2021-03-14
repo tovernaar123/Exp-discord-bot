@@ -80,17 +80,19 @@ module.exports = {
     args: true,
     usage: ` <server#>`,
     execute(msg, args, rcons, internal_error) {
-        const author = msg.author.username; //find author
+        //find author
+        const author = msg.author.username; 
         let server = Number(args[0]) || args[0];
 
         if(!isNaN(server)){
             server = Math.floor(args[0])
         }
 
-        if (!server) { // Checks to see if the person specified a server number
+        // Checks to see if the person specified a server number
+        if (!server) { 
             msg.channel.send(`Please pick a server first just a number (1-8). Usage: \`${prefix} po <server#>\` or \`${prefix} po all\``)
                 .catch((err) => {internal_error(err); return})
-            console.log(`po-Did not have server number`);
+            console.log(`po did not have server number`);
             return;
         }
 
