@@ -55,11 +55,15 @@ function playerdata2command(name,msg,args)
                         for (let i = 0; i < layout.length; i++) {
                             let msg_3 = [];
                             
-                            if (layout[i] == 'Playtime' || layout[i] == 'AfkTime') { // Playtime and AfkTime are calculated, all others is taken as stored.
+                            if (layout[i] == 'Playtime' || layout[i] == 'AfkTime') {
                                 try {
-                                    let t1 = msg_2[layout[i]];
+                                    var t1 = msg_2[layout[i]];
                                 } catch (e) {
-                                    let t1 = 0;
+                                    var t1 = 0;
+                                }
+                                
+                                if (isNaN(t1)) {
+                                    t1 = 0;
                                 }
                                     
                                 let h1 = Math.floor(t1 / 60); //the hours part of min-> hh:mm
@@ -178,7 +182,7 @@ function playerdata2command(name,msg,args)
 
 module.exports = {
     name: 'playerdata',
-    aka: ['pd2', 'userdata2','pd','pdformatted','pdnice','playerdataformatted','userdata'],
+    aka: ['userdata2','pd','pdformatted','pdnice','playerdataformatted','userdata'],
     description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
     guildOnly: true,
     args: false,
