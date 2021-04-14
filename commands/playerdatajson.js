@@ -1,12 +1,12 @@
 //player data storage access
 
 module.exports = {
-    name: 'playerdata',
-    aka: ['pd', 'userdata'],
-    description: 'Get stats (datastore info) for any user (Board+)',
+    name: 'playerdatajson',
+    aka: ['pdj', 'userdatajson', 'oguserdata','pdjson','pdog'],
+    description: 'Get stats (datastore info) for any user (Board+) (No formatting, Json output)',
     guildOnly: true,
     args: true,
-    helpLevel: 'staff',
+    helpLevel: 'board',
     required_role: role.board,
     usage: ` <nameToLookup>`,
     execute(msg, args, _, internal_error) {
