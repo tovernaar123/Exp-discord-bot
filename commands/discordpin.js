@@ -28,7 +28,7 @@ module.exports = {
         }
 
 
-        msg.channel.messages.fetch(id)
+        msg.channel.messages.fetch(idToPin)
         .then(message => message.pin())
         .catch((err) => { internal_error(err); return })
     },
