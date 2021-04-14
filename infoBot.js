@@ -134,8 +134,6 @@ client.on("message", async msg => {
             msg.channel.send(`You do not have ${role.name} permission.`);
             return;
             }
-                            let roleError1 = `You do not have ${role.name} permission(s).`;
-                            console.log(`Unauthorized playerdata lookup`);
         };
     
 

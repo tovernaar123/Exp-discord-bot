@@ -1,4 +1,5 @@
 const { Role } = require("discord.js");
+const Discord = require('discord.js');
 
 module.exports = {
     name: 'pin',
@@ -10,7 +11,9 @@ module.exports = {
     required_role: role.staff,
     usage: `<id>`,
     execute(msg, args, _, internal_error) {
-        const idToPin = Math.floor(Number(args[0]));
+        //const idToPin = Math.floor(Number(args[0]));
+        let idToPin = args[0];
+        /*
         if (!idToPin) {
             msg.channel.send('please pick an id first');
             console.log(`wanted to pin but did not pick an id first`);
@@ -26,7 +29,7 @@ module.exports = {
             msg.reply('an id number can not be this small'); // makes sure 1 or more posts  
             return;
         }
-
+        */
 
         msg.channel.messages.fetch(idToPin)
         .then(msg => msg.pin())
