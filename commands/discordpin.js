@@ -16,6 +16,7 @@ module.exports = {
 
         msg.channel.messages.fetch(idToPin)
             .then(msg => msg.pin())
+            .then(console.log(`message ${idToPin} has been pinned in ${msg.channel.name}`))
             .catch((err) => { internal_error(err); return })
     },
 };
