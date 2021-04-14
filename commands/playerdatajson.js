@@ -2,7 +2,7 @@
 
 module.exports = {
     name: 'playerdatajson',
-    aka: ['pdj', 'userdatajson', 'oguserdata','pdjson','pdog'],
+    aka: ['pdj', 'userdatajson', 'oguserdata','pdjson','pdog','pd2'],
     description: 'Get stats (datastore info) for any user (Board+) (No formatting, Json output)',
     guildOnly: true,
     args: true,
