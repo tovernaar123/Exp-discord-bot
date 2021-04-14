@@ -209,18 +209,12 @@ module.exports = {
             } 
             else
             {
-            let name = msg.member.displayName; 
-            playerdata2command(name,msg,args)
-            }
+                let name = args[0]
+                if(name){msg.channel.send(`ERROR: User lookup not allowed, getting users data.`);}
+                name = msg.member.displayName; 
+                playerdata2command(name,msg,args);
             
-            /*
-            // const Discord = require('discord.js');
-            let name = args[0];                
-            //runs the command if the person supplied a name
-            if(name){playerdata2command(name,msg,args)}
-            //runs the command after setting the name to look up as the user who submitted the request
-            if(!name){name = msg.member.displayName; playerdata2command(name,msg,args)}
-            */
+            }
         }  
        
        
