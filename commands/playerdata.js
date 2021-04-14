@@ -178,7 +178,20 @@ function playerdata2command(name,msg,args)
             */
 }
 
-async function runCommand()
+
+
+module.exports = {
+    name: 'playerdata',
+    aka: ['pd','pdformatted','pdnice','playerdataformatted','userdata'],
+    description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
+    guildOnly: true,
+    args: false,
+    helpLevel: "all",
+    // required_role: role.board,
+    usage: ` <name>`,
+    execute(msg, args, _, internal_error) {
+        
+        async function runCommand()
         
         {
             let role_needed = "693500936491892826" //board
@@ -209,19 +222,10 @@ async function runCommand()
             if(!name){name = msg.member.displayName; playerdata2command(name,msg,args)}
             */
         }  
-
-module.exports = {
-    name: 'playerdata',
-    aka: ['pd','pdformatted','pdnice','playerdataformatted','userdata'],
-    description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
-    guildOnly: true,
-    args: false,
-    helpLevel: "all",
-    // required_role: role.board,
-    usage: ` <name>`,
-    execute(msg, args, _, internal_error) {
-        
-       runCommand()
+       
+       
+       
+        runCommand()
         
         
        
