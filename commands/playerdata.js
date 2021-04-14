@@ -187,12 +187,31 @@ module.exports = {
     guildOnly: true,
     args: false,
     helpLevel: "all",
-    required_role: role.board,
+    // required_role: role.board,
     usage: ` <name>`,
     execute(msg, args, _, internal_error) {
-       // const Discord = require('discord.js');
-        let name = args[0];
-                
+        
+        let role_needed = "693500936491892826" //board
+        let role = await msg.guild.roles.fetch(req_role)
+        let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
+        
+        if(allowedThisCommand)
+        {
+           // const Discord = require('discord.js');
+            let name = args[0];                
+            //runs the command if the person supplied a name
+            if(name){playerdata2command(name,msg,args)}
+            //runs the command after setting the name to look up as the user who submitted the request
+            if(!name){name = msg.member.displayName; playerdata2command(name,msg,args)} 
+        } 
+        else
+        {
+           name = msg.member.displayName; 
+           playerdata2command(name,msg,args)
+        }
+        
+        // const Discord = require('discord.js');
+        let name = args[0];                
         //runs the command if the person supplied a name
         if(name){playerdata2command(name,msg,args)}
         //runs the command after setting the name to look up as the user who submitted the request
