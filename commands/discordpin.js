@@ -29,7 +29,7 @@ module.exports = {
 
 
         msg.channel.messages.fetch(idToPin)
-        .then(message => message.pin())
+        .then(msg => msg.pin())
         .catch((err) => { internal_error(err); return })
     },
 };
