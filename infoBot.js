@@ -137,7 +137,7 @@ client.on("message", async msg => {
                             let roleError1 = `You do not have ${role.name} permission(s).`;
                             console.log(`Unauthorized playerdata lookup`);
         };
-    }
+    
 
     // If command requires an argument, decline to run if none is provided. Request arguments in the main export of the command file. 
     if (command.args && !args.length) {
