@@ -1,29 +1,12 @@
 //player data storage access with new format
 //required_role has an exception for the user to look upthemselves, nothing needed here it is handeled in infoBot.js...
 //this helpLevel:"all" is required to show up on "semi public commands" it is not needed if the regular command was not restricted to role.board
-module.exports = {
-    name: 'playerdata2',
-    aka: ['pd2', 'userdata2'],
-    description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
-    guildOnly: true,
-    args: false,
-    helpLevel: "all",
-    required_role: role.board,
-    usage: ` <name>`,
-    execute(msg, args, _, internal_error) {
-        const Discord = require('discord.js');
-        let name = args[0];
-                
-        //runs the command if the person supplied a name
-        if(name){playerdata2command(name,msg,args)}
-        //runs the command after setting the name to look up as the user who submitted the request
-        if(!name){name = msg.member.displayName; playerdata2command(name,msg,args)}
-        
-         
-        function playerdata2command(name,msg,args)
+
+//make it run
+function playerdata2command(name,msg,args)
         {
-            if (1 == 1) 
-                { // start PHIDAS format feature
+            //if (1 == 1) 
+            //    { // start PHIDAS format feature
 
                     
                     function ts(x) { //thousands separator
@@ -179,14 +162,40 @@ module.exports = {
                     return;
 
             
+            /*
             } 
-            else 
-            {
-                msg.reply(`Something went wrong. See the logs because you should never run into this on this command`)
-                    .catch((err) => { internal_error(err); return })
-                console.log(`player data lookup by ${msg.author.username} but something happened, we dont know what, look at the logs that were just posted above.`);
-                return;
+            *else 
+            *{
+            *    msg.reply(`Something went wrong. See the logs because you should never run into this on this command`)
+            *        .catch((err) => { internal_error(err); return })
+            *    console.log(`player data lookup by ${msg.author.username} but something happened, we dont know what, look at the logs that were just posted above.`);
+            *    return;
             }
-       }
+            */
+}
+
+
+
+module.exports = {
+    name: 'playerdata',
+    aka: ['pd2', 'userdata2','pd','pdformatted','pdnice','playerdataformatted','userdata'],
+    description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
+    guildOnly: true,
+    args: false,
+    helpLevel: "all",
+    required_role: role.board,
+    usage: ` <name>`,
+    execute(msg, args, _, internal_error) {
+        const Discord = require('discord.js');
+        let name = args[0];
+                
+        //runs the command if the person supplied a name
+        if(name){playerdata2command(name,msg,args)}
+        //runs the command after setting the name to look up as the user who submitted the request
+        if(!name){name = msg.member.displayName; playerdata2command(name,msg,args)}
+        
+         
+        
+       
     },
 };
