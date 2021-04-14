@@ -28,7 +28,7 @@ module.exports = {
             let checkdata = mydata["PlayerData"][key1];
             let finaldata;
             
-            if(mydata["PlayerData"][key1] )
+            if(checkdata)
             {
                 finaldata = mydata["PlayerData"][key1]["Statistics"];
                 msg.channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
