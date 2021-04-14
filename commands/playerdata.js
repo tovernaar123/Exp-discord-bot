@@ -1,7 +1,7 @@
 //player data storage access with new format
 //required_role has an exception for the user to look upthemselves, nothing needed here it is handeled in infoBot.js...
 //this helpLevel:"all" is required to show up on "semi public commands" it is not needed if the regular command was not restricted to role.board
-
+const Discord = require('discord.js');
 //make it run
 function playerdata2command(name,msg,args)
         {
@@ -190,7 +190,7 @@ module.exports = {
     required_role: role.board,
     usage: ` <name>`,
     execute(msg, args, _, internal_error) {
-        const Discord = require('discord.js');
+       // const Discord = require('discord.js');
         let name = args[0];
                 
         //runs the command if the person supplied a name
