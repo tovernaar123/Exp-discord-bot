@@ -130,25 +130,12 @@ client.on("message", async msg => {
         let role = await msg.guild.roles.fetch(req_role)
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
-            //if(command.name == `playerdata` && args[0] == msg.member.displayName || command.name == `playerdata2` && args[0] == msg.member.displayName || command.name == `playerdata2` && !args[0])
-            //            {
-            //                console.log(`Self look up by ${msg.member.displayName}`);
-            //            } // exception for self lookup
-            //        else    
-            //            {
+        console.log(`Unauthorized `);
+            msg.channel.send(`You do not have ${role.name} permission.`);
+            return;
+            }
                             let roleError1 = `You do not have ${role.name} permission(s).`;
                             console.log(`Unauthorized playerdata lookup`);
-            //                if(command.name == `playerdata` || command.name == `playerdata2`)
-            //                {
-            //                    msg.channel.send(`${roleError1} Nor do you seem to be looking up your own data.`);
-            //                }
-            //                else
-            //                {
-                                msg.channel.send(`You do not have ${role.name} permission.`);
-            //                }
-                            return;
-            //            }
-            
         };
     }
 
