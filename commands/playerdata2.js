@@ -26,7 +26,7 @@ module.exports = {
                 { // start PHIDAS format feature
 
                     
-                    function ts(x) {
+                    function ts(x) { //thousands separator
                         if (x === undefined) {
                             return 0;
                         } else {
@@ -67,22 +67,22 @@ module.exports = {
                             'MapTagsMade':'Map Tags Created'
                         };
                         
-                        var msg_4 = [];
+                        let msg_4 = [];
                     
                         for (let i = 0; i < layout.length; i++) {
-                            var msg_3 = [];
+                            let msg_3 = [];
                             
-                            if (layout[i] == 'Playtime' || layout[i] == 'AfkTime') {
+                            if (layout[i] == 'Playtime' || layout[i] == 'AfkTime') { // Playtime and AfkTime are calculated, all others is taken as stored.
                                 try {
-                                    var t1 = msg_2[layout[i]];
+                                    let t1 = msg_2[layout[i]];
                                 } catch (e) {
-                                    var t1 = 0;
+                                    let t1 = 0;
                                 }
                                     
-                                var h1 = Math.floor(t1 / 60);
-                                var m1 = Math.floor(t1 % 60);
+                                let h1 = Math.floor(t1 / 60); //the hours part of min-> hh:mm
+                                let m1 = Math.floor(t1 % 60); // the min part of hh:mm
                     
-                                if (h1 > 0) {
+                                if (h1 > 0) { // if hours (of hh:mm) is more than 0 then show how many hours you have, else only show mins below
                                     msg_3.push(layout_dict[layout[i]]);
                                     msg_3.push(h1 + ' h ' + m1 + ' m');
                                 } else {
@@ -100,7 +100,7 @@ module.exports = {
                                 }
                             }
                     
-                            msg_4.push([msg_3[0], msg_3[1]]);
+                            msg_4.push([msg_3[0], msg_3[1]]); // push title and value in array
                         }
                         
                         return msg_4;
@@ -128,7 +128,7 @@ module.exports = {
 
                     let channel = msg.channel;
                     let result = profile(item);
-                    let lookup = key1;
+                    let lookup = name;
 
                     //log and channel (nonembed) messages sent
                     console.log(`Player Data Requested by ${msg.member.displayName}\nUsername: ${lookup} `);
