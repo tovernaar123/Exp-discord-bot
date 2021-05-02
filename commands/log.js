@@ -1,7 +1,7 @@
 const readLastLines = require(`read-last-lines`);
 async function get_logs(server, size, msg) {
     readLastLines.read(`/home/factorio/servers/eu-0${server}/console.log`, size) //D:\\programing\\lua\\factorio\\servers\\s${server}\\data\\console.log
-        .then((lines) => { let finalLines = lines.replace(/```/g, ',,,'); msg.channel.send(`\`\`\`${finalLines}\`\`\``, { split: true }) }) // lines gets returned with last X (see above) lines and sent to same channel as command
+        .then((lines) => { let finalLines = lines.replace(/```/g, ',,,'); msg.channel.send(`\`\`\`${finalLines}\`\`\``, { split: true, prepend:'\`\`\`' }) }) // lines gets returned with last X (see above) lines and sent to same channel as command
         .then(console.log(`The last ${size} lines of the log for server #${server} posted in ${msg.channel.name}. (asked for ${size})`)) // logs the command in the console log
         .catch((err) => { internal_error(err); return });
 }
