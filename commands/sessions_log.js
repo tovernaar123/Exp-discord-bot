@@ -149,6 +149,7 @@ const max_size = 50;
 async function get_logs(server, msg) {
     let lines = await getLines(server);
     lines = lines.join('\n');
+    lines = lines.replace(/\[special-item=.*?\]/g, '<blueprint>');
     lines = parse_log(lines.replace(/```/g, ',,,'));
     lines = lines.split('\n');
     lines = lines.slice(-1 * max_size);
