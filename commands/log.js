@@ -23,11 +23,12 @@ function getLines(server) {
 }
 
 async function get_logs(server, size, msg) {
+
     let lines = await getLines(server);
-    lines = lines.slice(0, size);
-    lines = lines.reverse();
+    lines = lines.slice(-1 * size);
     lines = lines.join('\n');
     lines = lines.replace(/```/g, ',,,');
+    lines = lines.replace(/\[special-item=.*?\]/g, '<blueprint>');
     lines = lines.match(/[\s\S]{1,1500}/g);
     for (let i = 0; i < lines.length; i++) {
         await msg.channel.send(`\`\`\`log\n${lines[i]} \n\`\`\``);

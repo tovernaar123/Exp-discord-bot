@@ -145,18 +145,17 @@ function getLines(server) {
 
     })
 }
-
-async function get_logs(server, size, msg) {
+const max_size = 50;
+async function get_logs(server, msg) {
     let lines = await getLines(server);
-    lines = lines.reverse();
     lines = lines.join('\n');
     lines = parse_log(lines.replace(/```/g, ',,,'));
     lines = lines.split('\n');
-    lines = lines.slice(0, size);
+    lines = lines.slice(-1 * max_size);
     lines = lines.join('\n');
     lines = lines.match(/[\s\S]{1,1500}/g);
     for (let i = 0; i < lines.length; i++) {
-        await msg.channel.send(`\`\`\`log\n${lines[i]} \n\`\`\``)
+        await msg.channel.send(`\`\`\`log\n${lines[i]}\`\`\``)
     }
 }
 module.exports = {   
@@ -167,17 +166,9 @@ module.exports = {
     args: true,
     helpLevel: 'staff',
     required_role: role.board,
-    usage: ` <server#> <amount of lines>`,
+    usage: ` <server#>`,
     async execute(msg, args, _, internal_error) {
         const server = Math.floor(Number(args[0]));
-        let size = Math.floor(Number(args[1]));
-        if (isNaN(size)) {
-            msg.reply(`Please give the amount of lines you want`)
-                .catch((err) => { internal_error(err); return })
-        }
-
-        let sizeLimit = 50;
-        let defaultSize = 10;
 
         if (!server) {
             msg.channel.send('Please pick a server first. Just the number (1-8)')
@@ -185,23 +176,10 @@ module.exports = {
             return;
         }
         
-        if (!size) {
-            size = defaultSize;
-            msg.channel.send(`Using standard amount of lines (${defaultSize}):`)
-                .catch((err) => {internal_error(err); return});
-        } else if (size > sizeLimit) {
-            size = defaultSize;
-            msg.channel.send(`Cannot get more than ${sizeLimit} lines, will get ${defaultSize} instead`)
-                .catch((err) => {internal_error(err); return});
-        } else if (size <= 0) {
-            size = defaultSize;
-            msg.channel.send(`Cannot be negative or 0, using standard amount of lines (${defaultSize}):`)
-                .catch((err) => {internal_error(err); return});
-        }
         
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
-            get_logs(server, size, msg, internal_error)
+            get_logs(server, msg, internal_error)
                 .catch((err) => {internal_error(err); return})
         } else {
             msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp sessions ${module.exports.usage}\``)
