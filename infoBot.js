@@ -29,7 +29,7 @@ role = {
 
 
 //array for all ofline servers
-let offline_servers = [2, 7, 6]
+let offline_servers = [2, 7, 6, 8]
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed
@@ -82,8 +82,8 @@ client.on("ready", () => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, '')     // delete the dot and everything after
     console.log(`${date_string}: I am ready!`)
-    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice bots # ${offline_servers} are set to be offline. To enable the bot for thoes servers please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice bots # ${offline_servers} are set to be offline. To enable the bot for thoes servers please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
 
     
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
@@ -137,9 +137,25 @@ client.on("message", async msg => {
         let role = await msg.guild.roles.fetch(req_role)
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
-            console.log(`Unauthorized `);
-            msg.channel.send(`You do not have ${role.name} permission.`);
-            return;
+            if(command.name == `playerdata` && args[0] == msg.member.displayName || command.name == `playerdata2` && args[0] == msg.member.displayName || command.name == `playerdata2` && !args[0])
+                        {
+                            console.log(`Self look up by ${msg.member.displayName}`);
+                        } // exception for self lookup
+                    else    
+                        {
+                            let roleError1 = `You do not have ${role.name} permission(s).`;
+                            console.log(`Unauthorized playerdata lookup`);
+                            if(command.name == `playerdata` || command.name == `playerdata2`)
+                            {
+                                msg.channel.send(`${roleError1} Nor do you seem to be looking up your own data.`);
+                            }
+                            else
+                            {
+                                msg.channel.send(`You do not have ${role.name} permission.`);
+                            }
+                            return;
+                        }
+            
         };
     }
 
