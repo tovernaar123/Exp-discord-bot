@@ -36,17 +36,38 @@ function getLines(server) {
     })
 }
 
+
+
 async function get_logs(server, size, msg) {
     let lines = await getLines(server);
     lines = lines.join('\n');
+    lines = lines.replace(/\[special-item=.*?\]/g, '<blueprint>');
     lines = parse_log(lines.replace(/```/g, ',,,'));
     lines = lines.split('\n')
     lines = lines.slice(-1 * size);
-    lines = lines.join('\n');
-    lines = lines.replace(/\[special-item=.*?\]/g, '<blueprint>');
-    lines = lines.match(/[\s\S]{1,1500}/g);
+
+    //Split on enters and limit size per line
+    let final_lines = []
+    let current_msg = "";
     for (let i = 0; i < lines.length; i++) {
-        await msg.channel.send(`\`\`\`log\n${lines[i]}\`\`\``)
+        let line = lines[i]
+        if (line.length > 500) { //max limit of 500 chars per line
+            line = line.replace(/(.*?\[.*?\] .*?:).*/, '$1 <message to long>');
+        }
+
+        if (current_msg.length + line.length > 1900) {
+            final_lines.push(current_msg);
+            current_msg = line + '\n';
+        } else {
+            current_msg += line + '\n';
+        }
+    }
+    //push the final current_msg
+    final_lines.push(current_msg);
+
+    //send the log in the code blocks
+    for (let i = 0; i < final_lines.length; i++) {
+        await msg.channel.send(`\`\`\`log\n${final_lines[i]}\`\`\``);
     }
 }
 
