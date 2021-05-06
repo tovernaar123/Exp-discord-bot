@@ -29,7 +29,7 @@ module.exports = {
     helpLevel: 'staff',
     required_role: role.staff,
     usage: `<branch>`,
-    execute(msg, args, _, internal_error) {
+    async execute(msg, args, _, internal_error) {
         
         if(msg.member.roles.cache.find(r => r.id === "678245941639381010") || msg.member.roles.cache.find(r => r.id === "290940523844468738") || msg.member.roles.cache.find(r => r.id === "764526097768644618")) // if Contributing Dev (PROD), Admin (PROD), Admin (test server)
         {
