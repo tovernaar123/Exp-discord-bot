@@ -189,7 +189,7 @@ module.exports = {
     helpLevel: "all",
     // required_role: role.board,
     usage: ` <name>`,
-    execute(msg, args, _, internal_error) {
+    async execute(msg, args, _, internal_error) {
         
         async function runCommand()
         

@@ -9,7 +9,7 @@ module.exports = {
     helpLevel: 'board',
     required_role: role.board,
     usage: ` <nameToLookup>`,
-    execute(msg, args, _, internal_error) {
+    async execute(msg, args, _, internal_error) {
         let name = args[0];
                 
         //this command unlike its brother pd2 DOES require a name to be specified. You can still look up yourself but you must add in your username to look up.

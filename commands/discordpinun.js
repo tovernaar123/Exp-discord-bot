@@ -10,7 +10,7 @@ module.exports = {
     helpLevel: 'role.staff',
     required_role: role.staff,
     usage: `<id>`,
-    execute(msg, args, _, internal_error) {
+    async execute(msg, args, _, internal_error) {
 
         let idToPin = args[0];
 
