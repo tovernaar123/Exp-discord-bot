@@ -15,28 +15,33 @@ exports.rcon_connect = async function(port, i) {
         password: rconpw,
     });
 
+    let Iconnected = false;
     //Show commands sent and their reply for debugging
     let real_send = client.send;
     client.send = function(cmd) {
         return real_send.call(client, cmd).then(res => {
+            if(!(client.socket && client.socket.writable && client.authenticated && Iconnected)){
+                console.error(`[Rcon]: Not connected tried to send: ${cmd}`);
+                return;
+            }
             console.log(`S${i}`, cmd, "=>", res.slice(0, -1));
             return res;
         });
     };
 
-    let connected = false;
     async function connect() {
         //Workaround for bug in rcon-client
-        if (client.socket && !client.socket.writeable && !client.authenticated) {
+        if (client.socket && !client.socket.writable && !client.authenticated) {
             client.socket = null;
         }
 
         //Atempt to connect to the Factorio server
         await client.connect().then(() => {
             console.log(`Connected to S${i}`);
-            connected = true;
+            Iconnected = true;
             //Reconnect if the attempt failed
         }).catch(err => {
+            Iconnected = false;
             console.log(`Connecting to S${i} failed:`, err.message);
             console.log("Reconnecting in 30 seconds");
             setTimeout(connect, 30e3).unref();
@@ -45,10 +50,10 @@ exports.rcon_connect = async function(port, i) {
 
     client.on("end", function() {
         //Reconnect if a successfull connection was made.
-        if (connected) {
+        if (Iconnected) {
             console.log(`Lost connection with S${i}`);
             console.log("Reconnecting in 30 seconds");
-            connected = false;
+            Iconnected = false;
             setTimeout(connect, 30e3).unref();
         }
     });
@@ -59,6 +64,8 @@ exports.rcon_connect = async function(port, i) {
     await connect();
     return {
         send: client.send,
-        connected: connected
+        get connected(){
+            return client.socket && client.socket.writable && client.authenticated && Iconnected
+        }
     }
 };

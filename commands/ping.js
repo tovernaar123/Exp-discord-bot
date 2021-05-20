@@ -8,8 +8,8 @@ module.exports = {
 	args: false,
 	
 	
-	execute(msg, args) {
-        msg.channel.send('Ping?, Ping what?... \n I mean Pong.');
+	async execute(msg, args) {
+        msg.channel.send('Ping?, Ping what?... \n I mean Pong..');
         console.log ('"Pong"')
 	},
 };

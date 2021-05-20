@@ -9,10 +9,8 @@
   "author": "ALo",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^14.6.0",
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
-    "rcon-client": "^4.2.2",
-    "read-last-lines": "^1.7.2"
+    "rcon-client": "^4.2.2"
   }
 }
