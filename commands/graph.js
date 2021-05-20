@@ -73,7 +73,9 @@ module.exports = {
                 }
             }
         } catch (e) {
-            // pass
+            channel.send(`Error selecting type of result.`)
+            .catch((err) => {internal_error(err); return});
+            console.log(`Graph - Error selecting type of result.`);
         }
 
         let url = 'https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=' + type + '&width=1000&height=300&tz=UTC';
@@ -86,7 +88,7 @@ module.exports = {
         } catch (e) {
             channel.send(`Error when saving image.`)
             .catch((err) => {internal_error(err); return});
-            console.log(`Graph - Error when saving image`);
+            console.log(`Graph - Error when saving image.`);
         }
 
         try {
@@ -94,7 +96,7 @@ module.exports = {
         } catch (e) {
             channel.send(`Error when sending image.`)
             .catch((err) => {internal_error(err); return});
-            console.log(`Graph - Error when sending image`);
+            console.log(`Graph - Error when sending image.`);
         }
     },
 };
