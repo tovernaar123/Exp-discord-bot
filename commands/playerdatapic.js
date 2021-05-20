@@ -1,7 +1,8 @@
 const Discord = require('discord.js');
 const fs  = require('fs');
+const puppeteer = require('puppeteer');
 
-function playerdata2command(name,msg,args) {
+function playerdata3command(name, msg, args) {
     //thousands separator
     function ts(x) { 
         if (x === undefined) {
@@ -113,54 +114,86 @@ function playerdata2command(name,msg,args) {
     let result = profile(finaldata);
     let lookup = name;
 
-    // log and channel (nonembed) messages sent
-    console.log(`Player Data Requested by ${msg.member.displayName}\nUsername: ${lookup} `);
-    channel.send(`\`\`\`txt\nPlayer Data Requested by ${msg.member.displayName}\nUsername: ${lookup}\n\`\`\``);
-    // set up embeds
-    const Embed = new Discord.MessageEmbed();
-    Embed.setColor("0x00ff00");
+    // Background Color
+    let html_bgc = '#4F4F4F';
+    // Font Color
+    let html_fc = '#F0F0F0';
+    // Table Border Color
+    let html_tbc = '#6F6F6F';
+    // Font Family
+    let html_ff = 'Arial,Helvetica,sans-serif';
+    // Font Size
+    let html_fs = '1em';
+    // Table Individual Width
+    let html_tiw = [200, 120];
+    // Table Total Width
+    let html_ttw = 2 * (html_tiw[0] + html_tiw[1]);
+    // Total Browser Height
+    let html_bh = 460;
 
-    for (let i = 0; i < result.length/2; i+=2) {
-        try {
-            Embed.addField(result[i][0], result[i][1], true);
-        } catch (e) {
-            Embed.addField(`** **`, `** **`, true);
-        }
+    // font-weight:bold
+    let html_code = ['<html>\n<head>\n<title></title>\n</head>\n<body style="background-color:' + html_bgc + '">',
+    '<h2 style="width:100%;text-align:center;border-bottom:1px solid ' + html_tbc + ';line-height:0.1em;margin:10px 0 20px;color:' + html_fc + '"><span style="background-color:' + html_bgc + ';padding:0 10px;font-family:' + html_ff + ';">Data</span></h2>',
+    '<p style="font-family:' + html_ff + ';font-size:' + html_fs + ';color:' + html_fc + '">Player data requested by: ' + author + ' </p>',
+    '<p style="font-family:' + html_ff + ';font-size:' + html_fs + ';color:' + html_fc + '">Username: ' + lookup + ' </p>',
+    // '<p style="font-family:' + html_ff + ';font-size:' + html_fs + ';color:' + html_fc + '">Our servers will save your player data so that we can sync it between servers.</p>',
+    // '<p style="font-family:' + html_ff + ';font-size:' + html_fs + ';color:' + html_fc + '">All of your data can be found below.</p>',
+    '<table style="border-collapse:collapse;width=' + html_ttw + 'px;">']
 
-        try {
-            Embed.addField(result[i+1][0], result[i+1][1], true);
-        } catch (e) {
-            Embed.addField(`** **`, `** **`, true);
-        }
+    let result = profile(item);
+    let table_td_style = '<td style="padding:5px;border:1px solid ' + html_tbc + ';font-family:' + html_ff + ';font-size:' + html_fs + ';text-align:left;color:' + html_fc + ';'
+    let table_td_width = ['width:' + html_tiw[0] + 'px;">', 'width:' + html_tiw[1] + 'px;">'];
 
-        Embed.addField(`** **`, `** **`, true);
-    }
+    // Table Contents
+    for (let i = 0; i < result.length; i+=2) {
+        let j = [];
 
-    const Embed2 = new Discord.MessageEmbed();
-    Embed2.setColor("0x00ff00");
-
-    for (let i = 0; i < result.length/2; i+=2) {
-        let j = i + result.length/2;
-        try {
-            Embed2.addField(result[j][0], result[j][1], true);
-        } catch (e) {
-            Embed2.addField(`** **`, `** **`, true);
-        }
-
-        try {
-            Embed2.addField(result[j+1][0], result[j+1][1], true);
-        } catch (e) {
-            Embed2.addField(`** **`, `** **`, true);
-        }
-                        
-        Embed2.addField(`** **`, `** **`, true);
-    }
-
-    // Send the Embeds, sent as 2 because depending on the length discord would error out if you sent them both.
-    channel.send(Embed);
-    channel.send(Embed2);
-    return;
+        j.push('<tr>\n' + table_td_style + table_td_width[0]);
+        j.push(result[i][0]);
+        j.push('</td>\n' + table_td_style + table_td_width[1]);
+        j.push(result[i][1]);
+        j.push('</td>\n' + table_td_style + table_td_width[0]);
+        j.push(result[i+1][0]);
+        j.push('</td>\n' + table_td_style + table_td_width[1]);
+        j.push(result[i+1][1]);
+        j.push('</td>\n</tr>');
             
+        html_code.push(j.join(''));
+    }
+
+    html_code.push('</table>\n</body>\n</html>');
+    
+    try {
+        (async () => {
+            const browser = await puppeteer.launch()
+            const page = await browser.newPage()
+            await page.setViewport({
+                width: html_ttw,
+                height: html_bh,
+                deviceScaleFactor: 1,
+                });
+            // page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
+            await page.setContent(html_code.join('\n'))
+            await page.screenshot({path: './graph.png'})
+            await browser.close()
+            })()
+    } catch (e) {
+        channel.send('Error when creating image.');
+    }
+
+    // channel.send(`\`\`\`Player Data Requested by ${message.author.username}\nUsername: ${lookup}\n\`\`\``);
+    channel.send({files: ['./graph.png']})
+
+    /*
+    try {
+        setTimeout(() => message.delete(), 1000);
+    } catch (e) {
+        //pass
+    }
+    */
+
+    return;
+   
     /*
     else {
     msg.reply(`Something went wrong. See the logs because you should never run into this on this command`)
@@ -173,8 +206,8 @@ function playerdata2command(name,msg,args) {
 
 
 module.exports = {
-    name: 'playerdata',
-    aka: ['pd','pdformatted','pdnice','playerdataformatted','userdata'],
+    name: 'playerdatapic',
+    aka: ['pd3','pdp'],
     description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
     guildOnly: true,
     args: false,
@@ -192,13 +225,13 @@ module.exports = {
                 let name = args[0];                
                 // runs the command if the person supplied a name
                 if (name) {
-                    playerdata2command(name, msg, args);
+                    playerdata3command(name, msg, args);
                 }
 
                 // runs the command after setting the name to look up as the user who submitted the request
                 if (!name) {
                     name = msg.member.displayName; 
-                    playerdata2command(name, msg, args);
+                    playerdata3command(name, msg, args);
                 } 
 
             } else {
@@ -209,7 +242,7 @@ module.exports = {
                 }
 
                 name = msg.member.displayName; 
-                playerdata2command(name, msg, args);
+                playerdata3command(name, msg, args);
             }
         }  
        
