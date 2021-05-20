@@ -4,7 +4,7 @@
 const Discord = require('discord.js');
 const fs  = require('fs');
 
-function playerdata2command(name,msg,args) {
+function playerdata2command(name, msg, args) {
     //thousands separator
     function ts(x) { 
         if (x === undefined) {
