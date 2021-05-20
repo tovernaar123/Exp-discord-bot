@@ -1,6 +1,3 @@
-//player data storage access with new format
-//required_role has an exception for the user to look upthemselves, nothing needed here it is handeled in infoBot.js...
-//this helpLevel:"all" is required to show up on "semi public commands" it is not needed if the regular command was not restricted to role.board
 const Discord = require('discord.js');
 const fs  = require('fs');
 
