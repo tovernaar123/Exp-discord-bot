@@ -193,15 +193,6 @@ function playerdata3command(name, msg, args) {
     */
 
     return;
-   
-    /*
-    else {
-    msg.reply(`Something went wrong. See the logs because you should never run into this on this command`)
-        .catch((err) => { internal_error(err); return })
-    console.log(`player data lookup by ${msg.author.username} but something happened, we dont know what, look at the logs that were just posted above.`);
-        return;
-    }
-    */
 }
 
 
@@ -217,7 +208,8 @@ module.exports = {
     async execute(msg, args, _, internal_error) {
         
         async function runCommand() {
-            let role_needed = "693500936491892826" //board
+            //board
+            let role_needed = "693500936491892826" 
             let role = await msg.guild.roles.fetch(role_needed)
             let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
             
