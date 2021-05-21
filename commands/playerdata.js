@@ -187,7 +187,8 @@ module.exports = {
     async execute(msg, args, _, internal_error) {
         
         async function runCommand() {
-            let role_needed = "693500936491892826" //board
+            //board
+            let role_needed = "693500936491892826" 
             let role = await msg.guild.roles.fetch(role_needed)
             let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
             
