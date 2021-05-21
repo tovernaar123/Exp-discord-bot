@@ -24,7 +24,7 @@ module.exports = {
             let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
             let mydata = JSON.parse(rawdata);
             // in dataFile
-            let key1 = `${name}`; 
+            let key1 = `${name}`;
             let checkdata = mydata["PlayerData"][key1];
             let finaldata;
             
@@ -33,7 +33,7 @@ module.exports = {
                 msg.channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
                 console.log(`PD of ${name} by ${msg.member.displayName}`)
             } else {
-                msg.channel.send('Name error: Name not found in datastore');console.log(`Name Not Found`); 
+                msg.channel.send('Name error: Name not found in datastore');console.log(`Name Not Found`);
                 return;
             }
              
