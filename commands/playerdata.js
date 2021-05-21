@@ -192,8 +192,9 @@ module.exports = {
             let role = await msg.guild.roles.fetch(role_needed)
             let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
             
-            if(allowedThisCommand) {
-                let name = args[0];                
+            if (allowedThisCommand) {
+                let name = args[0];
+
                 // runs the command if the person supplied a name
                 if (name) {
                     playerdata2command(name, msg, args);
