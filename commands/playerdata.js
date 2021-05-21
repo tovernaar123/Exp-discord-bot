@@ -201,7 +201,7 @@ module.exports = {
 
                 // runs the command after setting the name to look up as the user who submitted the request
                 if (!name) {
-                    name = msg.member.displayName; 
+                    name = msg.member.displayName;
                     playerdata2command(name, msg, args);
                 } 
 
