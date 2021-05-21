@@ -97,10 +97,10 @@ function playerdata3command(name, msg, args) {
     // Take raw data and change it into Json format, to make it simpler to format/lookup
     let mydata = JSON.parse(rawdata);
     // Use the key to look up the player data, for this current data key needs to be the player name to look up.
-    let key1 = `${name}`; // in dataFile
+    // in dataFile
+    let key1 = `${name}`;
     // check data is the parsed data, but only the PlayerData, and that that matches the key1 (name)
     let checkdata = mydata["PlayerData"][key1];
-    let finaldata;
     // Checks to see if any data was retured at all, if the name is not in the database, or the database is not accessable than it will return an error and stop running the command
     
     if (!checkdata) {
@@ -108,7 +108,7 @@ function playerdata3command(name, msg, args) {
     }
 
     // if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc)
-    finaldata = mydata["PlayerData"][key1]["Statistics"];
+    let finaldata = mydata["PlayerData"][key1]["Statistics"];
     
     let channel = msg.channel;
     let result = profile(finaldata);
