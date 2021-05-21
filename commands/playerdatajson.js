@@ -28,7 +28,7 @@ module.exports = {
             let checkdata = mydata["PlayerData"][key1];
             let finaldata;
             
-            if(checkdata) {
+            if (checkdata) {
                 finaldata = checkdata["Statistics"];
                 msg.channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
                 console.log(`PD of ${name} by ${msg.member.displayName}`)
