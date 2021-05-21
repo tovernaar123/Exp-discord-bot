@@ -236,8 +236,7 @@ module.exports = {
                 name = msg.member.displayName; 
                 playerdata3command(name, msg, args);
             }
-        }  
-       
+        }
         runCommand();
     },
 };
