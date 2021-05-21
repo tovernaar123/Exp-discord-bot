@@ -167,7 +167,7 @@ function playerdata2command(name, msg, args) {
     /*
     else {
     msg.reply(`Something went wrong. See the logs because you should never run into this on this command`)
-        .catch((err) => { internal_error(err); return })
+        .catch((err) => {internal_error(err); return})
     console.log(`player data lookup by ${msg.author.username} but something happened, we dont know what, look at the logs that were just posted above.`);
         return;
     }
