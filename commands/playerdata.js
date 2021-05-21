@@ -209,7 +209,7 @@ module.exports = {
                 let name = args[0];
 
                 if (name) {
-                    msg.channel.send(`ERROR: User lookup not allowed, getting users data.`);
+                    msg.channel.send(`Error: User lookup not allowed, getting users data.`);
                 }
 
                 name = msg.member.displayName; 
