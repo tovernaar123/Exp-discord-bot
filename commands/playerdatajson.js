@@ -12,11 +12,8 @@ module.exports = {
     async execute(msg, args, _, internal_error) {
         let name = args[0];
                 
-        //this command unlike its brother pd2 DOES require a name to be specified. You can still look up yourself but you must add in your username to look up.
         if (!name) {
-            msg.channel.send(`Please pick a name first. Just the name - CAPS COUNT (use \`playerdata2\` if you dont want to add in the name`)
-                .catch((err) => {internal_error(err); return});
-            return;
+            name = msg.member.displayName;
         }
 
         if (name) {
