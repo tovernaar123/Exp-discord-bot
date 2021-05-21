@@ -191,10 +191,9 @@ module.exports = {
             let role_needed = "693500936491892826" 
             let role = await msg.guild.roles.fetch(role_needed)
             let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
-            
-            if (allowedThisCommand) {
-                let name = args[0];
+            let name = args[0];
 
+            if (allowedThisCommand) {
                 // runs the command if the person supplied a name
                 if (name) {
                     playerdata2command(name, msg, args);
@@ -207,8 +206,6 @@ module.exports = {
                 } 
 
             } else {
-                let name = args[0];
-
                 if (name) {
                     msg.channel.send(`Error: User lookup not allowed, getting users data.`);
                 }
