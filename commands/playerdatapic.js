@@ -197,7 +197,6 @@ module.exports = {
     // required_role: role.board,
     usage: ` <name>`,
     async execute(msg, args, _, internal_error) {
-        
         async function runCommand() {
             //board
             let role_needed = "693500936491892826" 
