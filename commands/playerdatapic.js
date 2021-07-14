@@ -115,48 +115,48 @@ function playerdata3command(name, msg, args) {
     let lookup = name;
 
     // Background Color
-    let html_bgc = '#4F4F4F';
+    let html_background_color = '#4F4F4F';
     // Font Color
-    let html_fc = '#F0F0F0';
+    let html_font_color = '#F0F0F0';
     // Table Border Color
-    let html_tbc = '#6F6F6F';
+    let html_table_border_color = '#6F6F6F';
     // Font Family
-    let html_ff = 'Arial,Helvetica,sans-serif';
+    let html_font_family = 'Arial,Helvetica,sans-serif';
     // Font Size
-    let html_fs = '1em';
+    let html_font_size = '1em';
     // Table Individual Width
-    let html_tiw = [200, 120];
+    let html_table_width = [200, 120];
     // Table Total Width
-    let html_ttw = 2 * (html_tiw[0] + html_tiw[1]);
+    let html_table_width_total = 2 * (html_table_width[0] + html_table_width[1]);
     // Total Browser Height
-    let html_bh = 460;
+    let html_body_height = 460;
 
     // font-weight:bold
-    let html_code = ['<html>\n<head>\n<title></title>\n</head>\n<body style="background-color:' + html_bgc + '">',
-    '<h2 style="width:100%;text-align:center;border-bottom:1px solid ' + html_tbc + ';line-height:0.1em;margin:10px 0 20px;color:' + html_fc + '"><span style="background-color:' + html_bgc + ';padding:0 10px;font-family:' + html_ff + ';">Data</span></h2>',
-    '<p style="font-family:' + html_ff + ';font-size:' + html_fs + ';color:' + html_fc + '">Player data requested by: ' + author + ' </p>',
-    '<p style="font-family:' + html_ff + ';font-size:' + html_fs + ';color:' + html_fc + '">Username: ' + lookup + ' </p>',
-    // '<p style="font-family:' + html_ff + ';font-size:' + html_fs + ';color:' + html_fc + '">Our servers will save your player data so that we can sync it between servers.</p>',
-    // '<p style="font-family:' + html_ff + ';font-size:' + html_fs + ';color:' + html_fc + '">All of your data can be found below.</p>',
-    '<table style="border-collapse:collapse;width=' + html_ttw + 'px;">']
+    let html_code = ['<html>\n<head>\n<title></title>\n</head>\n<body style="background-color:' + html_background_color + '">',
+    '<h2 style="width:100%;text-align:center;border-bottom:1px solid ' + html_table_border_color + ';line-height:0.1em;margin:10px 0 20px;color:' + html_font_color + '"><span style="background-color:' + html_background_color + ';padding:0 10px;font-family:' + html_font_family + ';">Data</span></h2>',
+    '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Player data requested by: ' + author + ' </p>',
+    '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Username: ' + lookup + ' </p>',
+    // '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Our servers will save your player data so that we can sync it between servers.</p>',
+    // '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">All of your data can be found below.</p>',
+    '<table style="border-collapse:collapse;width=' + html_table_width_total + 'px;">']
 
     let result = profile(item);
-    let table_td_style = '<td style="padding:5px;border:1px solid ' + html_tbc + ';font-family:' + html_ff + ';font-size:' + html_fs + ';text-align:left;color:' + html_fc + ';'
-    let table_td_width = ['width:' + html_tiw[0] + 'px;">', 'width:' + html_tiw[1] + 'px;">'];
+    let table_td_style = '<td style="padding:5px;border:1px solid ' + html_table_border_color + ';font-family:' + html_font_family + ';font-size:' + html_font_size + ';text-align:left;color:' + html_font_color + ';'
+    let table_td_width = ['width:' + html_table_width[0] + 'px;">', 'width:' + html_table_width[1] + 'px;">'];
 
     // Table Contents
     for (let i = 0; i < result.length; i+=2) {
-        let j = [];
+        let html_table = [];
 
-        j.push('<tr>\n' + table_td_style + table_td_width[0]);
-        j.push(result[i][0]);
-        j.push('</td>\n' + table_td_style + table_td_width[1]);
-        j.push(result[i][1]);
-        j.push('</td>\n' + table_td_style + table_td_width[0]);
-        j.push(result[i+1][0]);
-        j.push('</td>\n' + table_td_style + table_td_width[1]);
-        j.push(result[i+1][1]);
-        j.push('</td>\n</tr>');
+        html_table.push('<tr>\n' + table_td_style + table_td_width[0]);
+        html_table.push(result[i][0]);
+        html_table.push('</td>\n' + table_td_style + table_td_width[1]);
+        html_table.push(result[i][1]);
+        html_table.push('</td>\n' + table_td_style + table_td_width[0]);
+        html_table.push(result[i+1][0]);
+        html_table.push('</td>\n' + table_td_style + table_td_width[1]);
+        html_table.push(result[i+1][1]);
+        html_table.push('</td>\n</tr>');
             
         html_code.push(j.join(''));
     }
@@ -168,8 +168,8 @@ function playerdata3command(name, msg, args) {
             const browser = await puppeteer.launch()
             const page = await browser.newPage()
             await page.setViewport({
-                width: html_ttw,
-                height: html_bh,
+                width: html_table_width_total,
+                height: html_body_height,
                 deviceScaleFactor: 1,
                 });
             // page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
@@ -183,15 +183,6 @@ function playerdata3command(name, msg, args) {
 
     // channel.send(`\`\`\`Player Data Requested by ${message.author.username}\nUsername: ${lookup}\n\`\`\``);
     channel.send({files: ['./graph.png']})
-
-    /*
-    try {
-        setTimeout(() => message.delete(), 1000);
-    } catch (e) {
-        //pass
-    }
-    */
-
     return;
 }
 
