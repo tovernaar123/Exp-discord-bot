@@ -202,28 +202,18 @@ module.exports = {
             let role_needed = "693500936491892826" 
             let role = await msg.guild.roles.fetch(role_needed)
             let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
+            let name = args[0];
             
-            if(allowedThisCommand) {
-                let name = args[0];                
-                // runs the command if the person supplied a name
-                if (name) {
+            if (name) {
+                if (allowedThisCommand) {
+                    // If the user is authorized to use the command and supplied a name
                     playerdata3command(name, msg, args);
+                } else {
+                    msg.channel.send(`Error: You are not authorized to perform this action.`);
                 }
-
-                // runs the command after setting the name to look up as the user who submitted the request
-                if (!name) {
-                    name = msg.member.displayName; 
-                    playerdata3command(name, msg, args);
-                } 
-
             } else {
-                let name = args[0];
-
-                if (name) {
-                    msg.channel.send(`ERROR: User lookup not allowed, getting users data.`);
-                }
-
-                name = msg.member.displayName; 
+                // User doesnt need to get authorized for a self lookup
+                name = msg.member.displayName;
                 playerdata3command(name, msg, args);
             }
         }

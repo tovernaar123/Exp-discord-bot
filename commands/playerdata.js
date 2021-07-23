@@ -179,7 +179,7 @@ function playerdata2command(name, msg, args) {
 
 module.exports = {
     name: 'playerdata',
-    aka: ['pd','pdformatted','pdnice','playerdataformatted','userdata'],
+    aka: ['pd','pdformatted','playerdataformatted'],
     description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
     guildOnly: true,
     args: false,
