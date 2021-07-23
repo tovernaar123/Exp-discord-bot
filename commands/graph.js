@@ -61,22 +61,30 @@ module.exports = {
         //board
         let role_needed = "693500936491892826";
         let role = await msg.guild.roles.fetch(role_needed);
-        let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
-        let allowed = [53, 54, 55];
+        let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0;
+        let graph_index_list = [4, 7, 9, 10, 11, 28, 42, 51, 53, 54, 55]
+        let graph_index_allowed = [53, 54, 55];
 
         if (type) {
             if (isNaN(+type)) {
+                // Type is word
                 type = graph_type_select(type)
+            } else {
+                // Type is number
+                if (graph_index_list.indexOf(type) < 0) {
+                    channel.send(`Lookup out of range.`);
+                    type = -1;
+                }
+            }
+            
+            if (!allowedThisCommand) {
+                if (graph_index_allowed.indexOf(type) < 0) {
+                    channel.send(`Unauthorized use of advanced graph usage.`);
+                    type = -1;
+                }
             }
         } else {
             type = 54;
-        }
-        
-        if (!allowedThisCommand) {
-            if (allowed.indexOf(type) < 0) {
-                channel.send(`Unauthorized use of advanced graph usage.`);
-                type = -1;
-            }
         }
 
         if (type >= 0) {
