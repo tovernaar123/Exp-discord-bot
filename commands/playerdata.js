@@ -4,7 +4,7 @@
 const Discord = require('discord.js');
 const fs  = require('fs');
 
-function playerdata2command(name, msg, args) {
+function playerdata2command(name, msg) {
     //thousands separator
     function ts(x) { 
         if (x === undefined) {
@@ -165,15 +165,6 @@ function playerdata2command(name, msg, args) {
     channel.send(Embed);
     channel.send(Embed2);
     return;
-            
-    /*
-    else {
-    msg.reply(`Something went wrong. See the logs because you should never run into this on this command`)
-        .catch((err) => {internal_error(err); return})
-    console.log(`player data lookup by ${msg.author.username} but something happened, we dont know what, look at the logs that were just posted above.`);
-        return;
-    }
-    */
 }
 
 
@@ -198,14 +189,14 @@ module.exports = {
             if (name) {
                 if (allowedThisCommand) {
                     // If the user is authorized to use the command and supplied a name
-                    playerdata2command(name, msg, args);
+                    playerdata2command(name, msg);
                 } else {
                     msg.channel.send(`Error: You are not authorized to perform this action.`);
                 }
             } else {
                 // User doesnt need to get authorized for a self lookup
                 name = msg.member.displayName;
-                playerdata2command(name, msg, args);
+                playerdata2command(name, msg);
             }
         }
         runCommand();

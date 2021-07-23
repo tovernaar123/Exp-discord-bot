@@ -1,6 +1,6 @@
 //player data storage access
 
-function playerdata1command(name, msg, args) {
+function playerdata1command(name, msg) {
     // Find "items" from datastore 
     // get raw data
     let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
@@ -46,14 +46,14 @@ module.exports = {
         if (name) {
             if (allowedThisCommand) {
                 // If the user is authorized to use the command and supplied a name
-                playerdata1command(name, msg, args);
+                playerdata1command(name, msg);
             } else {
                 msg.channel.send(`Error: You are not authorized to perform this action.`);
             }
         } else {
             // User doesnt need to get authorized for a self lookup
             name = msg.member.displayName;
-            playerdata1command(name, msg, args);
+            playerdata1command(name, msg);
         }
     },
 };

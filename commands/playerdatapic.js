@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const fs  = require('fs');
 const puppeteer = require('puppeteer');
 
-function playerdata3command(name, msg, args) {
+function playerdata3command(name, msg) {
     //thousands separator
     function ts(x) { 
         if (x === undefined) {
@@ -207,14 +207,14 @@ module.exports = {
             if (name) {
                 if (allowedThisCommand) {
                     // If the user is authorized to use the command and supplied a name
-                    playerdata3command(name, msg, args);
+                    playerdata3command(name, msg);
                 } else {
                     msg.channel.send(`Error: You are not authorized to perform this action.`);
                 }
             } else {
                 // User doesnt need to get authorized for a self lookup
                 name = msg.member.displayName;
-                playerdata3command(name, msg, args);
+                playerdata3command(name, msg);
             }
         }
         runCommand();
