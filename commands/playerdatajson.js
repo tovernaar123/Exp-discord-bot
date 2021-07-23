@@ -14,8 +14,8 @@ function playerdata1command(name, msg) {
     // Checks to see if any data was retured at all, if the name is not in the database, or the database is not accessable than it will return an error and stop running the command
     
     if (!checkdata) {
-        msg.channel.send('Name error: Name not found in datastore. Check the name or try again later.');
-        console.log(`Name Not Found`);
+        msg.channel.send('Error: Name not found. Check the name or try again later.');
+        console.log(`Name not found`);
         return;
     }
 
