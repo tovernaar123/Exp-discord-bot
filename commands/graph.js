@@ -2,6 +2,47 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const request = require('request');
 
+function graph_type_select(type) {
+    switch (type) {
+        case 'load':
+            type = 4;
+            break;
+        case 'memory':
+            type = 7;
+            break;
+        case 'network':
+            type = 9;
+            break;
+        case 'disk':
+            type = 10;
+            break;
+        case 'usage':
+            type = 11;
+            break;
+        case 'cpu_temp':
+            type = 28;
+            break;
+        case 'cpu_freq':
+            type = 42;
+            break;
+        case 'cpu':
+            type = 51;
+            break;
+        case 'player':
+            type = 53;
+            break;
+        case 'ups':
+            type = 54;
+            break;
+        case 'rocket':
+            type = 55;
+            break;
+        default:
+            type = 54;
+    }
+    return type;
+}
+
 module.exports = {
     name: 'graph',
     // aka: [''],
@@ -15,88 +56,54 @@ module.exports = {
         // server = Number(server) || server;
         let channel = msg.channel;
         let msg = [];
-        let type = 55;
+        let type = args[0].toLowerCase();
 
-        const download = (url, path, callback) => {
-            request.head(url, (err, res, body) => {
-              request(url).pipe(fs.createWriteStream(path)).on('close', callback)
-            })
-        }
+        //board
+        let role_needed = "693500936491892826";
+        let role = await msg.guild.roles.fetch(role_needed);
+        let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
+        let allowed = [53, 54, 55];
 
-        try {
-            type = args[0].toLowerCase();
-        } catch (e) {
-            // pass
-            channel.send(`Invalid argument provided.`)
-            .catch((err) => {internal_error(err); return});
-            console.log(`Graph - Invalid argument`);
-        }
-
-        try {
+        if (type) {
             if (isNaN(+type)) {
-                switch (type) {
-                    case 'load':
-                        type = 4;
-                        break;
-                    case 'memory':
-                        type = 7;
-                        break;
-                    case 'network':
-                        type = 9;
-                        break;
-                    case 'disk':
-                        type = 10;
-                        break;
-                    case 'usage':
-                        type = 11;
-                        break;
-                    case 'cpu_temp':
-                        type = 28;
-                        break;
-                    case 'cpu_freq':
-                        type = 42;
-                        break;
-                    case 'cpu':
-                        type = 51;
-                        break;
-                    case 'player':
-                        type = 53;
-                        break;
-                    case 'ups':
-                        type = 54;
-                        break;
-                    case 'rocket':
-                        type = 55;
-                        break;
-                    default:
-                        type = 54;
-                }
+                type = graph_type_select(type)
             }
-        } catch (e) {
-            channel.send(`Error selecting type of result.`)
-            .catch((err) => {internal_error(err); return});
-            console.log(`Graph - Error selecting type of result.`);
+        } else {
+            type = 54;
+        }
+        
+        if (!allowedThisCommand) {
+            if (allowed.indexOf(type) < 0) {
+                channel.send(`Unauthorized use of advanced graph usage.`);
+                type = -1;
+            }
         }
 
-        let url = 'https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=' + type + '&width=1000&height=300&tz=UTC';
-        const path = '.cache/graph.png'
+        if (type >= 0) {
+            const download = (url, path, callback) => {
+                request.head(url, (err, res, body) => {
+                  request(url).pipe(fs.createWriteStream(path)).on('close', callback);
+                })
+            }
 
-        try {
-            download(url, path, () => {
-                console.log('Download Complete.');
-            })
-        } catch (e) {
-            channel.send(`Error when saving image.`)
-            .catch((err) => {internal_error(err); return});
-            console.log(`Graph - Error when saving image.`);
-        }
-
-        try {
-            channel.send({files: ['.cache/graph.png']});
-        } catch (e) {
-            channel.send(`Error when sending image.`)
-            .catch((err) => {internal_error(err); return});
-            console.log(`Graph - Error when sending image.`);
+            let url = 'https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=' + type + '&width=1000&height=300&tz=UTC';
+            const path = '.cache/graph.png'
+    
+            try {
+                download(url, path, () => {
+                    console.log('Download Complete.');
+                })
+            } catch (e) {
+                channel.send(`Error when saving image.`);
+                console.log(`Graph - Error when saving image.`);
+            }
+    
+            try {
+                channel.send({files: ['.cache/graph.png']});
+            } catch (e) {
+                channel.send(`Error when sending image.`);
+                console.log(`Graph - Error when sending image.`);
+            }
         }
     },
 };
