@@ -72,14 +72,14 @@ module.exports = {
             } else {
                 // Type is number
                 if (graph_index_list.indexOf(type) < 0) {
-                    channel.send(`Lookup out of range.`);
+                    channel.send(`Error: Lookup out of range.`);
                     type = -1;
                 }
             }
             
             if (!allowedThisCommand) {
                 if (graph_index_allowed.indexOf(type) < 0) {
-                    channel.send(`Unauthorized use of advanced graph usage.`);
+                    channel.send(`Error: Unauthorized use of advanced graph usage.`);
                     type = -1;
                 }
             }
@@ -103,14 +103,14 @@ module.exports = {
                 })
             } catch (e) {
                 channel.send(`Error when saving image.`);
-                console.log(`Graph - Error when saving image.`);
+                console.log(`Error when saving graph image.`);
             }
     
             try {
                 channel.send({files: ['.cache/graph.png']});
             } catch (e) {
                 channel.send(`Error when sending image.`);
-                console.log(`Graph - Error when sending image.`);
+                console.log(`Error when saving graph image.`);
             }
         }
     },
