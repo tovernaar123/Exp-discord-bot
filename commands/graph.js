@@ -59,7 +59,7 @@ module.exports = {
         let type = args[0].toLowerCase();
 
         //board
-        let role_needed = "693500936491892826";
+        let role_needed = role.board;
         let role = await msg.guild.roles.fetch(role_needed);
         let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0;
         let graph_index_list = [4, 7, 9, 10, 11, 28, 42, 51, 53, 54, 55];
