@@ -1,5 +1,32 @@
 //player data storage access
 
+function playerdata1command(name, msg, args) {
+    // Find "items" from datastore 
+    // get raw data
+    let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
+    // Take raw data and change it into Json format, to make it simpler to format/lookup
+    let mydata = JSON.parse(rawdata);
+    // Use the key to look up the player data, for this current data key needs to be the player name to look up.
+    // in dataFile
+    let key1 = `${name}`; 
+    // check data is the parsed data, but only the PlayerData, and that that matches the key1 (name)
+    let checkdata = mydata["PlayerData"][key1];
+    // Checks to see if any data was retured at all, if the name is not in the database, or the database is not accessable than it will return an error and stop running the command
+    
+    if (!checkdata) {
+        msg.channel.send('Name error: Name not found in datastore. Check the name or try again later.');
+        console.log(`Name Not Found`);
+        return;
+    }
+
+    // if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc)
+    let finaldata = mydata["PlayerData"][key1]["Statistics"];
+
+    let channel = msg.channel;
+    channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
+    return;
+}
+
 module.exports = {
     name: 'playerdatajson',
     aka: ['pd1', 'pdj', 'userdatajson', 'oguserdata','pdjson','pdog'],
@@ -16,63 +43,17 @@ module.exports = {
         let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
         let name = args[0];
 
-        if (allowedThisCommand) {
-            if (!name) {
-                name = msg.member.displayName;
-            }
-
-            const fs  = require('fs');
-            let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
-            let mydata = JSON.parse(rawdata);
-
-            // in dataFile
-            let key1 = `${name}`;
-            let checkdata = mydata["PlayerData"][key1];
-            let finaldata;
-            
-            if (checkdata) {
-                finaldata = checkdata["Statistics"];
-                msg.channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
-                console.log(`PD of ${name} by ${msg.member.displayName}`);
+        if (name) {
+            if (allowedThisCommand) {
+                // If the user is authorized to use the command and supplied a name
+                playerdata1command(name, msg, args);
             } else {
-                msg.channel.send('Name error: Name not found in datastore');console.log(`Name Not Found`);
-                return;
+                msg.channel.send(`Error: You are not authorized to perform this action.`);
             }
-        
         } else {
-            if (name) {
-                msg.channel.send(`Error: User lookup not allowed, getting users data.`);
-            }
-
-            name = msg.member.displayName; 
-            
-            const fs  = require('fs');
-            let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json');
-            let mydata = JSON.parse(rawdata);
-
-            // in dataFile
-            let key1 = `${name}`;
-            let checkdata = mydata["PlayerData"][key1];
-            let finaldata;
-            
-            if (checkdata) {
-                finaldata = checkdata["Statistics"];
-                msg.channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
-                console.log(`PD of ${name} by ${msg.member.displayName}`);
-            } else {
-                msg.channel.send('Name error: Name not found in datastore');
-                console.log(`Name Not Found`);
-                return;
-            }
+            // User doesnt need to get authorized for a self lookup
+            name = msg.member.displayName;
+            playerdata1command(name, msg, args);
         }
-        
-        /*
-        } else {
-            msg.reply(`There was an error with the name that we did not previously catch, please try again later and \`@\` a bot dev`)
-                .catch((err) => {internal_error(err); return})
-            console.log(`PD Lookup ${msg.author.username} but something unexpected happened, hopefully the log above will tell us what.`);
-            return;
-        }
-        */
     },
 };
