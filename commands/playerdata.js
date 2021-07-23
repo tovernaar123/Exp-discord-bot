@@ -195,24 +195,16 @@ module.exports = {
             let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
             let name = args[0];
 
-            if (allowedThisCommand) {
-                // runs the command if the person supplied a name
-                if (name) {
+            if (name) {
+                if (allowedThisCommand) {
+                    // If the user is authorized to use the command and supplied a name
                     playerdata2command(name, msg, args);
+                } else {
+                    msg.channel.send(`Error: You are not authorized to perform this action.`);
                 }
-
-                // runs the command after setting the name to look up as the user who submitted the request
-                if (!name) {
-                    name = msg.member.displayName;
-                    playerdata2command(name, msg, args);
-                } 
-
             } else {
-                if (name) {
-                    msg.channel.send(`Error: User lookup not allowed, getting users data.`);
-                }
-
-                name = msg.member.displayName; 
+                // User doesnt need to get authorized for a self lookup
+                name = msg.member.displayName;
                 playerdata2command(name, msg, args);
             }
         }
