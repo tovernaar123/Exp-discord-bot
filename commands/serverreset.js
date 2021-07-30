@@ -53,7 +53,7 @@ module.exports = {
         for (let i = 0; i < reset.length; i++) {
             if (server == reset[i][0] || server == 'all') {
                 // Day Difference
-                diff = Math.ceil((date_today + time_offset - reset[i][1]) / day_ms) % reset[i][2];
+                let diff = Math.ceil((date_today + time_offset - reset[i][1]) / day_ms) % reset[i][2];
 
                 if (diff == 0) {
                     message.push('S' + reset[i][0] +' resets today, at ' + reset[i][3] + ':00 UTC');
