@@ -44,7 +44,7 @@ module.exports = {
         
         let reset = [[new Date(2021, 6, 23).getTime(), 2, 16], 
         [new Date(2021, 6, 23).getTime(), 7, 22],
-        [new Date(2021, 6, 23).getTime(), 28, 8]];
+        [new Date(2021, 6, 19).getTime(), 28, 8]];
         let day_ms = 86400000;
         let time_offset = (new Date()).getTimezoneOffset() * 60000;
         let date_today = Date.now();
