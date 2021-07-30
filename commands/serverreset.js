@@ -9,8 +9,9 @@ module.exports = {
     usage: ` <server#>`,
     async execute(msg, args, _, internal_error) {
         const author = msg.author.displayName;
-        let server = args[0];
         let message = [];
+
+        let server = args[0]  || 'all';
 
         if (server) {
             if (isNaN(+server)) {
@@ -47,7 +48,7 @@ module.exports = {
         let time_offset = (new Date()).getTimezoneOffset() * 60000;
         let date_today = Date.now();
         
-        message.push('Next Map Reset\n');
+        message.push('Next Map Reset');
 
         for (let i = 0; i < reset.length; i++) {
             if (server == reset[i][0] || server == 'all') {
