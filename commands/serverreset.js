@@ -54,7 +54,7 @@ module.exports = {
         Math.ceil((date_today + time_offset - reset[1][0]) / day_ms) % reset[1][1], 
         Math.ceil((date_today + time_offset - reset[2][0]) / day_ms) % reset[2][1]];
 
-        message.push('Next Map Reset Date');
+        message.push('Next Map Reset\n');
 
         if (server == '1' || server == 'all') {
             if (diff[0] == 0) {
