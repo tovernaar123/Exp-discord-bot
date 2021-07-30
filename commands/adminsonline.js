@@ -70,7 +70,7 @@ module.exports = {
     args: true,
     required_role: role.staff,
     usage: `<#>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         let server = Number(args[0]) || args[0]
         const extra = args[1]; // nothing extra please for this command
 

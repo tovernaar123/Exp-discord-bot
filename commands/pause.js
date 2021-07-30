@@ -31,7 +31,7 @@ module.exports = {
     helpLevel: 'staff',
     required_role: role.staff,
     usage: `\`<#>\` (Server Number, number only)`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         
         const server = Math.floor(Number(args[0]));
         //let reason = args.slice(2).join(" ");

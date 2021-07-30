@@ -31,7 +31,7 @@ module.exports = {
     helpLevel: 'staff',
     required_role: role.staff,
     usage: `<#> <username> <reason>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const server = Math.floor(Number(args[0]));
         let rea = args.slice(2).join(" ");
         let reason = `${rea} Via Discord by ${msg.author.username}`;

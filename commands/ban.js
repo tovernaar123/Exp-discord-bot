@@ -28,7 +28,7 @@ module.exports = {
     helpLevel: 'role.staff', //helplevel must be in quotes to work
     required_role: role.staff,
     usage: ` <#server> <username> <reason>`,
-    execute(msg, args, rcons, internal_error) {
+    async execute(msg, args, rcons, internal_error) {
         const author = msg.author.username; //find author
         const server = Math.floor(Number(args[0]));
 

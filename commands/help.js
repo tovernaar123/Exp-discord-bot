@@ -7,7 +7,7 @@ module.exports = {
     usage: '[command name]',
     guildOnly: false,
     cooldown: 5,
-    execute(msg, args) {
+    async execute(msg, args) {
         const data = [];
         const { commands } = msg.client;
         if (!args.length && msg.channel.type == "text") {
@@ -27,6 +27,10 @@ module.exports = {
                 .map(command => command.name).join(', ');
 
             data.push(`\`${commandList}\``);
+            //Semi Restricted Public Items//
+                data.push(`**Special (semi-public) Commands:**`);
+                let semiPublic = commands.filter(command => command.helpLevel === "all").map(command => command.name).join(', ');
+                data.push(`\`${semiPublic}\``);
             //Board+//
             if (isBoard || isStaff) {
                 data.push(`**Board Member(s) Commands:**`);
