@@ -41,42 +41,23 @@ module.exports = {
         // [Init Date, Cycle Duration, Reset at hour time]
         // Ordered by S1, S3, S4
         
-        let reset = [[new Date(2021, 6, 23).getTime(), 2, 16], 
-        [new Date(2021, 6, 23).getTime(), 7, 22],
-        [new Date(2021, 6, 19).getTime(), 28, 8]];
+        let reset = [[1, new Date(2021, 6, 23).getTime(), 2, 16], 
+        [3, new Date(2021, 6, 23).getTime(), 7, 22],
+        [4, new Date(2021, 6, 19).getTime(), 28, 8]];
         let day_ms = 86400000;
         let time_offset = (new Date()).getTimezoneOffset() * 60000;
         let date_today = Date.now();
-
-        // Day Difference
         
-        diff = [Math.ceil((date_today + time_offset - reset[0][0]) / day_ms) % reset[0][1], 
-        Math.ceil((date_today + time_offset - reset[1][0]) / day_ms) % reset[1][1], 
-        Math.ceil((date_today + time_offset - reset[2][0]) / day_ms) % reset[2][1]];
+        msg.push('Next Map Reset\n');
 
-        message.push('Next Map Reset\n');
+        for (let i = 0; i < reset.length; i++) {
+            // Day Difference
+            diff = Math.ceil((date_today + time_offset - reset[i][1]) / day_ms) % reset[i][2]
 
-        if (server == '1' || server == 'all') {
-            if (diff[0] == 0) {
-                message.push('S1 reset in today, at ' + reset[0][2] + ':00');
+            if (diff == 0) {
+                msg.push('S' + reset[i][0] +' reset in today, at ' + reset[i][3] + ':00');
             } else {
-                message.push('S1 reset in ' + (reset[0][1] - diff[0]) + ' day, at ' + reset[0][2] + ':00');
-            }
-        }
-
-        if (server == '3' || server == 'all') {
-            if (diff[1] == 0) {
-                message.push('S3 reset in today, at ' + reset[1][2] + ':00');
-            } else {
-                message.push('S3 reset in ' + (reset[1][1] - diff[1]) + ' day, at ' + reset[1][2] + ':00');
-            }
-        }
-
-        if (server == '4' || server == 'all') {
-            if (diff[2] == 0) {
-                message.push('S4 reset in today, at ' + reset[2][2] + ':00');
-            } else {
-                message.push('S4 reset in ' + (reset[2][1] - diff[2]) + ' day, at ' + reset[2][2] + ':00');
+                msg.push('S' + reset[i][0] +' reset in ' + (reset[i][2] - diff) + ' day, at ' + reset[i][3] + ':00');
             }
         }
         
