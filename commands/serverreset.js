@@ -10,6 +10,7 @@ module.exports = {
     async execute(msg, args, _, internal_error) {
         const author = msg.author.displayName;
         let server = args[0];
+        let message = [];
 
         if (server) {
             if (isNaN(+server)) {
@@ -23,8 +24,6 @@ module.exports = {
                 }
             }
         }
-
-        let message = [];
 
         /*
         As a cycle:
@@ -48,7 +47,7 @@ module.exports = {
         let time_offset = (new Date()).getTimezoneOffset() * 60000;
         let date_today = Date.now();
         
-        msg.push('Next Map Reset\n');
+        message.push('Next Map Reset\n');
 
         for (let i = 0; i < reset.length; i++) {
             if (server == reset[i][0] || server == 'all') {
@@ -56,11 +55,11 @@ module.exports = {
                 diff = Math.ceil((date_today + time_offset - reset[i][1]) / day_ms) % reset[i][2];
 
                 if (diff == 0) {
-                    msg.push('S' + reset[i][0] +' resets today, at ' + reset[i][3] + ':00 UTC');
+                    message.push('S' + reset[i][0] +' resets today, at ' + reset[i][3] + ':00 UTC');
                 } else if ((reset[i][2] - diff) == 1) {
-                    msg.push('S' + reset[i][0] +' resets tomorrow, at ' + reset[i][3] + ':00 UTC');
+                    message.push('S' + reset[i][0] +' resets tomorrow, at ' + reset[i][3] + ':00 UTC');
                 } else {
-                    msg.push('S' + reset[i][0] +' reset in ' + (reset[i][2] - diff) + ' day, at ' + reset[i][3] + ':00 UTC');
+                    message.push('S' + reset[i][0] +' reset in ' + (reset[i][2] - diff) + ' day, at ' + reset[i][3] + ':00 UTC');
                 }
             }
         }
