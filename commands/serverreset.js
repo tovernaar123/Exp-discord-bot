@@ -32,15 +32,15 @@ module.exports = {
         S3: 168 hours or 7 days
         S4: 672 hours or 28 days
 
-        Time:
+        Time of reset:
         S1: 16
         S3: 22
         S4: 8
         */
 
-        // [Init Date, Cycle Duration, Reset at hour time]
+        // [Server Number, Init Date, Cycle Duration, Reset at hour time]
         // Ordered by S1, S3, S4
-        
+
         let reset = [[1, new Date(2021, 6, 23).getTime(), 2, 16], 
         [3, new Date(2021, 6, 23).getTime(), 7, 22],
         [4, new Date(2021, 6, 19).getTime(), 28, 8]];
@@ -52,12 +52,14 @@ module.exports = {
 
         for (let i = 0; i < reset.length; i++) {
             // Day Difference
-            diff = Math.ceil((date_today + time_offset - reset[i][1]) / day_ms) % reset[i][2]
+            diff = Math.ceil((date_today + time_offset - reset[i][1]) / day_ms) % reset[i][2];
 
             if (diff == 0) {
-                msg.push('S' + reset[i][0] +' reset in today, at ' + reset[i][3] + ':00');
+                msg.push('S' + reset[i][0] +' resets today, at ' + reset[i][3] + ':00');
+            } else if (diff == 1) {
+                msg.push('S' + reset[i][0] +' resets tomorrow, at ' + reset[i][3] + ':00');
             } else {
-                msg.push('S' + reset[i][0] +' reset in ' + (reset[i][2] - diff) + ' day, at ' + reset[i][3] + ':00');
+                msg.push('S' + reset[i][0] +' reset in ' + (reset[i][2] - diff) + ' days, at ' + reset[i][3] + ':00');
             }
         }
         
