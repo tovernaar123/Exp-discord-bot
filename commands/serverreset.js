@@ -39,8 +39,7 @@ module.exports = {
         */
 
         // [Init Date, Cycle Duration, Reset at hour time]
-        // Order:
-        // S1, S3, S4
+        // Ordered by S1, S3, S4
         
         let reset = [[new Date(2021, 6, 23).getTime(), 2, 16], 
         [new Date(2021, 6, 23).getTime(), 7, 22],
@@ -50,6 +49,7 @@ module.exports = {
         let date_today = Date.now();
 
         // Day Difference
+        
         diff = [Math.ceil((date_today + time_offset - reset[0][0]) / day_ms) % reset[0][1], 
         Math.ceil((date_today + time_offset - reset[1][0]) / day_ms) % reset[1][1], 
         Math.ceil((date_today + time_offset - reset[2][0]) / day_ms) % reset[2][1]];
