@@ -110,7 +110,7 @@ module.exports = {
                 channel.send({files: ['.cache/graph.png']});
             } catch (e) {
                 channel.send(`Error when sending image.`);
-                console.log(`Error when saving graph image.`);
+                console.log(`Error when sending image.`);
             }
         }
     },
