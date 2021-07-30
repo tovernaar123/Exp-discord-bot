@@ -19,7 +19,7 @@ module.exports = {
             } else {
                 // Type is number
                 if (server < 1 || server > 8) {
-                    channel.send(`Error: Lookup out of range.`);
+                    msg.channel.send(`Error: Lookup out of range.`);
                     server = -1;
                 }
             }
