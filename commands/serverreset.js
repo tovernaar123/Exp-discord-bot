@@ -57,7 +57,7 @@ module.exports = {
             if (diff == 0) {
                 msg.push('S' + reset[i][0] +' resets today, at ' + reset[i][3] + ':00 UTC');
             } else {
-                msg.push('S' + reset[i][0] +' reset in ' + (reset[i][2] - diff) + ' day(s), at ' + reset[i][3] + ':00 UTC');
+                msg.push('S' + reset[i][0] +' reset in ' + (reset[i][2] - diff) + ' day, at ' + reset[i][3] + ':00 UTC');
             }
         }
         
