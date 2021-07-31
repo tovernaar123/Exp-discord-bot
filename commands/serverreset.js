@@ -60,7 +60,7 @@ module.exports = {
                 } else if ((reset[i][2] - diff) == 1) {
                     message.push('S' + reset[i][0] +' resets tomorrow, at ' + reset[i][3] + ':00 UTC');
                 } else {
-                    message.push('S' + reset[i][0] +' reset in ' + (reset[i][2] - diff) + ' day, at ' + reset[i][3] + ':00 UTC');
+                    message.push('S' + reset[i][0] +' resets in ' + (reset[i][2] - diff) + ' day, at ' + reset[i][3] + ':00 UTC');
                 }
             }
         }
