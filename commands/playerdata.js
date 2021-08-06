@@ -6,12 +6,18 @@ const fs  = require('fs');
 
 function playerdata2command(name, msg) {
     //thousands separator
-    function ts(x) { 
+    function ts(x, nd) {
+        // x as value
+        // nd as nth decimal places
+        nd = nd || 0;
+    
         if (x === undefined) {
             return 0;
         } else {
+            let i = Math.round(Number(x) * 100) / 100;
+            var d = i.toFixed(nd).split(".");
             try {
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return d[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (d[1] ? "." + d[1] : "");
             } catch(e) {
                 return 0;
             }
@@ -21,26 +27,31 @@ function playerdata2command(name, msg) {
     function profile(msg_2) {
         var layout = ['Playtime', 'AfkTime', 'MapsPlayed', 'JoinCount', 'ChatMessages', 'CommandsUsed', 'RocketsLaunched', 'ResearchCompleted', 'MachinesBuilt', 'MachinesRemoved', 'TilesBuilt', 'TilesRemoved', 'TreesDestroyed', 'OreMined', 'ItemsCrafted', 'ItemsPickedUp', 'Kills', 'Deaths', 'DamageDealt', 'DistanceTravelled', 'CapsulesUsed', 'EntityRepaired', 'DeconstructionPlannerUsed', 'MapTagsMade'];
         var layout_dict = {
+            // 0
             'Playtime':'Play Time',
             'AfkTime':'AFK Time',
             'MapsPlayed':'Maps Played',
             'JoinCount':'Join Count',
             'ChatMessages':'Chat Messages',
+            // 5
             'CommandsUsed':'Commands',
             'RocketsLaunched':'Rockets Launched',
             'ResearchCompleted':'Research Completed',
             'MachinesBuilt':'Machines Built',
             'MachinesRemoved':'Machines Removed',
+            // 10
             'TilesBuilt':'Tiles Placed',
             'TilesRemoved':'Tiles Removed',
             'TreesDestroyed':'Trees Destroyed',
             'OreMined':'Ore Mined',
             'ItemsCrafted':'Items Crafted',
+            // 15
             'ItemsPickedUp':'Items Picked Up',
             'Kills':'Kills',
             'Deaths':'Deaths',
             'DamageDealt':'Damage Dealt',
             'DistanceTravelled':'Distance Travelled',
+            // 20
             'CapsulesUsed':'Capsules Used',
             'EntityRepaired':'Machines Repaired',
             'DeconstructionPlannerUsed':'Decon Planner Used',
@@ -71,7 +82,7 @@ function playerdata2command(name, msg) {
                 // if hours (of hh:mm) is more than 0 then show how many hours you have, else only show mins below
                 if (h1 > 0) { 
                     msg_3.push(layout_dict[layout[i]]);
-                    msg_3.push(h1 + ' h ' + m1 + ' m');
+                    msg_3.push(ts(h1, 0) + ' h ' + m1 + ' m');
                 } else {
                     msg_3.push(layout_dict[layout[i]]);
                     msg_3.push(m1 + ' m ');
