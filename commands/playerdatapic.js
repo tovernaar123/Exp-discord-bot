@@ -92,6 +92,8 @@ function playerdata3command(name, msg) {
                     msg_3.push(ts(0, 0));
                 }
             }
+            
+            // push title and value in array
             msg_4.push([msg_3[0], msg_3[1]]);
         }
         
