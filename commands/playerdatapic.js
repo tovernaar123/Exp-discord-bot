@@ -4,12 +4,18 @@ const puppeteer = require('puppeteer');
 
 function playerdata3command(name, msg) {
     //thousands separator
-    function ts(x) { 
+    function ts(x, nd) {
+        // x as value
+        // nd as nth decimal places
+        nd = nd || 0;
+    
         if (x === undefined) {
             return 0;
         } else {
+            let i = Math.round(Number(x) * 100) / 100;
+            var d = i.toFixed(nd).split(".");
             try {
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return d[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (d[1] ? "." + d[1] : "");
             } catch(e) {
                 return 0;
             }
@@ -19,75 +25,83 @@ function playerdata3command(name, msg) {
     function profile(msg_2) {
         var layout = ['Playtime', 'AfkTime', 'MapsPlayed', 'JoinCount', 'ChatMessages', 'CommandsUsed', 'RocketsLaunched', 'ResearchCompleted', 'MachinesBuilt', 'MachinesRemoved', 'TilesBuilt', 'TilesRemoved', 'TreesDestroyed', 'OreMined', 'ItemsCrafted', 'ItemsPickedUp', 'Kills', 'Deaths', 'DamageDealt', 'DistanceTravelled', 'CapsulesUsed', 'EntityRepaired', 'DeconstructionPlannerUsed', 'MapTagsMade'];
         var layout_dict = {
+            // 0
             'Playtime':'Play Time',
             'AfkTime':'AFK Time',
             'MapsPlayed':'Maps Played',
             'JoinCount':'Join Count',
             'ChatMessages':'Chat Messages',
+            // 5
             'CommandsUsed':'Commands',
             'RocketsLaunched':'Rockets Launched',
             'ResearchCompleted':'Research Completed',
             'MachinesBuilt':'Machines Built',
             'MachinesRemoved':'Machines Removed',
+            // 10
             'TilesBuilt':'Tiles Placed',
             'TilesRemoved':'Tiles Removed',
             'TreesDestroyed':'Trees Destroyed',
             'OreMined':'Ore Mined',
             'ItemsCrafted':'Items Crafted',
+            // 15
             'ItemsPickedUp':'Items Picked Up',
             'Kills':'Kills',
             'Deaths':'Deaths',
             'DamageDealt':'Damage Dealt',
             'DistanceTravelled':'Distance Travelled',
+            // 20
             'CapsulesUsed':'Capsules Used',
             'EntityRepaired':'Machines Repaired',
             'DeconstructionPlannerUsed':'Decon Planner Used',
             'MapTagsMade':'Map Tags Created'
         };
-                        
-        let msg_4 = [];
-                    
+        
+        var msg_4 = [];
+    
         for (let i = 0; i < layout.length; i++) {
-            let msg_3 = [];
-                            
+            var msg_3 = [];
+            
             if (layout[i] == 'Playtime' || layout[i] == 'AfkTime') {
                 try {
                     var t1 = msg_2[layout[i]];
                 } catch (e) {
                     var t1 = 0;
                 }
-                                
+                
                 if (isNaN(t1)) {
                     t1 = 0;
                 }
-                                
-                // the hours part of min-> hh:mm
-                let h1 = Math.floor(t1 / 60);
-                // the min part of hh:mm
-                let m1 = Math.floor(t1 % 60);
-                
-                // if hours (of hh:mm) is more than 0 then show how many hours you have, else only show mins below
-                if (h1 > 0) { 
+    
+                var h1 = Math.floor(t1 / 60);
+                var m1 = Math.floor(t1 % 60);
+    
+                if (h1 > 0) {
                     msg_3.push(layout_dict[layout[i]]);
-                    msg_3.push(h1 + ' h ' + m1 + ' m');
+                    msg_3.push(ts(h1, 0)+ ' h ' + m1 + ' m');
                 } else {
                     msg_3.push(layout_dict[layout[i]]);
                     msg_3.push(m1 + ' m ');
                 }
-                    
+    
             } else {
                 try {
                     msg_3.push(layout_dict[layout[i]]);
-                    msg_3.push(ts(msg_2[layout[i]]));
+                    msg_3.push(ts(msg_2[layout[i]], 0));
                 } catch (e) {
                     msg_3.push(layout_dict[layout[i]]);
-                    msg_3.push(ts(0));
+                    msg_3.push(ts(0, 0));
                 }
             }
-            
-            // push title and value in array
-            msg_4.push([msg_3[0], msg_3[1]]); 
-        }         
+            msg_4.push([msg_3[0], msg_3[1]]);
+        }
+        
+        // Additional Data
+        msg_4.push(['AFK Time Ratio', ts(msg_2[layout[1]] / msg_2[layout[0]] * 100, 2) + ' %']);
+        msg_4.push(['Chat Command Ratio', ts(msg_2[layout[5]] / msg_2[layout[4]] * 100, 2) + ' %']);
+        msg_4.push(['Build Ratio', ts(msg_2[layout[8]] / msg_2[layout[9]], 2)]);
+        msg_4.push(['Tiles Build Ratio', ts(msg_2[layout[10]] / msg_2[layout[11]], 2)]);
+        msg_4.push(['Kill Death Ratio', ts(msg_2[layout[16]] / msg_2[layout[17]], 2)]);
+        msg_4.push(['Damage Death Ratio', ts(msg_2[layout[18]] / msg_2[layout[17]], 2)]);
         return msg_4;
     }
                     
@@ -123,23 +137,22 @@ function playerdata3command(name, msg) {
     // Table Border Color
     let html_table_border_color = '#6F6F6F';
     // Font Family
-    let html_font_family = 'Arial,Helvetica,sans-serif';
+    // Arial, Helvetica, Verdana, Calibri
+    let html_font_family = 'Helvetica';
     // Font Size
     let html_font_size = '1em';
     // Table Individual Width
-    let html_table_width = [200, 120];
+    let html_table_width = [200, 140];
     // Table Total Width
     let html_table_width_total = 2 * (html_table_width[0] + html_table_width[1]);
     // Total Browser Height
-    let html_body_height = 460;
+    let html_body_height = 565;
 
     // font-weight:bold
-    let html_code = ['<html>\n<head>\n<title></title>\n</head>\n<body style="background-color:' + html_background_color + '">',
+    let html_code = ['<html>\n<head>\n<title></title>\n</head>\n<body style="background-color:' + html_background_color + '"><hr style="height:5px; visibility:hidden;margin:0px;border:0px;">',
     '<h2 style="width:100%;text-align:center;border-bottom:1px solid ' + html_table_border_color + ';line-height:0.1em;margin:10px 0 20px;color:' + html_font_color + '"><span style="background-color:' + html_background_color + ';padding:0 10px;font-family:' + html_font_family + ';">Data</span></h2>',
     '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Player data requested by: ' + author + ' </p>',
     '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Username: ' + lookup + ' </p>',
-    // '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Our servers will save your player data so that we can sync it between servers.</p>',
-    // '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">All of your data can be found below.</p>',
     '<table style="border-collapse:collapse;width=' + html_table_width_total + 'px;">']
 
     let result = profile(item);
