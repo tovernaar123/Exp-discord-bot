@@ -192,9 +192,8 @@ module.exports = {
         
         async function runCommand() {
             //board
-            let role_needed = role.board;
-            let role = await msg.guild.roles.fetch(role_needed);
-            let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
+            let role_needed = await msg.guild.roles.fetch(role.board);
+            let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role_needed) >= 0; 
             let name = args[0];
 
             if (name) {
