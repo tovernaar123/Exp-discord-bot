@@ -99,7 +99,7 @@ function playerdata3command(name, msg) {
         
         // Additional Data
         msg_4.push(['AFK Time Ratio', ts(msg_2[layout[1]] / msg_2[layout[0]] * 100, 2) + ' %']);
-        msg_4.push(['Chat Command Ratio', ts(msg_2[layout[5]] / msg_2[layout[4]] * 100, 2) + ' %']);
+        msg_4.push(['Map Join Ratio', ts(msg_2[layout[3]] / msg_2[layout[2]], 2)]);
         msg_4.push(['Build Ratio', ts(msg_2[layout[8]] / msg_2[layout[9]], 2)]);
         msg_4.push(['Tiles Build Ratio', ts(msg_2[layout[10]] / msg_2[layout[11]], 2)]);
         msg_4.push(['Kill Death Ratio', ts(msg_2[layout[16]] / msg_2[layout[17]], 2)]);
