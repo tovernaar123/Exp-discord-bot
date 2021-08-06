@@ -77,7 +77,7 @@ function playerdata3command(name, msg) {
     
                 if (h1 > 0) {
                     msg_3.push(layout_dict[layout[i]]);
-                    msg_3.push(ts(h1, 0)+ ' h ' + m1 + ' m');
+                    msg_3.push(ts(h1, 0) + ' h ' + m1 + ' m');
                 } else {
                     msg_3.push(layout_dict[layout[i]]);
                     msg_3.push(m1 + ' m ');
