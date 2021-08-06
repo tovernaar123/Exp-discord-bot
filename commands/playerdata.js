@@ -91,10 +91,10 @@ function playerdata2command(name, msg) {
             } else {
                 try {
                     msg_3.push(layout_dict[layout[i]]);
-                    msg_3.push(ts(msg_2[layout[i]]));
+                    msg_3.push(ts(msg_2[layout[i]], 0));
                 } catch (e) {
                     msg_3.push(layout_dict[layout[i]]);
-                    msg_3.push(ts(0));
+                    msg_3.push(ts(0, 0));
                 }
             }
             
