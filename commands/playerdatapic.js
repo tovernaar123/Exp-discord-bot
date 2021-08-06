@@ -150,7 +150,7 @@ function playerdata3command(name, msg) {
     // Table Total Width
     let html_table_width_total = 2 * (html_table_width[0] + html_table_width[1]);
     // Total Browser Height
-    let html_body_height = 585;
+    let html_body_height = 600;
 
     // font-weight:bold
     let html_code = ['<html>\n<head>\n<title></title>\n</head>\n<body style="background-color:' + html_background_color + '"><hr style="height:5px; visibility:hidden;margin:0px;border:0px;">',
