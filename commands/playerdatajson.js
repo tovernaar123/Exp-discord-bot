@@ -38,8 +38,8 @@ module.exports = {
     usage: ` <nameToLookup>`,
     async execute(msg, args, _, internal_error) {
         //board
-        let role = await msg.guild.roles.fetch(role.board);
-        let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0; 
+        let role_needed = await msg.guild.roles.fetch(role.board);
+        let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role_needed) >= 0; 
         let name = args[0];
 
         if (name) {
