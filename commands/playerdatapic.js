@@ -122,7 +122,7 @@ function playerdata3command(name, msg) {
     // Checks to see if any data was retured at all, if the name is not in the database, or the database is not accessable than it will return an error and stop running the command
     
     if (!checkdata) {
-        msg.channel.send('Error: Name not found. Check the name or try again later.');
+        msg.channel.send({content: 'Error: Name not found. Check the name or try again later.'});
         console.log(`Name not found`);
         return;
     }
@@ -197,7 +197,7 @@ function playerdata3command(name, msg) {
             await browser.close();
             })();
     } catch (e) {
-        channel.send('Error when creating image.');
+        channel.send({content: 'Error when creating image.'});
     }
 
     // channel.send(`\`\`\`Player Data Requested by ${message.author.username}\nUsername: ${lookup}\n\`\`\``);
@@ -226,7 +226,7 @@ module.exports = {
                     // If the user is authorized to use the command and supplied a name
                     playerdata3command(name, msg);
                 } else {
-                    msg.channel.send(`Error: You are not authorized to perform this action.`);
+                    msg.channel.send({content: `Error: You are not authorized to perform this action.`});
                 }
             } else {
                 // User doesnt need to get authorized for a self lookup
