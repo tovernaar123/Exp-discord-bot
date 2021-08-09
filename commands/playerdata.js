@@ -175,6 +175,7 @@ function playerdata2command(name, msg) {
     // Send the Embeds, sent as 2 because depending on the length discord would error out if you sent them both.
     channel.send(Embed);
     channel.send(Embed2);
+    // channel.send({embeds: [embed, embed2]});
     return;
 }
 
@@ -201,7 +202,7 @@ module.exports = {
                     // If the user is authorized to use the command and supplied a name
                     playerdata2command(name, msg);
                 } else {
-                    msg.channel.send(`Error: You are not authorized to perform this action.`);
+                    msg.channel.send({content: `Error: You are not authorized to perform this action.`});
                 }
             } else {
                 // User doesnt need to get authorized for a self lookup
