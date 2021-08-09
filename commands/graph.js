@@ -14,7 +14,8 @@ module.exports = {
         // let server = args[0].replace(/server|s/i, '');
         // server = Number(server) || server;
         let channel = msg.channel;
-        let type = args[0].toLowerCase();
+        let type = args[0] || 55;
+        type = type.toString().toLowerCase();
 
         //board
         let role_needed = role.board;
@@ -61,36 +62,23 @@ module.exports = {
         }
 
         if (type >= 0) {
-            async function download(url, path, width, height) {
-                const browser = await puppeteer.launch({
-                    headless: false
-                });
-                const page = await browser.newPage();
-                await page.setViewport({width: width, height: height});
-                await page.goto(url);
-                
-                fs.writeFile(path, await viewSource.buffer(), function (err) {
-
-                if (err) {
-                    return console.log(err);
-                }
-            });
-            
-                browser.close();
-            }
-            
             let url = 'https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=' + type + '&width=1000&height=300&tz=UTC';
-            const path = './graph.png'
     
             try {
-                download(url, path, 1000, 300);
+                (async () => {
+                    const browser = await puppeteer.launch();
+                    const page = await browser.newPage();
+                    await page.goto(url);
+                    await page.screenshot({path: './graph.png'});
+                    await browser.close();
+                    })();
             } catch (e) {
                 channel.send({content: `Error when saving image.`});
                 console.log({content: `Error when saving graph image.`});
             }
     
             try {
-                channel.send({files: [path]});
+                channel.send({files: ['./graph.png']});
             } catch (e) {
                 channel.send({content: `Error when sending image.`});
                 console.log(`Error when sending image.`);
