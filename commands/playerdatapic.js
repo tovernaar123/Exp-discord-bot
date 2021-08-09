@@ -184,17 +184,17 @@ function playerdata3command(name, msg) {
     
     try {
         (async () => {
-            const browser = await puppeteer.launch()
-            const page = await browser.newPage()
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
             await page.setViewport({
                 width: html_table_width_total,
                 height: html_body_height,
                 deviceScaleFactor: 1,
                 });
             // page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
-            await page.setContent(html_code.join('\n'))
-            await page.screenshot({path: './graph.png'})
-            await browser.close()
+            await page.setContent(html_code.join('\n'));
+            await page.screenshot({path: './graph.png'});
+            await browser.close();
             })();
     } catch (e) {
         channel.send('Error when creating image.');
