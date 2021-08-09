@@ -195,7 +195,7 @@ function playerdata3command(name, msg) {
             await page.setContent(html_code.join('\n'))
             await page.screenshot({path: './graph.png'})
             await browser.close()
-            })()
+            })();
     } catch (e) {
         channel.send('Error when creating image.');
     }
