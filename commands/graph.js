@@ -42,7 +42,7 @@ module.exports = {
         if (isNaN(type)) {
             // Type is word
             if (graph_dict.hasOwnProperty(type)) {
-                type = graph_dict(type);
+                type = graph_dict[type];
             } else {
                 channel.send({content: `Error: Lookup out of range.`});
             }
