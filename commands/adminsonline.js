@@ -78,11 +78,17 @@ module.exports = {
     required_role: role.staff,
     usage: `<#>`,
     async execute(msg, args, rcons, internal_error) {
-        let server = Number(args[0]) || args[0];
         let author = msg.author.displayName;
+        let server = args[0] || 'all';
 
-        if(!isNaN(server)){
-            server = Math.floor(args[0]);
+        if (isNaN(server)) {
+            // Server is word
+            server =  Number(server.replace('/server/i', '').replace('/s/i', '')) || server;
+        } 
+        
+        if (server < 1 || server > 8) {
+            channel.send({content: `Error: Lookup out of range.`});
+            server = -1;
         }
 
         // Checks to see if the person specified a server number
