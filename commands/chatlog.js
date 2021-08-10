@@ -80,7 +80,7 @@ module.exports = {
     required_role: role.board,
     usage: ` <server#> <amount of lines>`,
     async execute(msg, args, _, internal_error) {
-        let server = args[0] || 4;
+        let server = args[0] || 0;
 
         if (isNaN(server)) {
             // Server is word
