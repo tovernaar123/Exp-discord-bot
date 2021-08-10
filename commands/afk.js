@@ -34,7 +34,7 @@ module.exports = {
         let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`;
 
         if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
+            console.log(`Info: Command - AFK server is ${server}.`);
             runCommand(server, rcons[server], msg, internal_error)
                 .catch((err) => { internal_error(err); return })
         } else {
