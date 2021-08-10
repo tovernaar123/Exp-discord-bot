@@ -7,8 +7,8 @@ async function runCommand(server, rcon, msg, username, reason) {
     }
 
     let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${username}", "${msg.member.displayName}")`)
-    await msg.channel.send(`*Please make sure you have the correct username and a report was issued in #reports.* Server replies complete even if user does not exist. Server replied: ${res} By: ${msg.member.displayName} becasue: *${reason}*`);
-    console.log(`A user tried to Clear ${username}'s reports... \n    Server replied: ${res}    By: ${msg.member.displayName}/${msg.member.id} \n    Becasue: *${reason}*`);
+    await msg.channel.send({content: `User ${username} has a report removed by: ${msg.member.displayName} becasue of ${reason}`});
+    console.log(`Info: Command - Clear Reports has removed a report of ${username} by ${msg.member.displayName} because of ${reason}.`);
 }
 
 module.exports = {
@@ -52,14 +52,8 @@ module.exports = {
         }
 
         if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
-            runCommand(server, rcons[server], msg, username, reason)
-                .catch((err) => { internal_error(err); return })
-        } else {
-            // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.reply(`Please pick a server first (**just the number 1-8**). Correct usage is \`.exp clear-all <server#> <reason>\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`players online by ${author} incorrect server number`);
+            console.log(`Info: Command - Clear Reports server is ${server}.`);
+            runCommand(server, rcons[server], msg, username, reason).catch((err) => {internal_error(err); return});
         }
     },
 };
