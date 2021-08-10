@@ -99,16 +99,11 @@ module.exports = {
         }
 
         if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
+            console.log(`Info: Command - Admin Online Server is ${server}.`);
             runCommand(server, rcons[server], msg).catch((err) => {internal_error(err); return});
         } else if (server === 'all') {
+            console.log(`Info: Command - Admin Online Server is all.`);
             all_servers(rcons, msg).catch((err) => {internal_error(err); return});
-        } else {
-            // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.reply({content: `Please pick a server first just a number (1-8).  Correct usage is \` ao <server#>\``})
-                .catch((err) => {internal_error(err); return});
-            console.log(`players online by ${author} incorrect server number`);
         }
-
     },
 };
