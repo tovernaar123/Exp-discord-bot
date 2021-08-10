@@ -44,7 +44,6 @@ async function runCommand(server, rcon, msg) {
  * @returns {void}
 */
 async function all_servers(rcons, msg) {
-    await msg.channel.send({content: "Asked for all online admins: Awaiting reply from servers..."});
     const Embed = Discord.MessageEmbed();
     Embed.addField('Online Admins', `request by ${msg.author.displayName}`, false);
 
