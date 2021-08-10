@@ -90,7 +90,7 @@ module.exports = {
 
         if (server < 1 || server > 8 || isNaN(server)) {
             channel.send({content: `Error: Server lookup out of range.`}).catch((err) => {internal_error(err); return});
-            console.log(`Error: Command - Chat Log did not have a proper range included.`);
+            console.log(`Error: Command - Chat Log did not have a proper server range included.`);
             server = 0;
             return;
         }
@@ -99,7 +99,7 @@ module.exports = {
 
         if (isNaN(size) || !size) {
             msg.reply({content: `How many lines is needed? (max 50)`}).catch((err) => {internal_error(err); return});
-            console.log(`Info: Command - Chat Log did not have a proper range included.`);
+            console.log(`Info: Command - Chat Log did not have a proper lines range included.`);
             return;
         }
 
