@@ -94,7 +94,7 @@ module.exports = {
         }
 
         if (args.length > 1) {
-            msg.channel.send({content: `No extra arguments needed - Please remove "${args.slice(1).join(" ")}". Correct usage: \`ao <Server#>\``}).catch((err) => {internal_error(err); return});
+            msg.channel.send({content: `No extra arguments needed. Correct usage: \`ao <Server#>\``}).catch((err) => {internal_error(err); return});
             console.log(`Error: Command - Admin Online was given too many arguments`);
         }
 
