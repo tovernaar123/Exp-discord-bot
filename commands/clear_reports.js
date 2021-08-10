@@ -1,14 +1,14 @@
 const Discord = require('discord.js');
 
-async function runCommand(server, rcon, msg, username, reason) {
+async function runCommand(server, rcon, msg, username, author, reason) {
     if(!rcon.connected){
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
 
-    let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${username}", "${msg.member.displayName}")`)
-    await msg.channel.send({content: `User ${username} has a report removed by: ${msg.member.displayName} becasue of ${reason}`});
-    console.log(`Info: Command - Clear Reports has removed a report of ${username} by ${msg.member.displayName} because of ${reason}.`);
+    let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${username}", "${author}")`)
+    await msg.channel.send({content: `User ${username} has a report removed by: ${author} becasue of ${reason}`});
+    console.log(`Info: Command - Clear Reports has removed a report of ${username} by ${author} because of ${reason}.`);
 }
 
 module.exports = {
@@ -24,8 +24,8 @@ module.exports = {
         const author = msg.author.displayName;
         let server = args[0] || 0;
 
-        let username = args[1];
-        let reason = args.slice(2).join(" ");
+        let username = args[1] || '';
+        let reason = args.slice(2).join(" ") || '';
         
         if (isNaN(server)) {
             // Server is word
@@ -53,7 +53,7 @@ module.exports = {
 
         if (server < 9 && server > 0) {
             console.log(`Info: Command - Clear Reports server is ${server}.`);
-            runCommand(server, rcons[server], msg, username, reason).catch((err) => {internal_error(err); return});
+            runCommand(server, rcons[server], msg, username, author, reason).catch((err) => {internal_error(err); return});
         }
     },
 };
