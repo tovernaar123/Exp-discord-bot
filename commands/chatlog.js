@@ -94,11 +94,12 @@ module.exports = {
             return;
         }
 
-        let size = Math.floor(Number(args[1]));
+        let size = Math.floor(Number(args[1])) || '1';
 
         if (isNaN(size)) {
-            msg.reply(`Please give the amount of lines you want`)
-                .catch((err) => { internal_error(err); return })
+            msg.reply({content: `How many lines is needed? (max 50)`}).catch((err) => {internal_error(err); return});
+            console.log(`Info: Command - Chat Log did not have a proper range included.`);
+            return;
         }
 
         let sizeLimit = 50;
