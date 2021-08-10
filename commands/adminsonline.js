@@ -89,14 +89,14 @@ module.exports = {
         
         if (server < 1 || server > 8 || isNaN(server)) {
             channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
-            console.log(`Error: Command - Admin Online did not have a proper range included.`);
+            console.log(`Info: Command - Admin Online did not have a proper range included.`);
             server = 0;
             return;
         }
 
         if (args.length > 1) {
             msg.channel.send({content: `No extra arguments needed. Correct usage: \`.exp ao <server#>\``}).catch((err) => {internal_error(err); return});
-            console.log(`Error: Command - Admin Online was given too many arguments.`);
+            console.log(`Info: Command - Admin Online was given too many arguments.`);
         }
 
         if (server < 9 && server > 0) {
