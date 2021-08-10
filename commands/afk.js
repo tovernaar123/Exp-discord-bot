@@ -9,24 +9,29 @@ module.exports = {
     required_role: role.staff,
     usage: `<#>`,
     async execute(msg, args, rcons, internal_error) {
-        const server = Math.floor(Number(args[0]));
-        //send afk command
-        let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`;
+        let author = msg.author.displayName;
+        let server = args[0] || 4;
 
-        // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        if (isNaN(server)) {
+            // Server is word
+            server =  Number(server.replace('/server/i', '').replace('/s/i', '')) || server;
+        } 
+
+        if (server < 1 || server > 8 || isNaN(server)) {
+            channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
+            console.log(`Error: Command - Admin Online did not have a proper range included.`);
+            server = -1;
+            return;
+        }
+
         if (args.length > 1) {
             msg.channel.send(`No extra arguments needed. Correct usage: \`.exp afk <Server#>\``).catch((err) => {internal_error(err); return});
             console.log(`Error: Command - AFK was given too many arguments.`);
             return;
         }
 
-        // Checks to see if the person specified a server number.
-        if (!server) {
-            msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`')
-                .catch((err) => { internal_error(err); return })
-            console.log(`Kick-Did not have server number`);
-            return;
-        }
+        //send afk command
+        let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`;
 
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
