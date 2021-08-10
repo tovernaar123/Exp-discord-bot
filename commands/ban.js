@@ -26,8 +26,8 @@ async function runCommand(server, rcon, msg, username, reason) {
 
 module.exports = {
     name: 'ban',
-    aka: ['bannd','banned','permaban','gtfo'],
-    description: 'Ban any user (Admin/Mod only command)',
+    aka: ['banned','permaban','gtfo'],
+    description: 'Ban user (Mod+)',
     guildOnly: true,
     args: true,
     // help level must be in quotes to work
