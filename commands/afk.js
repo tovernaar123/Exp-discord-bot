@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+
 module.exports = {
     name: 'afk',
     aka: ['whoisafk', 'afkstreak', 'alwaysafk'],
@@ -10,9 +11,11 @@ module.exports = {
     async execute(msg, args, rcons, internal_error) {
         const server = Math.floor(Number(args[0]));
         let extra = args.slice(1).join(" "); // cant have any of this here for afk
-        let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`; //send afk chat bot
+        //send afk chat bot
+        let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`;
 
-        if (extra) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
+        if (args.length > 1) {
             msg.channel.send(`Please remove "${extra}". Correct usage: \`.exp afk <Server#>\``)
                 .catch((err) => { internal_error(err); return })
             console.log(`AFK was given too many arguments`);
