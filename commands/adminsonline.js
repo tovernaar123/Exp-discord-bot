@@ -94,7 +94,7 @@ module.exports = {
         }
 
         if (args.length > 1) {
-            msg.channel.send({content: `No reasons (or extra arguments) needed - Please remove "${args.slice(1)}". Correct usage: \`ao <Server#>\``})
+            msg.channel.send({content: `No reasons (or extra arguments) needed - Please remove "${args.slice(1).join(" ")}". Correct usage: \`ao <Server#>\``})
                 .catch((err) => {internal_error(err); return});
             console.log(`AO was given too many arguments`);
         }
