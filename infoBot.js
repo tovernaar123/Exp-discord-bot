@@ -92,53 +92,59 @@ client.on("ready", () => {
 
 
 
-client.on("message", async msg => {
-    
+client.on("messageCreate", async msg => {
+    const guild = msg.guild;
+
     function internal_error(err) {
-        console.log(err)
-        msg.channel.send('Internal error in the command. Please contact an admin.')
+        console.log(err);
+        msg.channel.send({content: 'Internal error occurred.'});
     }
 
-    //Ends msg early if author is a bot
-    const guild = msg.guild;
-    if (msg.author.bot) return;
+    // Ends message if author is bot
+    if (msg.author.bot) {
+        return;
+    }
 
-    //Ends msg  code early if the command does not start with a prefix
-    if (!msg.content.toLowerCase().startsWith(prefix)) return;
+    // Ends message if it dont start with prefix
+    if (!msg.content.toLowerCase().startsWith(prefix)) {
+        return;
+    }
 
     // remove the .exp then removes the spaces in the beging and end then splits it up into args
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
 
-    //gets the command in lower case
+    // get the command in lower case
     const commandName = args.shift().toLowerCase();
 
     // get the command or its aka
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aka && cmd.aka.includes(commandName));
 
     // if no command dont do anything
-    if (!command) return;
+    if (!command) {
+        return;
+    }
 
     // disallows commands in dm's to run as commands in dms if it is set to guild only
-    if (command.guildOnly && msg.channel.type !== 'text') 
-    {
-        return msg.reply('Sorry - I can\'t do that in a DM');
+    if (command.guildOnly && msg.channel.type !== 'text') {
+        return msg.reply({content: 'Direct Message is not allowed.'});
     }
 
     // only runs if below Guild id's (EXP = `260843215836545025`) 762249085268656178 is testing server
     if (command.guildOnly && (guild != `762249085268656178` && guild != `260843215836545025`)) {
-        console.log(`Not correct guild`);
-        return msg.reply(`Wrong guild`);
+        console.log(`Info: Other guild.`);
+        return msg.reply({content: `The bot cannot run in other guild.`});
     }
 
     // Check to see if you have the role you need or a higher one
     let req_role = command.required_role
 
     if (req_role) {
-        let role = await msg.guild.roles.fetch(req_role)
+        let role = await msg.guild.roles.fetch(req_role);
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
+
         if (!allowed) {
-        console.log(`Unauthorized `);
-            msg.channel.send(`You do not have ${role.name} permission.`);
+            console.log(`Info: User is not authorized to use the command.`);
+            msg.channel.send({content: `You do not have ${role.name} permission to run the command.`});
             return;
             }
         };
