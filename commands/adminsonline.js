@@ -99,10 +99,10 @@ module.exports = {
         }
 
         if (server < 9 && server > 0) {
-            console.log(`Info: Command - Admin Online Server is ${server}.`);
+            console.log(`Info: Command - Admin Online server is ${server}.`);
             runCommand(server, rcons[server], msg).catch((err) => {internal_error(err); return});
         } else if (server === 'all') {
-            console.log(`Info: Command - Admin Online Server is all.`);
+            console.log(`Info: Command - Admin Online server is all.`);
             all_servers(rcons, msg).catch((err) => {internal_error(err); return});
         }
     },
