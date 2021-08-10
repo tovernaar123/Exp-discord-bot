@@ -72,11 +72,11 @@ async function all_servers(rcons, msg) {
 module.exports = {
     name: 'ao',
     aka: ['adminonline', 'adminsonline', 'admins'],
-    description: 'how many players are online?',
+    description: 'how many admins are online? (Mod+)',
     guildOnly: true,
     args: true,
     required_role: role.staff,
-    usage: `<#>`,
+    usage: `<server#>`,
     async execute(msg, args, rcons, internal_error) {
         let author = msg.author.displayName;
         let server = args[0] || 'all';
@@ -94,7 +94,7 @@ module.exports = {
         }
 
         if (args.length > 1) {
-            msg.channel.send({content: `No extra arguments needed. Correct usage: \`.exp ao <Server#>\``}).catch((err) => {internal_error(err); return});
+            msg.channel.send({content: `No extra arguments needed. Correct usage: \`.exp ao <server#>\``}).catch((err) => {internal_error(err); return});
             console.log(`Error: Command - Admin Online was given too many arguments.`);
         }
 
