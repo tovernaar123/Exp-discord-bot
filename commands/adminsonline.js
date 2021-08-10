@@ -32,7 +32,7 @@ async function runCommand(server, rcon, msg) {
         const Embed = Discord.MessageEmbed();
         Embed.addField('Online Admins', `request by ${msg.author.username} \n \u200B`, false);
         Embed.addField(`S${server}`, response, true);
-        await msg.channel.send(Embed);
+        await msg.channel.send({embeds: [Embed]});
         console.log(`S${server} checked admins online: ${response}`);
     }
 }
@@ -66,7 +66,7 @@ async function all_servers(rcons, msg) {
         Embed.addField(`\u200B`, `\u200B`, true);
     }
 
-    await msg.channel.send(Embed);
+    await msg.channel.send({embeds: [Embed]});
 }
 
 module.exports = {
