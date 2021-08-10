@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 
 async function runCommand(server, rcon, msg, username, reason) {
     if(!rcon.connected){
-        await msg.channel.send(`S${server} is not connected the bot.`)
+        await msg.channel.send(`S${server} is not connected.`)
         return;
     }
 
