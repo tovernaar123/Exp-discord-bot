@@ -46,12 +46,11 @@ module.exports = {
             } else {
                 channel.send({content: `Error: Lookup out of range.`});
             }
-        } else {
-            // Type is number
-            if (graph_list.indexOf(type) < 0) {
+        }
+
+        if (graph_list.indexOf(type) < 0) {
                 channel.send({content: `Error: Lookup out of range.`});
                 type = -1;
-            }
         }
             
         if (!allowedThisCommand) {
