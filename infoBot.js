@@ -17,7 +17,7 @@ role = {
     admin: "764526097768644618",
     mod: "762260114186305546",
     board: "765920803006054431"
-}
+};
 */
 
 // Production
@@ -27,10 +27,10 @@ role = {
     mod: "260893080968888321",
     board: "693500936491892826",
     sadmin: "446066482007244821"
-}
+};
 
 //array for all ofline servers
-let offline_servers = [2, 6, 7, 8]
+let offline_servers = [2, 6, 7, 8];
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed;
@@ -56,7 +56,7 @@ async function start() {
     for (let i = 1; i < 9; i++) {
         //if servers is offline dont try and connect to it
         if (offline_servers.includes(i)) {
-            rcons[i] = { "connected": false }
+            rcons[i] = {"connected": false}
             continue;
         }
 
@@ -125,8 +125,8 @@ client.on("messageCreate", async msg => {
         return msg.reply({content: 'Direct Message is not allowed.'});
     }
 
-    // only runs if below Guild id's (EXP = `260843215836545025`) 762249085268656178 is testing server
-    if (command.guildOnly && (guild != `762249085268656178` && guild != `260843215836545025`)) {
+    // Prod and Dev Server
+    if (command.guildOnly && (guild != `260843215836545025` && guild != `762249085268656178`)) {
         console.log(`Info: Other guild.`);
         return msg.reply({content: `The bot cannot run in other guild.`});
     }
