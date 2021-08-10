@@ -106,20 +106,14 @@ module.exports = {
         if (size > max_lines) {
             msg.channel.send({content: `Error: maximum numbers of lines are ${max_lines}.`}).catch((err) => {internal_error(err); return});
             return;
-        } else if (size <= 0) {
-            msg.channel.send({content: `Cannot be negative or 0, using standard amount of lines (${defaultSize}):`}).catch((err) => {internal_error(err); return});
+        } else if (size < 1) {
+            msg.channel.send({content: `Error: minimum numbers of lines are 1.`}).catch((err) => {internal_error(err); return});
             return;
         }
 
         if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
-            get_logs(server, size, msg, internal_error)
-                .catch((err) => { internal_error(err); return })
-        } else {
-            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp chats ${module.exports.usage}\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`chatlog look up by ${msg.author.username} incorrect server number`);
-            return;
+            console.log(`Info: Command - Chat Log server is ${server}.`);
+            get_logs(server, size, msg, internal_error).catch((err) => {internal_error(err); return});
         }
     },
 };
