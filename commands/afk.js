@@ -10,18 +10,19 @@ module.exports = {
     usage: `<#>`,
     async execute(msg, args, rcons, internal_error) {
         const server = Math.floor(Number(args[0]));
-        let extra = args.slice(1).join(" "); // cant have any of this here for afk
-        //send afk chat bot
+        //send afk command
         let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`;
 
         // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
         if (args.length > 1) {
-            msg.channel.send(`Please remove "${extra}". Correct usage: \`.exp afk <Server#>\``)
-                .catch((err) => { internal_error(err); return })
+            msg.channel.send(`Please remove "${args.slice(1).join(" ")}". Correct usage: \`.exp afk <Server#>\``)
+                .catch((err) => { internal_error(err); return });
             console.log(`AFK was given too many arguments`);
             return;
         }
-        if (!server) { // Checks to see if the person specified a server number.
+
+        // Checks to see if the person specified a server number.
+        if (!server) {
             msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`')
                 .catch((err) => { internal_error(err); return })
             console.log(`Kick-Did not have server number`);
