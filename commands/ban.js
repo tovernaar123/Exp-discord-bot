@@ -2,12 +2,12 @@ const Discord = require('discord.js');
 
 async function runCommand(server, rcon, msg, username, reason) {
     if(!rcon.connected){
-        await msg.channel.send(`S${server} is not connected.`)
+        await msg.channel.send({content: `S${server} is not connected.`})
         return;
     }
 
     await rcon.send(`/ban ${username} ${reason}`);
-    await msg.channel.send(`User **${username}** has been Banned for *${reason}*, check with someone on S${server} to be sure `);
+    await msg.channel.send({content: `User **${username}** has been Banned for *${reason}*, check with someone on S${server} to be sure `});
     
     const Embed = Discord.MessageEmbed();
     Embed.addField('Ban', `A player has been Banned`, false);
@@ -45,7 +45,7 @@ module.exports = {
         
         if (server < 1 || server > 8 || isNaN(server) || server == '') {
             channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
-            console.log(`Error: Command - Ban did not have a proper range included.`);
+            console.log(`Info: Command - Ban did not have a proper range included.`);
             server = 0;
             return;
         }
@@ -55,18 +55,18 @@ module.exports = {
         
         if (!username) { 
             msg.channel.send({content: `Username is required to ban. Correct usage: \`.exp ban<#> <username> <reason>\``});
-            console.log(`Error: Command - Ban did not have username supplied.`);
+            console.log(`Info: Command - Ban did not have username supplied.`);
             return;
         }
 
         if (!reason) {
             msg.channel.send({content: `Reason is required to ban. Correct usage: \`.exp ban<#> <username> <reason>\``});
-            console.log(`Error: Command - Ban did not have reason supplied.`);
+            console.log(`Info: Command - Ban did not have reason supplied.`);
             return;
         }
 
         if (server < 9 && server > 0) {
-            console.log(`Info: Command - Ban server is ${server}.`);
+            console.log(`Info: Command - User ${username} banned on eu-${server} with reason ${reason}.`);
             runCommand(server, rcons[server], msg, username, reason).catch((err) => {internal_error(err); return});
         }
     },
