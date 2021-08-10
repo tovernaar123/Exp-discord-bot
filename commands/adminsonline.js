@@ -86,32 +86,23 @@ module.exports = {
             server =  Number(server.replace('/server/i', '').replace('/s/i', '')) || server;
         } 
         
-        if (server < 1 || server > 8) {
-            channel.send({content: `Error: Lookup out of range.`});
+        if (server < 1 || server > 8 || isNaN(server)) {
+            channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
+            console.log(`Error: Command - Admin Online did not have a proper range included.`);
             server = -1;
-        }
-
-        // Checks to see if the person specified a server number
-        if (!server) {
-            msg.channel.send({content: `Please pick a server. Just the number - ie S1 would be \`1\` (Currently 1-8). Correct usage is \`ao <Server#>\``})
-                .catch((err) => {internal_error(err); return});
-            console.log(`AO Check does not have server number`);
             return;
         }
 
         if (args.length > 1) {
-            msg.channel.send({content: `No reasons (or extra arguments) needed - Please remove "${args.slice(1).join(" ")}". Correct usage: \`ao <Server#>\``})
-                .catch((err) => {internal_error(err); return});
-            console.log(`AO was given too many arguments`);
+            msg.channel.send({content: `No extra arguments needed - Please remove "${args.slice(1).join(" ")}". Correct usage: \`ao <Server#>\``}).catch((err) => {internal_error(err); return});
+            console.log(`Error: Command - Admin Online was given too many arguments`);
         }
 
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
-            runCommand(server, rcons[server], msg)
-                .catch((err) => {internal_error(err); return});
+            runCommand(server, rcons[server], msg).catch((err) => {internal_error(err); return});
         } else if (server === 'all') {
-            all_servers(rcons, msg)
-                .catch((err) => {internal_error(err); return});
+            all_servers(rcons, msg).catch((err) => {internal_error(err); return});
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
             msg.reply({content: `Please pick a server first just a number (1-8).  Correct usage is \` ao <server#>\``})
