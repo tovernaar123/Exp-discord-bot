@@ -1,15 +1,16 @@
-
-
 require('dotenv').config()
 const fs = require('fs');
-const { rcon_connect } = require('./rcon_auto_connect.js');
+const {rcon_connect} = require('./rcon_auto_connect.js');
 const Discord = require('discord.js');
-const client = new Discord.Client();
-const baseport = 34228;
-const prefix = `.exp`
+const {Client, Intents} = require('discord.js');
+const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
+
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 let rcons = {};
-//global for all commands to use this object
+const baseport = 34228;
+const prefix = `.exp`
+
+// Dev
 /*
 role = {
     staff: "762264452611440653",
@@ -18,7 +19,8 @@ role = {
     board: "765920803006054431"
 }
 */
-//prod server
+
+// Production
 role = {
     staff: "482924291084779532",
     admin: "290940523844468738",
@@ -27,18 +29,17 @@ role = {
     sadmin: "446066482007244821"
 }
 
-
 //array for all ofline servers
-let offline_servers = [2, 7, 6, 8]
+let offline_servers = [2, 6, 7, 8]
 
 //standard embed settings like color and footer
-let real_discord_embed = Discord.MessageEmbed
+let real_discord_embed = Discord.MessageEmbed;
 Discord.MessageEmbed = function () {
-    let discord_embed = new real_discord_embed()
-    discord_embed.setTimestamp()
-    discord_embed.setFooter(client.user.username, client.user.avatarURL())
-    discord_embed.setColor('53380')
-    return discord_embed
+    let discord_embed = new real_discord_embed();
+    discord_embed.setTimestamp();
+    discord_embed.setFooter(client.user.username, client.user.avatarURL());
+    discord_embed.setColor('53380');
+    return discord_embed;
 }
 
 async function start() {
@@ -60,37 +61,32 @@ async function start() {
         }
 
         //port starts at baseport 34228 and its it server num so s1 is 34229 etc.
-        let port_to_use = baseport + i
+        let port_to_use = baseport + i;
 
         //Use the auto rcon connect
-        rcon = await rcon_connect(port_to_use, i)
+        rcon = await rcon_connect(port_to_use, i);
 
         //add to the list
-        rcons[i] = rcon
+        rcons[i] = rcon;
     }
+
     //start listing for commands
     client.login(process.env.DISCORD_TOKEN);
 }
 
-start().catch((err) => {
-    console.log(err)
-});
-
+start().catch((err) => {console.log(err)});
 
 client.on("ready", () => {
-    let date_string = new Date().toISOString().
-        replace(/T/, ' ').      // replace T with a space
-        replace(/\..+/, '')     // delete the dot and everything after
-    console.log(`${date_string}: I am ready!`)
-    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-
-    
-    //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
+    // replace T with a space
+    // delete the dot and everything after
+    let date_string = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    console.log(`${date_string}: I am ready!`);
+    // Bot Spam Channel for ready message. 
+    // exp "368812365594230788"
+    // dev "764881627893334047"
+    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}).`);
+    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}).`);
 });
-
-
-
 
 client.on("messageCreate", async msg => {
     const guild = msg.guild;
@@ -144,27 +140,26 @@ client.on("messageCreate", async msg => {
 
         if (!allowed) {
             console.log(`Info: User is not authorized to use the command.`);
-            msg.channel.send({content: `You do not have ${role.name} permission to run the command.`});
+            msg.channel.send({content: `You do not have ${role.name} or above permission to run the command.`});
             return;
             }
         };
-    
 
     // If command requires an argument, decline to run if none is provided. Request arguments in the main export of the command file. 
     if (command.args && !args.length) {
-        let reply = `You didn't provide any arguments, ${msg.author}!`;
+        let reply = `You didn't provide enough arguments, ${msg.author.displayName}!`;
 
         if (command.usage) {
-            reply += `\nThe proper usage would be: \`${prefix} ${command.name} ${command.usage}\``;
+            reply += `\nCorrect usage: \`${prefix} ${command.name} ${command.usage}\``;
         }
-        return msg.channel.send(reply);
+
+        return msg.channel.send({content: reply});
     }
 
     try {
-        command.execute(msg, args, rcons, internal_error)
-            .catch((err) => { internal_error(err); return })
+        command.execute(msg, args, rcons, internal_error).catch((err) => {internal_error(err); return});
     } catch (error) {
         console.log(error);
-        msg.reply(`there was an error trying to execute that command!`);
+        msg.reply({content: `An error has occurred when executing the command.`});
     }
 })
