@@ -19,14 +19,14 @@ module.exports = {
 
         if (server < 1 || server > 8 || isNaN(server)) {
             channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
-            console.log(`Error: Command - Admin Online did not have a proper range included.`);
+            console.log(`Info: Command - Admin Online did not have a proper range included.`);
             server = 0;
             return;
         }
 
         if (args.length > 1) {
             msg.channel.send({content: `No extra arguments needed. Correct usage: \`.exp afk <Server#>\``}).catch((err) => {internal_error(err); return});
-            console.log(`Error: Command - AFK was given too many arguments.`);
+            console.log(`Info: Command - AFK was given too many arguments.`);
             return;
         }
 
@@ -39,7 +39,7 @@ module.exports = {
             try {
                 if (!rcon.connected) {
                     const Embed = Discord.MessageEmbed();
-                    Embed.addField(`S${server} is not connected to the bot`, `S${server} offline`, false);
+                    Embed.addField(`S${server} is not connected`, `S${server} offline`, false);
                     await msg.channel.send({embeds: [Embed]});
                     return;
                 }
