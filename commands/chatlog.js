@@ -81,6 +81,8 @@ module.exports = {
     usage: ` <server#> <amount of lines>`,
     async execute(msg, args, _, internal_error) {
         let server = args[0] || 0;
+        let defaultSize = 10;
+        let sizeLimit = 50;
 
         if (isNaN(server)) {
             // Server is word
@@ -88,7 +90,7 @@ module.exports = {
         } 
 
         if (server < 1 || server > 8 || isNaN(server)) {
-            channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
+            channel.send({content: `Error: Server lookup out of range.`}).catch((err) => {internal_error(err); return});
             console.log(`Error: Command - Chat Log did not have a proper range included.`);
             server = 0;
             return;
@@ -99,15 +101,6 @@ module.exports = {
         if (isNaN(size)) {
             msg.reply({content: `How many lines is needed? (max 50)`}).catch((err) => {internal_error(err); return});
             console.log(`Info: Command - Chat Log did not have a proper range included.`);
-            return;
-        }
-
-        let sizeLimit = 50;
-        let defaultSize = 10;
-
-        if (!server) {
-            msg.channel.send('Please pick a server first. Just the number (1-8)')
-                .catch((err) => { internal_error(err); return });
             return;
         }
 
