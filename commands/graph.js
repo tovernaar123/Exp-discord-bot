@@ -79,7 +79,7 @@ module.exports = {
                 console.log({content: `Error when saving graph image.`});
             }
     
-            const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
             sleep(500).then(() => {
                 try {
