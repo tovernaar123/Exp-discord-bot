@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 module.exports = {
     name: 'afk',
     aka: ['whoisafk', 'afkstreak', 'alwaysafk'],
-    description: 'how many players are online?',
+    description: 'Get numbers of players afk (Mod+)',
     guildOnly: true,
     args: true,
     required_role: role.staff,
