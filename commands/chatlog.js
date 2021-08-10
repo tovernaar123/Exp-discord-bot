@@ -11,47 +11,45 @@ function parse_log(log) {
     return chat.join('');
 }
 
-
 const readline = require('readline');
 const fs = require('fs');
+
 function getLines(server) {
     return new Promise((resolve, reject) => {
-        let lines = []
+        let lines = [];
 
-        const rl = readline.createInterface({
-            input:fs.createReadStream(`/home/factorio/servers/eu-0${server}/console.log`),
-        })
+        const rl = readline.createInterface({input:fs.createReadStream(`/home/factorio/servers/eu-0${server}/console.log`),});
 
         rl.on('line', line => {
-            lines.push(line)
+            lines.push(line);
+
             if (line.startsWith('=')) {
-                lines = []
+                lines = [];
             }
         })
 
-        rl.on('close', () => {
-            resolve(lines)
-        })
+        rl.on('close', () => {resolve(lines);});
 
     })
 }
-
-
 
 async function get_logs(server, size, msg) {
     let lines = await getLines(server);
     lines = lines.join('\n');
     lines = lines.replace(/\[special-item=.*?\]/g, '<blueprint>');
     lines = parse_log(lines.replace(/```/g, ',,,'));
-    lines = lines.split('\n')
+    lines = lines.split('\n');
     lines = lines.slice(-1 * size);
 
     //Split on enters and limit size per line
-    let final_lines = []
+    let final_lines = [];
     let current_msg = "";
+
     for (let i = 0; i < lines.length; i++) {
-        let line = lines[i]
-        if (line.length > 500) { //max limit of 500 chars per line
+        let line = lines[i];
+
+        // maximum limit of 500 characters per line
+        if (line.length > 500) { 
             line = line.replace(/(.*?\[.*?\] .*?:).*/, '$1 <message to long>');
         }
 
@@ -62,6 +60,7 @@ async function get_logs(server, size, msg) {
             current_msg += line + '\n';
         }
     }
+
     //push the final current_msg
     final_lines.push(current_msg);
 
@@ -74,7 +73,7 @@ async function get_logs(server, size, msg) {
 module.exports = {
     name: 'chatlog',
     aka: ['chat', 'chats', 'log-chat'],
-    description: 'get previous chatlog (last 10 lines) (Board+ command)',
+    description: 'Get previous chatlog(Board+)',
     guildOnly: true,
     args: true,
     helpLevel: 'staff',
