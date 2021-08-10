@@ -1,21 +1,24 @@
-
 const Discord = require('discord.js');
+
 async function runCommand(server, rcon, msg, toBan, reason) {
     if(!rcon.connected){
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
+
     await rcon.send(`/ban ${toBan} ${reason}`);
-    await msg.channel.send(`User **${toBan}** has been Baned for *${reason}*, check with someone on S${server} to be sure `);
-    const Embed = Discord.MessageEmbed()
-    Embed.addField('Ban', `A player has been Baned`, false);
-    Embed.addField(`Server Details`, `server: S${server}`, false);
+    await msg.channel.send(`User **${toBan}** has been Banned for *${reason}*, check with someone on S${server} to be sure `);
+    const Embed = Discord.MessageEmbed();
+    Embed.addField('Ban', `A player has been Banned`, false);
+    Embed.addField(`Server Details`, `server: eu-${server}`, false);
     Embed.addField(`Player`, `${toBan}`, true);
-    Embed.addField(`By`, `${msg.author.username}`, true);
+    Embed.addField(`By`, `${msg.author.displayName}`, true);
     Embed.addField(`Reason`, `${reason}`, true);
     Embed.setColor("0xb40e0e");
-    let reportChan = msg.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    await reportChan.send(Embed);
+    // Reports channel is "368812365594230788" for exp 
+    // Reports Channel is "764881627893334047" for test server
+    let report_channel = msg.guild.channels.cache.get('368812365594230788');
+    await report_channel.send({embeds: [Embed]});
 }
 
 
@@ -25,12 +28,25 @@ module.exports = {
     description: 'Ban any user (Admin/Mod only command)',
     guildOnly: true,
     args: true,
-    helpLevel: 'role.staff', //helplevel must be in quotes to work
+    // help level must be in quotes to work
+    helpLevel: 'role.staff',
     required_role: role.staff,
     usage: ` <#server> <username> <reason>`,
     async execute(msg, args, rcons, internal_error) {
-        const author = msg.author.username; //find author
-        const server = Math.floor(Number(args[0]));
+        const author = msg.author.displayName;
+        let server = args[0] || '';
+
+        if (isNaN(server)) {
+            // Server is word
+            server =  Number(server.replace('/server/i', '').replace('/s/i', '')) || server;
+        } 
+        
+        if (server < 1 || server > 8 || isNaN(server)) {
+            channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
+            console.log(`Error: Command - Ban did not have a proper range included.`);
+            server = -1;
+            return;
+        }
 
         let reason = args.slice(2).join(" ");
         let toBan = args[1];
