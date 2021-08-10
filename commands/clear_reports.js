@@ -1,27 +1,27 @@
-
 const Discord = require('discord.js');
+
 async function runCommand(server, rcon, msg, toClear, reason) {
     if(!rcon.connected){
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
+
     let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${toClear}", "${msg.member.displayName}")`)
     await msg.channel.send(`*Please make sure you have the correct username and a report was issued in #reports.* Server replies complete even if user does not exist. Server replied: ${res} By: ${msg.member.displayName} becasue: *${reason}*`);
     console.log(`A user tried to Clear ${toClear}'s reports... \n    Server replied: ${res}    By: ${msg.member.displayName}/${msg.member.id} \n    Becasue: *${reason}*`);
 }
 
-
 module.exports = {
     name: 'clear-reports',
     aka: ['clearreports','cr','clear_reports','clear-report'],
-    description: 'Clear reports on ingame users (Admin/Mod only command)',
+    description: 'Clear reports on user (Mod+)',
     guildOnly: true,
     args: true,
     helpLevel: 'role.staff',
     required_role: role.staff,
     usage: ` <username> <reason>`,
     async execute(msg, args, rcons, internal_error) {
-        const author = msg.author.displayName; //find author
+        const author = msg.author.displayName;
         const server = Math.floor(Number(args[0]));
 
         let reason = args.slice(2).join(" ");
