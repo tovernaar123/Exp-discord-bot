@@ -81,8 +81,7 @@ module.exports = {
     usage: ` <server#> <amount of lines>`,
     async execute(msg, args, _, internal_error) {
         let server = args[0] || 0;
-        let defaultSize = 10;
-        let sizeLimit = 50;
+        let max_lines = 50;
 
         if (isNaN(server)) {
             // Server is word
@@ -98,24 +97,18 @@ module.exports = {
 
         let size = Math.floor(Number(args[1])) || '1';
 
-        if (isNaN(size)) {
+        if (isNaN(size) || !size) {
             msg.reply({content: `How many lines is needed? (max 50)`}).catch((err) => {internal_error(err); return});
             console.log(`Info: Command - Chat Log did not have a proper range included.`);
             return;
         }
 
-        if (!size) {
-            size = defaultSize;
-            msg.channel.send(`Using standard amount of lines (${defaultSize}):`)
-                .catch((err) => { internal_error(err); return });
-        } else if (size > sizeLimit) {
-            size = defaultSize;
-            msg.channel.send(`Cannot get more than ${sizeLimit} lines, will get ${defaultSize} instead`)
-                .catch((err) => { internal_error(err); return });
+        if (size > max_lines) {
+            msg.channel.send({content: `Error: maximum numbers of lines are ${max_lines}.`}).catch((err) => {internal_error(err); return});
+            return;
         } else if (size <= 0) {
-            size = defaultSize;
-            msg.channel.send(`Cannot be negative or 0, using standard amount of lines (${defaultSize}):`)
-                .catch((err) => { internal_error(err); return });
+            msg.channel.send({content: `Cannot be negative or 0, using standard amount of lines (${defaultSize}):`}).catch((err) => {internal_error(err); return});
+            return;
         }
 
         if (server < 9 && server > 0) {
