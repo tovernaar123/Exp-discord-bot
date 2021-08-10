@@ -44,13 +44,13 @@ module.exports = {
             console.log(`Info: Command - Clear Reports did not have username supplied.`);
             return;
         }
-
-        if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
-            msg.channel.send(`Please put a reason for the report chan. \`<#> <username> <reason>\``)
-            .catch((err) => { internal_error(err); return });
-            console.log(`Clear Reports -Did not have reason`);
+        
+        if (!reason) {
+            msg.channel.send({content: `Reason is required to ban. Correct usage: \`.exp ban<#> <username> <reason>\``});
+            console.log(`Info: Command - Ban did not have reason supplied.`);
             return;
         }
+
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
             runCommand(server, rcons[server], msg, username, reason)
