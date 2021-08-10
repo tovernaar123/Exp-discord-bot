@@ -16,7 +16,7 @@ module.exports = {
         // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
         if (args.length > 1) {
             msg.channel.send(`No extra arguments needed. Correct usage: \`.exp afk <Server#>\``).catch((err) => {internal_error(err); return});
-            console.log(`AFK was given too many arguments`);
+            console.log(`Error: Command - AFK was given too many arguments.`);
             return;
         }
 
