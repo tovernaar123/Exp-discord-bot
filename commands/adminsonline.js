@@ -21,19 +21,21 @@ async function runCommand(server, rcon, msg) {
         return response;
     }
 
-    // If Responses is blank (not normal ao) then runs function called respNone found below.
+    // If no response
     if (!response) {
-        await msg.channel.send({content: `AO - There was no response from the server, this is not normal for this command please ask an admin to check the logs.`});
-        console.log(`Rcon: There was no response (Admins Online), this is not normal for this command please ask an admin to check the logs.`);
+        await msg.channel.send({content: `There was no response from the server, contact an admin to check the logs.`});
+        console.log(`Error: Command - Admin Online did not recieved response from the server, check the logs for details.`);
     };
 
-    // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message 
+    // If repsonse by rcon / factorio exists than runs function "resp" in this case prints the rcon response
+    // instead of sucess / fail message
+
     if (response) {
         const Embed = Discord.MessageEmbed();
-        Embed.addField('Online Admins', `request by ${msg.author.username} \n \u200B`, false);
+        Embed.addField('Online Admins', `request by ${msg.author.displayName} \n \u200B`, false);
         Embed.addField(`S${server}`, response, true);
         await msg.channel.send({embeds: [Embed]});
-        console.log(`S${server} checked admins online: ${response}`);
+        console.log(`Info: Command - Admin Online checked admins online for S${server}: ${response}`);
     }
 }
 
@@ -45,7 +47,7 @@ async function runCommand(server, rcon, msg) {
 */
 async function all_servers(rcons, msg) {
     const Embed = Discord.MessageEmbed();
-    Embed.addField('Online Admins', `request by ${msg.author.displayName}`, false);
+    Embed.addField('Online Admins', `requested by ${msg.author.displayName}`, false);
 
     //adds fields for every server
     let amount_of_fields = 0;
