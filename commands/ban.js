@@ -45,7 +45,7 @@ module.exports = {
         
         if (server < 1 || server > 8 || isNaN(server) || server == '') {
             channel.send({content: `Error: Server lookup out of range.`}).catch((err) => {internal_error(err); return});
-            console.log(`Info: Command - Ban did not have a proper range included.`);
+            console.log(`Info: Command - Ban did not have a proper server range included.`);
             server = 0;
             return;
         }
