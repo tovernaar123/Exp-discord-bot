@@ -10,10 +10,8 @@ module.exports = {
     args: true,
     usage: `<#> <username> <reason>`,
     async execute(msg, args, _, internal_error) {
-        // const author = msg.member.displayName;
-        // let server = args[0].replace(/server|s/i, '');
-        // server = Number(server) || server;
         let channel = msg.channel;
+        const author = msg.member.displayName;
         let type = args[0] || 55;
         type = type.toString().toLowerCase();
 
@@ -67,6 +65,11 @@ module.exports = {
                 (async () => {
                     const browser = await puppeteer.launch();
                     const page = await browser.newPage();
+                    await page.setViewport({
+                        width: 1000,
+                        height: 300,
+                        deviceScaleFactor: 1,
+                    });
                     await page.goto(url);
                     await page.screenshot({path: './graph.png'});
                     await browser.close();
@@ -76,12 +79,16 @@ module.exports = {
                 console.log({content: `Error when saving graph image.`});
             }
     
-            try {
-                channel.send({files: ['./graph.png']});
-            } catch (e) {
-                channel.send({content: `Error when sending image.`});
-                console.log(`Error when sending image.`);
-            }
+            const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
+
+            sleep(500).then(() => {
+                try {
+                    channel.send({files: ['./graph.png']});
+                } catch (e) {
+                    channel.send({content: `Error when sending image.`});
+                    console.log(`Error when sending image.`);
+                }
+            });
         }
     },
 };
