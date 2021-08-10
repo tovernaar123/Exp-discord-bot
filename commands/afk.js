@@ -25,23 +25,13 @@ module.exports = {
         }
 
         if (args.length > 1) {
-            msg.channel.send(`No extra arguments needed. Correct usage: \`.exp afk <Server#>\``).catch((err) => {internal_error(err); return});
+            msg.channel.send({content: `No extra arguments needed. Correct usage: \`.exp afk <Server#>\``}).catch((err) => {internal_error(err); return});
             console.log(`Error: Command - AFK was given too many arguments.`);
             return;
         }
 
         //send afk command
         let rconToSend = `/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))`;
-
-        if (server < 9 && server > 0) {
-            console.log(`Info: Command - AFK server is ${server}.`);
-            runCommand(server, rcons[server], msg, internal_error).catch((err) => {internal_error(err); return});
-        } else {
-            // If a person DID give a server number but did NOT give the correct one it will return without running
-            // Is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.reply(`Please pick a server first just a number (1-8).  Correct usage is \`.exp afk <server#>\``).catch((err) => {internal_error(err); return});
-            console.log(`players online by ${msg.author.username} incorrect server number`);
-        }
 
         async function runCommand(server, rcon, msg, internal_error) {
             let json_data;
@@ -50,7 +40,7 @@ module.exports = {
                 if (!rcon.connected) {
                     const Embed = Discord.MessageEmbed();
                     Embed.addField(`S${server} is not connected to the bot`, `S${server} offline`, false);
-                    await msg.channel.send(Embed);
+                    await msg.channel.send({embeds: [Embed]});
                     return;
                 }
 
@@ -60,9 +50,9 @@ module.exports = {
                     json_data = JSON.parse(responses);
                 } else {
                     const Embed = Discord.MessageEmbed();
-                    Embed.addField(`AFK players S${server}`, `request by ${msg.author.username}`, false);
+                    Embed.addField(`S${server} AFK players`, `requested by ${author}`, false);
                     Embed.addField(`No players online`, `\u200B`, false);
-                    await msg.channel.send(Embed);
+                    await msg.channel.send({embeds: [Embed]});
                 }
 
             } catch (err) {
@@ -71,20 +61,21 @@ module.exports = {
 
             // If Responses is blank (not normal).
             if (!json_data) {
-                await msg.channel.send(`There was no response from the server, this is not normal for this command please ask an admin to check the logs.`);
-                console.log(`Rcon: There was no response from the server, this is not normal for this command please ask an admin to check the logs.`);
+                await msg.channel.send({content: `There was no response from the server, contact an admin to check the logs.`});
+                console.log(`Error: Command - AFK did not recieved response from the server, check the logs for details.`);
                 return;
             }
 
-            // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
+            // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response
+            // instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
             if (json_data) {
                 const Embed = Discord.MessageEmbed();
                 let length = Object.keys(json_data).length;
-                if (length === 0 ) {
-                    Embed.addField(`AFK players S${server}`, `request by ${msg.author.username}`, false);
-                    Embed.addField(`No players online`, `\u200B`, false);
+                if (length === 0) {
+                    Embed.addField(`S${server} AFK players`, `requested by ${author}`, false);
+                    Embed.addField(`No player online`, `\u200B`, false);
                 } else {
-                    Embed.addField(`AFK players S${server}`, `request by ${msg.author.username} \n \u200B`, false);
+                    Embed.addField(`S${server} AFK players`, `requested by ${author} \n \u200B`, false);
                 }
 
                 for (let name in json_data) {
@@ -93,16 +84,21 @@ module.exports = {
                     let minutes = Math.floor(time / 60) - (hours * 60);
                     let seconds = Math.floor(time - ((hours * 3600) + (minutes * 60)));
 
-                    if (hours > 0 ) {
-                        Embed.addField(`${name}:`, `${hours}h, ${minutes}m and ${seconds}s`, false);
+                    if (hours > 0) {
+                        Embed.addField(`${name}:`, `${hours}h ${minutes}m ${seconds}s`, false);
                     } else {
-                        Embed.addField(`${name}:`, `${minutes}m and ${seconds}s`, false);
+                        Embed.addField(`${name}:`, `${minutes}m ${seconds}s`, false);
                     }
                 }
 
-                await msg.channel.send(Embed);
+                await msg.channel.send({embeds: [Embed]});
             }
 
+        }
+
+        if (server < 9 && server > 0) {
+            console.log(`Info: Command - AFK server is ${server}.`);
+            runCommand(server, rcons[server], msg, internal_error).catch((err) => {internal_error(err); return});
         }
     },
 };
