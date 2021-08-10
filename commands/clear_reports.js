@@ -44,10 +44,10 @@ module.exports = {
             console.log(`Info: Command - Clear Reports did not have username supplied.`);
             return;
         }
-        
+
         if (!reason) {
             msg.channel.send({content: `Reason is required to ban. Correct usage: \`.exp ban<#> <username> <reason>\``});
-            console.log(`Info: Command - Ban did not have reason supplied.`);
+            console.log(`Info: Command - Clear Reports did not have reason supplied.`);
             return;
         }
 
