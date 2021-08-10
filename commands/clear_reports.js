@@ -1,14 +1,14 @@
 const Discord = require('discord.js');
 
-async function runCommand(server, rcon, msg, toClear, reason) {
+async function runCommand(server, rcon, msg, username, reason) {
     if(!rcon.connected){
         await msg.channel.send(`S${server} is not connected the bot.`)
         return;
     }
 
-    let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${toClear}", "${msg.member.displayName}")`)
+    let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${username}", "${msg.member.displayName}")`)
     await msg.channel.send(`*Please make sure you have the correct username and a report was issued in #reports.* Server replies complete even if user does not exist. Server replied: ${res} By: ${msg.member.displayName} becasue: *${reason}*`);
-    console.log(`A user tried to Clear ${toClear}'s reports... \n    Server replied: ${res}    By: ${msg.member.displayName}/${msg.member.id} \n    Becasue: *${reason}*`);
+    console.log(`A user tried to Clear ${username}'s reports... \n    Server replied: ${res}    By: ${msg.member.displayName}/${msg.member.id} \n    Becasue: *${reason}*`);
 }
 
 module.exports = {
@@ -19,24 +19,30 @@ module.exports = {
     args: true,
     helpLevel: 'role.staff',
     required_role: role.staff,
-    usage: ` <username> <reason>`,
+    usage: `<server#> <username> <reason>`,
     async execute(msg, args, rcons, internal_error) {
         const author = msg.author.displayName;
-        const server = Math.floor(Number(args[0]));
+        let server = args[0] || 0;
 
-        let reason = args.slice(2).join(" ");
         let toClear = args[1];
+        let reason = args.slice(2).join(" ");
+        
+        if (isNaN(server)) {
+            // Server is word
+            server =  Number(server.replace('/server/i', '').replace('/s/i', '')) || server;
+        } 
 
-        if (!server) { // Checks to see if the person specified a server number
-            msg.channel.send('Please pick a server first (**just the number 1-8**). \`<Server#> <username> <reason>\`')
-            .catch((err) => { internal_error(err); return });
-            console.log(`Clear Reports- Did not have server number`);
+        if (server < 1 || server > 8 || isNaN(server)) {
+            channel.send({content: `Error: Server lookup out of range.`}).catch((err) => {internal_error(err); return});
+            console.log(`Error: Command - Clear RepCorts did not have a proper server range included.`);
+            server = 0;
             return;
         }
+
         if (!toClear) { // if no 2nd argument returns without running with error
             msg.channel.send(`You need to tell us who you would like to clear for us to be able to clear-all \`<#> <username> <reason>\``)
-            .catch((err) => { internal_error(err); return });
-            console.log(`Clear Reports - Did not have name`);
+            .catch((err) => {internal_error(err); return});
+            console.log(`lear RepCorts - Did not have name`);
             return;
         }
         if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
