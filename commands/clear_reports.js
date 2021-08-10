@@ -24,7 +24,7 @@ module.exports = {
         const author = msg.author.displayName;
         let server = args[0] || 0;
 
-        let toClear = args[1];
+        let username = args[1];
         let reason = args.slice(2).join(" ");
         
         if (isNaN(server)) {
@@ -39,12 +39,12 @@ module.exports = {
             return;
         }
 
-        if (!toClear) { // if no 2nd argument returns without running with error
-            msg.channel.send(`You need to tell us who you would like to clear for us to be able to clear-all \`<#> <username> <reason>\``)
-            .catch((err) => {internal_error(err); return});
-            console.log(`lear RepCorts - Did not have name`);
+        if (!username) { 
+            msg.channel.send({content: `Username is required to ban. Correct usage: \`.exp ban<#> <username> <reason>\``});
+            console.log(`Info: Command - Clear Reports did not have username supplied.`);
             return;
         }
+
         if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
             msg.channel.send(`Please put a reason for the report chan. \`<#> <username> <reason>\``)
             .catch((err) => { internal_error(err); return });
@@ -53,7 +53,7 @@ module.exports = {
         }
         if (server < 9 && server > 0) {
             console.log(`Server is ${server}`);
-            runCommand(server, rcons[server], msg, toClear, reason)
+            runCommand(server, rcons[server], msg, username, reason)
                 .catch((err) => { internal_error(err); return })
         } else {
             // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
