@@ -90,7 +90,7 @@ module.exports = {
         if (server < 1 || server > 8 || isNaN(server)) {
             channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
             console.log(`Error: Command - Admin Online did not have a proper range included.`);
-            server = -1;
+            server = 0;
             return;
         }
 
