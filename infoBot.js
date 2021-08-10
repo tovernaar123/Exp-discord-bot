@@ -80,7 +80,7 @@ client.on("ready", () => {
     // replace T with a space
     // delete the dot and everything after
     let date_string = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-    console.log(`${date_string}: I am ready!`);
+    console.log(`${date_string}: Bot is ready.`);
     // Bot Spam Channel for ready message. 
     // exp "368812365594230788"
     // dev "764881627893334047"
