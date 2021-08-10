@@ -10,7 +10,7 @@ module.exports = {
     usage: `<#>`,
     async execute(msg, args, rcons, internal_error) {
         let author = msg.author.displayName;
-        let server = args[0] || 4;
+        let server = args[0] || 0;
 
         if (isNaN(server)) {
             // Server is word
