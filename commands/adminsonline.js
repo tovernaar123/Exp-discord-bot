@@ -95,7 +95,7 @@ module.exports = {
 
         if (args.length > 1) {
             msg.channel.send({content: `No extra arguments needed. Correct usage: \`.exp ao <Server#>\``}).catch((err) => {internal_error(err); return});
-            console.log(`Error: Command - Admin Online was given too many arguments`);
+            console.log(`Error: Command - Admin Online was given too many arguments.`);
         }
 
         if (server < 9 && server > 0) {
