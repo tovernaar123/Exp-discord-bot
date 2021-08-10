@@ -73,7 +73,7 @@ async function all_servers(rcons, msg) {
 module.exports = {
     name: 'ao',
     aka: ['adminonline', 'adminsonline', 'admins'],
-    description: 'how many admins are online? (Mod+)',
+    description: 'Get numbers of admins online (Mod+)',
     guildOnly: true,
     args: true,
     required_role: role.staff,
