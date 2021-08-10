@@ -41,33 +41,30 @@ module.exports = {
             server =  Number(server.replace('/server/i', '').replace('/s/i', '')) || server;
         } 
         
-        if (server < 1 || server > 8 || isNaN(server)) {
+        if (server < 1 || server > 8 || isNaN(server) || server == '') {
             channel.send({content: `Error: Lookup out of range.`}).catch((err) => {internal_error(err); return});
             console.log(`Error: Command - Ban did not have a proper range included.`);
             server = -1;
             return;
         }
 
-        let reason = args.slice(2).join(" ");
         let toBan = args[1];
+        let reason = args.slice(2).join(" ");
+        
+        if (!toBan) { 
+            msg.channel.send({content: `Username is required to ban. Correct usage: \`.exp ban<#> <username> <reason>\``});
+            console.log(`Error: Command - Ban did not have username supplied.`);
+            return;
+        }
 
-        if (!server) { // Checks to see if the person specified a server number
-            msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`');
-            console.log(`Ban-Did not have server number`);
+        if (!reason) {
+            msg.channel.send({content: `Reason is required to ban. Correct usage: \`.exp ban<#> <username> <reason>\``});
+            console.log(`Error: Command - Ban did not have reason supplied.`);
             return;
         }
-        if (!toBan) { // if no 2nd argument returns without running with error
-            msg.channel.send(`You need to tell us who you would like to Ban for us to be able to Ban them. \`<#> <username> <reason>\``);
-            console.log(`Ban-Did not have name`);
-            return;
-        }
-        if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
-            msg.channel.send(`Please put a reason, you can always reBan or reban later with a better one.\`<#> <username> <reason>\``);
-            console.log(`Ban-Did not have reason`);
-            return;
-        }
+
         if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
+            console.log(`Info: Command - Ban server is ${server}.`);
             runCommand(server, rcons[server], msg, toBan, reason)
                 .catch((err) => { internal_error(err); return })
         } else {
