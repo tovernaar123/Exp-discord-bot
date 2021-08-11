@@ -34,7 +34,8 @@ if (typeof process.env.RUN === 'string') {
 //array for all ofline servers
 let offline_servers = [2, 6, 7, 8];
 
-//standard embed settings like color and footer
+// Standard embed settings like color and footer
+/*
 let real_discord_embed = Discord.MessageEmbed;
 Discord.MessageEmbed = function () {
     let discord_embed = new real_discord_embed();
@@ -43,6 +44,7 @@ Discord.MessageEmbed = function () {
     discord_embed.setColor('53380');
     return discord_embed;
 }
+*/
 
 async function start() {
     //instantiate the list of commands 
@@ -101,7 +103,8 @@ client.on("messageCreate", async msg => {
     const guild = msg.guild;
 
     function internal_error(err) {
-        console.log('Error: ' + err);
+        console.log('Error: ');
+        console.log(err);
         msg.channel.send({content: 'Internal error has occurred.'});
     }
 
