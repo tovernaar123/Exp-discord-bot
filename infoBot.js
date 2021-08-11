@@ -58,7 +58,7 @@ async function start() {
     for (let i = 1; i < 9; i++) {
         //if servers is offline dont try and connect to it
         if (offline_servers.includes(i)) {
-            rcons[i] = {"connected": false}
+            rcons[i] = {"connected": false};
             continue;
         }
 
