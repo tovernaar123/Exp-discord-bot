@@ -71,7 +71,7 @@ async function start() {
     }
 
     //start listing for commands
-    client.login(process.env.DISCORD_TOKEN);
+    client.login(process.env.TOKEN);
 }
 
 start().catch((err) => {console.log(err)});
