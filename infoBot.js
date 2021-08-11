@@ -10,24 +10,26 @@ let rcons = {};
 const baseport = 34228;
 const prefix = `.exp`
 
-// Dev
-/*
-role = {
-    staff: "762264452611440653",
-    admin: "764526097768644618",
-    mod: "762260114186305546",
-    board: "765920803006054431"
-};
-*/
-
-// Production
-role = {
-    staff: "482924291084779532",
-    admin: "290940523844468738",
-    mod: "260893080968888321",
-    board: "693500936491892826",
-    sadmin: "446066482007244821"
-};
+if (typeof process.env.RUN === 'string') {
+    if (process.env.RUN.toLowerCase() == 'dev') {
+        // Development
+        role = {
+            board: "765920803006054431",
+            staff: "762264452611440653",
+            mod: "762260114186305546",
+            admin: "764526097768644618"
+        };
+    }
+} else {
+    // Production
+    role = {
+        board: "693500936491892826",
+        staff: "482924291084779532",
+        mod: "260893080968888321",
+        admin: "290940523844468738",
+        sadmin: "446066482007244821"
+    };
+}
 
 //array for all ofline servers
 let offline_servers = [2, 6, 7, 8];
@@ -71,7 +73,7 @@ async function start() {
     }
 
     //start listing for commands
-    client.login(process.env.TOKEN);
+    client.login(process.env.DISCORD_TOKEN);
 }
 
 start().catch((err) => {console.log(err)});
@@ -81,19 +83,26 @@ client.on("ready", () => {
     // delete the dot and everything after
     let date_string = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
     console.log(`${date_string}: Bot is ready.`);
-    // Bot Spam Channel for ready message. 
+
+    // Bot ready message. 
     // exp "368812365594230788"
     // dev "764881627893334047"
-    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}).`);
-    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}).`);
+
+    if (typeof process.env.RUN === 'string') {
+        if (process.env.RUN.toLowerCase() == 'dev') {
+            client.channels.cache.get('764881627893334047').send(`Bot is ready.`);
+        }
+    } else {
+        client.channels.cache.get('368727884451545089').send(`Bot is ready.`);
+    }
 });
 
 client.on("messageCreate", async msg => {
     const guild = msg.guild;
 
     function internal_error(err) {
-        console.log(err);
-        msg.channel.send({content: 'Internal error occurred.'});
+        console.log('Error: ' + err);
+        msg.channel.send({content: 'Internal error has occurred.'});
     }
 
     // Ends message if author is bot
@@ -147,7 +156,7 @@ client.on("messageCreate", async msg => {
 
     // If command requires an argument, decline to run if none is provided. Request arguments in the main export of the command file. 
     if (command.args && !args.length) {
-        let reply = `You didn't provide enough arguments, ${msg.author.displayName}!`;
+        let reply = `You didn't provide enough arguments, ${msg.author.displayName}.`;
 
         if (command.usage) {
             reply += `\nCorrect usage: \`${prefix} ${command.name} ${command.usage}\``;
