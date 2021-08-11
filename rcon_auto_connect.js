@@ -16,7 +16,7 @@ exports.rcon_connect = async function(port, i) {
     });
 
     let Iconnected = false;
-    //Show commands sent and their reply for debugging
+    // Show commands sent and their reply for debugging
     let real_send = client.send;
 
     client.send = function(cmd) {
@@ -32,12 +32,12 @@ exports.rcon_connect = async function(port, i) {
     };
 
     async function connect() {
-        //Workaround for bug in rcon-client
+        // Workaround for bug in rcon-client
         if (client.socket && !client.socket.writable && !client.authenticated) {
             client.socket = null;
         }
 
-        //Atempt to connect to the Factorio server
+        // Attempt to connect to the Factorio server
         await client.connect().then(() => {
             console.log(`Connected to S${i}`);
             Iconnected = true;
@@ -51,7 +51,7 @@ exports.rcon_connect = async function(port, i) {
     }
 
     client.on("end", function() {
-        //Reconnect if a successfull connection was made.
+        // Reconnect if a successfull connection was made.
         if (Iconnected) {
             console.log(`Lost connection with S${i}`);
             console.log("Reconnecting in 30 seconds");
