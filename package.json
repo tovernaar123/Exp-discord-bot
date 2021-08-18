@@ -11,6 +11,9 @@
   "dependencies": {
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
-    "rcon-client": "^4.2.2"
+    "got": "^11.8.2",
+    "puppeteer": "^10.2.0",
+    "rcon-client": "^4.2.2",
+    "request": "^2.88.2"
   }
 }
