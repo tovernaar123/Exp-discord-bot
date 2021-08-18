@@ -159,7 +159,7 @@ function playerdata3command(name, msg) {
     '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Username: ' + lookup + ' </p>',
     '<table style="border-collapse:collapse;width=' + html_table_width_total + 'px;">']
 
-    let result = profile(item);
+    result = profile(item);
     let table_td_style = '<td style="padding:5px;border:1px solid ' + html_table_border_color + ';font-family:' + html_font_family + ';font-size:' + html_font_size + ';text-align:left;color:' + html_font_color + ';'
     let table_td_width = ['width:' + html_table_width[0] + 'px;">', 'width:' + html_table_width[1] + 'px;">'];
 
