@@ -2,116 +2,91 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const request = require('request');
 
-function graph_type_select(type) {
-    switch (type) {
-        case 'load':
-            type = 4;
-            break;
-        case 'memory':
-            type = 7;
-            break;
-        case 'network':
-            type = 9;
-            break;
-        case 'disk':
-            type = 10;
-            break;
-        case 'usage':
-            type = 11;
-            break;
-        case 'cpu_temp':
-            type = 28;
-            break;
-        case 'cpu_freq':
-            type = 42;
-            break;
-        case 'cpu':
-            type = 51;
-            break;
-        case 'player':
-            type = 53;
-            break;
-        case 'ups':
-            type = 54;
-            break;
-        case 'rocket':
-            type = 55;
-            break;
-        default:
-            type = 54;
-    }
-    return type;
+let cooldown = new Set()
+let timeout = 60 * 1000 * 3
+let config = {
+    load: 4,
+    memory: 7,
+    network: 9,
+    disk: 10,
+    usage: 11,
+    cpu_temp: 28,
+    cpu_freq: 42,
+    cpu: 51,
+    player: 54,
+    ups: 55,
+    rocket: 56
+}
+let graph_index_allowed = ["rocket", "player", "ups"];
+
+const download = (url, path, callback) => {
+    request.head(url, (err, res, body) => {
+        request(url).pipe(fs.createWriteStream(path)).on('close', callback);
+    })
 }
 
 module.exports = {
     name: 'graph',
-    // aka: [''],
     description: 'Provide server Info using graph',
     guildOnly: true,
     args: true,
-    usage: `<#> <username> <reason>`,
+    usage: `<Type>`,
     async execute(msg, args, _, internal_error) {
-        // const author = msg.member.displayName;
-        // let server = args[0].replace(/server|s/i, '');
-        // server = Number(server) || server;
         let channel = msg.channel;
-        let msg = [];
+        let id = msg.author.id
         let type = args[0].toLowerCase();
 
-        //board
-        let role_needed = role.board;
+        cooldown.add(id);
+
+        setTimeout(() => {
+            cooldown.delete(id)
+        }, timeout);
+
+        let url = 'https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=' + config[type] + '&width=1000&height=300&tz=UTC';
+        const path = '.cache/graph.png'
+        channel.send("Downloading graph please wait.");
+        
+        try {
+            download(url, path, () => {
+                console.log('Download Complete.');
+                channel.send({ files: ['.cache/graph.png'] }).catch((err) => {
+                    console.error(err)
+                    channel.send(`Error when sending image.`);
+                });
+            });
+        } catch (e) {
+            channel.send(`Error when saving image.`);
+            console.log(`Error when saving graph image.`);
+        }
+
+    },
+    async validator(msg, args, internal_error) {
+
+        let type = args[0].toLowerCase();
+        let id = msg.author.id
+
+        let obj = {}
+        obj.success = false;
+        if (cooldown.has(id)) {
+            obj.error = "Due to the memory need of this command it has a 3 minute cooldown please wait."
+            return obj
+        }
+
+        let role_needed = global.role.board;
         let role = await msg.guild.roles.fetch(role_needed);
         let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0;
-        let graph_index_list = [4, 7, 9, 10, 11, 28, 42, 51, 53, 54, 55];
-        let graph_index_allowed = [53, 54, 55];
 
-        if (type) {
-            if (isNaN(+type)) {
-                // Type is word
-                type = graph_type_select(type)
-            } else {
-                // Type is number
-                if (graph_index_list.indexOf(type) < 0) {
-                    channel.send(`Error: Lookup out of range.`);
-                    type = -1;
-                }
-            }
-            
-            if (!allowedThisCommand) {
-                if (graph_index_allowed.indexOf(type) < 0) {
-                    channel.send(`Error: Unauthorized use of advanced graph usage.`);
-                    type = -1;
-                }
-            }
-        } else {
-            type = 54;
+        if (!config[type]) {
+            if (allowedThisCommand) obj.error = `Please enter one of the following for the type: \n${Object.keys(config).join(', ')} `;
+            else obj.error = `Please enter one of the following for the type: \n${graph_index_allowed.join(', ')} `;
+            return obj;
         }
 
-        if (type >= 0) {
-            const download = (url, path, callback) => {
-                request.head(url, (err, res, body) => {
-                  request(url).pipe(fs.createWriteStream(path)).on('close', callback);
-                })
-            }
-
-            let url = 'https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=' + type + '&width=1000&height=300&tz=UTC';
-            const path = '.cache/graph.png'
-    
-            try {
-                download(url, path, () => {
-                    console.log('Download Complete.');
-                })
-            } catch (e) {
-                channel.send(`Error when saving image.`);
-                console.log(`Error when saving graph image.`);
-            }
-    
-            try {
-                channel.send({files: ['.cache/graph.png']});
-            } catch (e) {
-                channel.send(`Error when sending image.`);
-                console.log(`Error when sending image.`);
-            }
+        if (!(graph_index_allowed.indexOf(type) >  0 || allowedThisCommand)) {
+            obj.error = `You do not have the right role for this graph type`;
+            return obj;
         }
-    },
+        obj.success = true
+        return obj
+    }
 };
