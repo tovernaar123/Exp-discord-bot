@@ -93,7 +93,7 @@ client.on("ready", () => {
 
 
 client.on("message", async msg => {
-
+    
     function internal_error(err) {
         console.log(err)
         msg.channel.send('Internal error in the command. Please contact an admin.')
@@ -119,7 +119,8 @@ client.on("message", async msg => {
     if (!command) return;
 
     // disallows commands in dm's to run as commands in dms if it is set to guild only
-    if (command.guildOnly && msg.channel.type !== 'text') {
+    if (command.guildOnly && msg.channel.type !== 'text') 
+    {
         return msg.reply('Sorry - I can\'t do that in a DM');
     }
 
@@ -136,19 +137,12 @@ client.on("message", async msg => {
         let role = await msg.guild.roles.fetch(req_role)
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
-            console.log(`Unauthorized `);
+        console.log(`Unauthorized `);
             msg.channel.send(`You do not have ${role.name} permission.`);
             return;
-        }
-    } else if (command.validator) {
-        let obj = await command.validator(msg, args, internal_error)
-            .catch((err) => { internal_error(err); return })
-        if (!obj.success) {
-            return msg.channel.send(obj.error)
-                .catch((err) => { internal_error(err); return })
-        }
-    }
-
+            }
+        };
+    
 
     // If command requires an argument, decline to run if none is provided. Request arguments in the main export of the command file. 
     if (command.args && !args.length) {
