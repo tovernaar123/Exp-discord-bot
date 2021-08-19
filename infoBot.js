@@ -30,7 +30,7 @@ role = {
 //
 
 //array for all ofline servers
-let offline_servers = [1, 2, 3, 4, 5, 7, 6, 8]
+let offline_servers = [2, 6, 7, 8]
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed
