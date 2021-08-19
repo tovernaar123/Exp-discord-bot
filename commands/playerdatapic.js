@@ -176,7 +176,7 @@ function playerdata3command(name, msg) {
         html_table.push(result[i+1][1]);
         html_table.push('</td>\n</tr>');
             
-        html_code.push(j.join(''));
+        html_code.push(html_table.join(''));
     }
 
     html_code.push('</table>\n</body>\n</html>');
