@@ -9,7 +9,7 @@ function playerdata3command(name, msg) {
         // nd as nth decimal places
         nd = nd || 0;
     
-        if (x === undefined) {
+        if (x === undefined || isNaN(x)) {
             return 0;
         } else {
             let i = Math.round(Number(x) * 100) / 100;
