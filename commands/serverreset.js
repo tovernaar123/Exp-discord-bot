@@ -51,11 +51,12 @@ module.exports = {
         for (let i = 0; i < reset.length; i++) {
             if (server == reset[i][0] || server == 'all') {
                 // Day Difference
-                let diff = Math.ceil((date_today + time_offset - reset[i][1]) / day_ms) % reset[i][2];
+                let diff = Math.ceil((date_today + time_offset - reset[i][1] - reset[i][3]) / day_ms) % reset[i][2];
 
                 if (diff == 0) {
-                    let min = Math.ceil((date_today % day_ms + time_offset - reset[i][3] * 3600000) / 60000);
-                    
+                    let date_t = new Date();
+                    let min = (reset[i][3] * 60 + (24 - date_t.getHours()) * 60 + (60 - date_t.getMinutes()) - date_t.getTimezoneOffset()) % 1440;
+
                     if (min < 0) { 
                         min = 1440 + min;
                     }
