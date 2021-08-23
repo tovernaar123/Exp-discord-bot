@@ -35,13 +35,13 @@ module.exports = {
         S4: 8
         */
 
-        // [Init Date, Cycle Duration, Reset at hour time]
+        // [Server No, Init Date, Cycle Duration, Reset at hour time]
         // Order:
         // S1, S3, S4
 
-        let reset = [['1', new Date(2021, 6, 23).getTime(), 2, 16], 
-        ['3', new Date(2021, 6, 23).getTime(), 7, 22],
-        ['4', new Date(2021, 6, 19).getTime(), 28, 8]];
+        let reset = [['1', new Date(2021, 7, 20).getTime(), 2, 16], 
+        ['3', new Date(2021, 7, 20).getTime(), 7, 22],
+        ['4', new Date(2021, 7, 16).getTime(), 28, 8]];
         let day_ms = 86400000;
         let time_offset = (new Date()).getTimezoneOffset() * 60000;
         let date_today = Date.now();
@@ -51,7 +51,7 @@ module.exports = {
         for (let i = 0; i < reset.length; i++) {
             if (server == reset[i][0] || server == 'all') {
                 // Day Difference
-                let diff = Math.ceil((date_today + time_offset - reset[i][1] - reset[i][3]) / day_ms) % reset[i][2];
+                let diff = Math.ceil(new Date(date_today - reset[i][1] - reset[i][3] * 3600000 + time_offset).getTime() / day_ms) % reset[i][2];
 
                 if (diff == 0) {
                     let date_t = new Date();
