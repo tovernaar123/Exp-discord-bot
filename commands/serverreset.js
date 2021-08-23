@@ -65,7 +65,7 @@ module.exports = {
                 } else if ((reset[i][2] - diff) == 1) {
                     msg_2.push('S' + reset[i][0] +' resets tomorrow, at ' + reset[i][3] + ':00 UTC');
                 } else {
-                    msg_2.push('S' + reset[i][0] +' resets in ' + (reset[i][2] - diff) + ' day, at ' + reset[i][3] + ':00 UTC');
+                    msg_2.push('S' + reset[i][0] +' resets in ' + (reset[i][2] - diff) + ' days, at ' + reset[i][3] + ':00 UTC');
                 }
             }
         }
