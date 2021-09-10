@@ -155,7 +155,7 @@ function playerdata3command(name, msg) {
     // font-weight:bold
     let html_code = ['<html>\n<head>\n<title></title>\n</head>\n<body style="background-color:' + html_background_color + '"><hr style="height:5px; visibility:hidden;margin:0px;border:0px;">',
     '<h2 style="width:100%;text-align:center;border-bottom:1px solid ' + html_table_border_color + ';line-height:0.1em;margin:10px 0 20px;color:' + html_font_color + '"><span style="background-color:' + html_background_color + ';padding:0 10px;font-family:' + html_font_family + ';">Data</span></h2>',
-    '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Player data requested by: ' + msg.author + ' </p>',
+    '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Player data requested by: ' + msg.member.displayName + ' </p>',
     '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Username: ' + lookup + ' </p>',
     '<table style="border-collapse:collapse;width=' + html_table_width_total + 'px;">']
 
@@ -183,10 +183,8 @@ function playerdata3command(name, msg) {
 
     try {
         (async () => {
-            const browser = await puppeteer.launch({
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            });
-            const page = await browser.newPage()
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
             await page.setViewport({
                 width: html_table_width_total,
                 height: html_body_height,
