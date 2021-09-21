@@ -16,15 +16,21 @@ function playerdata1command(name, msg) {
     
     if (!checkdata) {
         msg.channel.send('Error: Name not found. Check the name or try again later.');
-        console.log(`Name not found`);
+        console.log(`Name '${key1}' not found`);
         return;
     }
-
+    let privacyData = mydata["PlayerData"][key1]["DataSavingPreference"];
+    if (privacyData) {
+        msg.channel.send('Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.');
+        console.log(`Privacy settings for user ${key1} prevent saved stats`);
+        return;
+    }
     // if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc)
     let finaldata = mydata["PlayerData"][key1]["Statistics"];
 
     let channel = msg.channel;
     channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
+    console.log(`${name} json player data printed to ${channel}`);
     return;
 }
 
@@ -33,10 +39,10 @@ module.exports = {
     aka: ['pd1', 'pdj', 'userdatajson', 'oguserdata','pdjson','pdog'],
     description: 'Get stats (datastore info) for any user (Board+) (No formatting, Json output)',
     guildOnly: true,
-    args: false, //true,
-    helpLevel: 'all',
+    args: false, //can have args not needed
+    helpLevel: 'all', // helpLevel places it in the "semi-public" group
     //required_role: role.board,
-    usage: ` <nameToLookup>`,
+    usage: ` <nameToLookup> || <null> (for self lookup)`,
     async execute(msg, args, _, internal_error) {
         
         async function runCommand() {
@@ -46,11 +52,12 @@ module.exports = {
         let name = args[0];
 
         if (name) {
-            if (allowedThisCommand) {
+            if (allowedThisCommand || name === msg.member.displayName) {
                 // If the user is authorized to use the command and supplied a name
                 playerdata1command(name, msg);
             } else {
                 msg.channel.send(`Error: You are not authorized to perform this action.`);
+                console.log(`user ${msg.member.displayName} tried to look up ${name}'s user data - it was not allowed due to lack of permissions`);
             }
         } else {
             // User doesnt need to get authorized for a self lookup

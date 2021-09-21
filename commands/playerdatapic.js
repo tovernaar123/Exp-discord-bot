@@ -126,6 +126,13 @@ function playerdata3command(name, msg) {
         console.log(`Name not found`);
         return;
     }
+    // checks to see if the user looked up has turned off data sync, if so error msg sent in channel and logged to console 
+    let privacyData = mydata["PlayerData"][key1]["DataSavingPreference"];
+    if (privacyData) {
+        msg.channel.send('Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.');
+        console.log(`Privacy settings for user ${key1} prevent saved stats`);
+        return;
+    }
 
     // if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc)
     let finaldata = mydata["PlayerData"][key1]["Statistics"];
@@ -224,16 +231,19 @@ module.exports = {
             let name = args[0];
 
             if (name) {
-                if (allowedThisCommand) {
-                    // If the user is authorized to use the command and supplied a name
+                if (allowedThisCommand || name === msg.member.displayName) {
+                    // If the user is authorized to use the command and supplied a name, or used their own name
                     playerdata3command(name, msg);
+                    console.log(`If No Name Error above: ${name} player data (image) to ${msg.channel}, looked up by ${msg.member.displayName}`);
                 } else {
                     msg.channel.send(`Error: You are not authorized to perform this action.`);
+                    console.log(`User ${msg.member.displayName} tried to look up ${name}'s user data (pdp) - it was not allowed due to lack of permissions`);
                 }
             } else {
                 // User doesnt need to get authorized for a self lookup
                 name = msg.member.displayName;
                 playerdata3command(name, msg);
+                console.log(`User ${msg.member.displayName} looked up their own info in ${msg.channel}`);
             }
         }
         runCommand();
