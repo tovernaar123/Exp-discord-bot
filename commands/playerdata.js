@@ -121,6 +121,12 @@ function playerdata2command(name, msg) {
         console.log(`Name not found`);
         return;
     }
+    let privacyData = mydata["PlayerData"][key1]["DataSavingPreference"];
+        if (privacyData) {
+            msg.channel.send('Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.');
+            console.log(`Privacy settings for user ${key1} prevent saved stats (pd)`);
+            return;
+        }
 
     // if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc)
     let finaldata = mydata["PlayerData"][key1]["Statistics"];
@@ -197,11 +203,12 @@ module.exports = {
             let name = args[0];
 
             if (name) {
-                if (allowedThisCommand) {
-                    // If the user is authorized to use the command and supplied a name
+                if (allowedThisCommand || name === msg.member.displayName) {
+                    // If the user is authorized to use the command and supplied a name or supplies their own name
                     playerdata2command(name, msg);
                 } else {
                     msg.channel.send(`Error: You are not authorized to perform this action.`);
+                    console.log(`user ${msg.member.displayName} tried to look up ${name}'s user data (pd) - it was not allowed due to lack of permissions`);
                 }
             } else {
                 // User doesnt need to get authorized for a self lookup
