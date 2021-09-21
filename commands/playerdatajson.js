@@ -19,7 +19,12 @@ function playerdata1command(name, msg) {
         console.log(`Name not found`);
         return;
     }
-
+    let privacyData = mydata["PlayerData"][key1]["DataSavingPreference"];
+    if (!privacyData) {
+        msg.channel.send('Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.');
+        console.log(`No items Saved`);
+        return;
+    }
     // if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc)
     let finaldata = mydata["PlayerData"][key1]["Statistics"];
 
