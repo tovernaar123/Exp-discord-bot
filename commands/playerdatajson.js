@@ -48,7 +48,10 @@ module.exports = {
                 // If the user is authorized to use the command and supplied a name
                 playerdata1command(name, msg);
             } else {
-                msg.channel.send(`Error: You are not authorized to perform this action.`);
+                // User doesnt need to get authorized for a self lookup
+            name = msg.member.displayName;
+            playerdata1command(name, msg);
+                // msg.channel.send(`Error: You are not authorized to perform this action.`); // removed to allow player to get self data
             }
         } else {
             // User doesnt need to get authorized for a self lookup
