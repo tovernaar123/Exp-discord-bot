@@ -39,10 +39,10 @@ module.exports = {
     aka: ['pd1', 'pdj', 'userdatajson', 'oguserdata','pdjson','pdog'],
     description: 'Get stats (datastore info) for any user (Board+) (No formatting, Json output)',
     guildOnly: true,
-    args: false, //true,
-    helpLevel: 'all',
+    args: false, //can have args not needed
+    helpLevel: 'all', // helpLevel places it in the "semi-public" group
     //required_role: role.board,
-    usage: ` <nameToLookup>`,
+    usage: ` <nameToLookup> || <null> (for self lookup)`,
     async execute(msg, args, _, internal_error) {
         
         async function runCommand() {
@@ -57,6 +57,7 @@ module.exports = {
                 playerdata1command(name, msg);
             } else {
                 msg.channel.send(`Error: You are not authorized to perform this action.`);
+                console.log(`user ${msg.member.displayName} tried to look up ${name}'s user data - it was not allowed due to lack of permissions`);
             }
         } else {
             // User doesnt need to get authorized for a self lookup
