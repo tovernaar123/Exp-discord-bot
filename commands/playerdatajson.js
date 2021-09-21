@@ -38,6 +38,8 @@ module.exports = {
     //required_role: role.board,
     usage: ` <nameToLookup>`,
     async execute(msg, args, _, internal_error) {
+        
+        async function runCommand() {
         //board
         let role_needed = await msg.guild.roles.fetch(role.board);
         let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role_needed) >= 0; 
@@ -48,15 +50,14 @@ module.exports = {
                 // If the user is authorized to use the command and supplied a name
                 playerdata1command(name, msg);
             } else {
-                // User doesnt need to get authorized for a self lookup
-            name = msg.member.displayName;
-            playerdata1command(name, msg);
-                // msg.channel.send(`Error: You are not authorized to perform this action.`); // removed to allow player to get self data
+                msg.channel.send(`Error: You are not authorized to perform this action.`);
             }
         } else {
             // User doesnt need to get authorized for a self lookup
             name = msg.member.displayName;
             playerdata1command(name, msg);
+            }
         }
+        runCommand();
     },
 };
