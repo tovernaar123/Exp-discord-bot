@@ -33,9 +33,9 @@ module.exports = {
     aka: ['pd1', 'pdj', 'userdatajson', 'oguserdata','pdjson','pdog'],
     description: 'Get stats (datastore info) for any user (Board+) (No formatting, Json output)',
     guildOnly: true,
-    args: true,
-    helpLevel: 'board',
-    required_role: role.board,
+    args: false, //true,
+    helpLevel: 'all',
+    //required_role: role.board,
     usage: ` <nameToLookup>`,
     async execute(msg, args, _, internal_error) {
         //board
