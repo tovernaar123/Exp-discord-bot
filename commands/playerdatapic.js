@@ -234,16 +234,16 @@ module.exports = {
                 if (allowedThisCommand || name === msg.member.displayName) {
                     // If the user is authorized to use the command and supplied a name, or used their own name
                     playerdata3command(name, msg);
-                    console.log(`${name} player data (image) printed to ${msg.channel}, looked up by ${msg.member.displayName}`);
+                    console.log(`If No Name Error above: ${name} player data (image) to ${msg.channel}, looked up by ${msg.member.displayName}`);
                 } else {
                     msg.channel.send(`Error: You are not authorized to perform this action.`);
-                    console.log(`user ${msg.member.displayName} tried to look up ${name}'s user data (pdp) - it was not allowed due to lack of permissions`);
+                    console.log(`User ${msg.member.displayName} tried to look up ${name}'s user data (pdp) - it was not allowed due to lack of permissions`);
                 }
             } else {
                 // User doesnt need to get authorized for a self lookup
                 name = msg.member.displayName;
                 playerdata3command(name, msg);
-                console.log(`user ${msg.member.displayName} looked up their own info in ${msg.channel}`);
+                console.log(`User ${msg.member.displayName} looked up their own info in ${msg.channel}`);
             }
         }
         runCommand();
