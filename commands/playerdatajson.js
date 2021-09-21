@@ -1,4 +1,5 @@
 //player data storage access
+const fs = require('fs');
 
 function playerdata1command(name, msg) {
     // Find "items" from datastore 
