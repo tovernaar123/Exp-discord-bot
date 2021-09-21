@@ -16,13 +16,13 @@ function playerdata1command(name, msg) {
     
     if (!checkdata) {
         msg.channel.send('Error: Name not found. Check the name or try again later.');
-        console.log(`Name not found`);
+        console.log(`Name '${key1}' not found`);
         return;
     }
     let privacyData = mydata["PlayerData"][key1]["DataSavingPreference"];
     if (privacyData) {
         msg.channel.send('Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.');
-        console.log(`No items Saved`);
+        console.log(`Privacy settings for user ${key1} prevent saved stats`);
         return;
     }
     // if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc)
@@ -30,6 +30,7 @@ function playerdata1command(name, msg) {
 
     let channel = msg.channel;
     channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
+    console.log(`${name} jason player data printed to ${channel}`);
     return;
 }
 
