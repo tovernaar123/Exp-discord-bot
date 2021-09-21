@@ -20,7 +20,7 @@ function playerdata1command(name, msg) {
         return;
     }
     let privacyData = mydata["PlayerData"][key1]["DataSavingPreference"];
-    if (!privacyData) {
+    if (privacyData) {
         msg.channel.send('Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.');
         console.log(`No items Saved`);
         return;
