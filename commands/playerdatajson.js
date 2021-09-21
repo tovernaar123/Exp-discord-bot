@@ -30,7 +30,7 @@ function playerdata1command(name, msg) {
 
     let channel = msg.channel;
     channel.send(`${name}:\n\`\`\`json\n${JSON.stringify(finaldata, null, 2)}\`\`\``);
-    console.log(`${name} jason player data printed to ${channel}`);
+    console.log(`${name} json player data printed to ${channel}`);
     return;
 }
 
@@ -52,7 +52,7 @@ module.exports = {
         let name = args[0];
 
         if (name) {
-            if (allowedThisCommand) {
+            if (allowedThisCommand || name === msg.member.displayName) {
                 // If the user is authorized to use the command and supplied a name
                 playerdata1command(name, msg);
             } else {
