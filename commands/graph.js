@@ -1,94 +1,92 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const puppeteer = require('puppeteer');
+const request = require('request');
+
+let cooldown = new Set()
+let timeout = 60 * 1000 * 3
+let config = {
+    load: 4,
+    memory: 7,
+    network: 9,
+    disk: 10,
+    usage: 11,
+    cpu_temp: 28,
+    cpu_freq: 42,
+    cpu: 51,
+    player: 54,
+    ups: 55,
+    rocket: 56
+}
+let graph_index_allowed = ["rocket", "player", "ups"];
+
+const download = (url, path, callback) => {
+    request.head(url, (err, res, body) => {
+        request(url).pipe(fs.createWriteStream(path)).on('close', callback);
+    })
+}
 
 module.exports = {
     name: 'graph',
-    // aka: [''],
     description: 'Provide server Info using graph',
     guildOnly: true,
     args: true,
-    usage: `<#> <username> <reason>`,
+    usage: `<Type>`,
     async execute(msg, args, _, internal_error) {
         let channel = msg.channel;
-        const author = msg.member.displayName;
-        let type = args[0] || 55;
-        type = type.toString().toLowerCase();
+        let id = msg.author.id
+        let type = args[0].toLowerCase();
 
-        //board
-        let role_needed = role.board;
+        cooldown.add(id);
+
+        setTimeout(() => {
+            cooldown.delete(id)
+        }, timeout);
+
+        let url = 'https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=' + config[type] + '&width=1000&height=300&tz=UTC';
+        const path = '.cache/graph.png'
+        channel.send("Downloading graph please wait.");
+        
+        try {
+            download(url, path, () => {
+                console.log('Download Complete.');
+                channel.send({ files: ['.cache/graph.png'] }).catch((err) => {
+                    console.error(err)
+                    channel.send(`Error when sending image.`);
+                });
+            });
+        } catch (e) {
+            channel.send(`Error when saving image.`);
+            console.log(`Error when saving graph image.`);
+        }
+
+    },
+    async validator(msg, args, internal_error) {
+
+        let type = args[0].toLowerCase();
+        let id = msg.author.id
+
+        let obj = {}
+        obj.success = false;
+        if (cooldown.has(id)) {
+            obj.error = "Due to the memory need of this command it has a 3 minute cooldown please wait."
+            return obj
+        }
+
+        let role_needed = global.role.board;
         let role = await msg.guild.roles.fetch(role_needed);
         let allowedThisCommand = msg.member.roles.highest.comparePositionTo(role) >= 0;
 
-        let graph_list_standard = ['54', '55', '56'];
-        let graph_list = ['4', '7', '9', '10', '11', '28', '42', '51', '54', '55', '56'];
-        let graph_dict = {
-            'load':'4',
-            'memory':'7',
-            'network':'9',
-            'disk':'10',
-            'usage':'11',
-            'cpu_temp':'28',
-            'cpu_freq':'42',
-            'cpu':'51',
-            'player':'54',
-            'ups':'55',
-            'rocket':'56'
-        };
-
-        
-        if (isNaN(type)) {
-            // Type is word
-            if (graph_dict.hasOwnProperty(type)) {
-                type = graph_dict[type];
-            } else {
-                channel.send({content: `Error: Lookup out of range.`});
-            }
+        if (!config[type]) {
+            if (allowedThisCommand) obj.error = `Please enter one of the following for the type: \n${Object.keys(config).join(', ')} `;
+            else obj.error = `Please enter one of the following for the type: \n${graph_index_allowed.join(', ')} `;
+            return obj;
         }
 
-        if (graph_list.indexOf(type) < 0) {
-                channel.send({content: `Error: Lookup out of range.`});
-                type = -1;
+        if (!(graph_index_allowed.indexOf(type) >  0 || allowedThisCommand)) {
+            obj.error = `You do not have the right role for this graph type`;
+            return obj;
         }
-            
-        if (!allowedThisCommand) {
-            if (graph_list_standard.indexOf(type) < 0) {
-                channel.send({content: `Error: Unauthorized use of other graph usage.`});
-                type = -1;
-            }
-        }
-
-        if (type >= 0) {
-            let url = 'https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=' + type + '&width=1000&height=300&tz=UTC';
-    
-            try {
-                (async () => {
-                    const browser = await puppeteer.launch();
-                    const page = await browser.newPage();
-                    await page.setViewport({
-                        width: 1000,
-                        height: 300,
-                        deviceScaleFactor: 1,
-                    });
-                    await page.goto(url);
-                    await page.screenshot({path: './graph.png'});
-                    await browser.close();
-                    })();
-            } catch (e) {
-                channel.send({content: `Error when saving image.`});
-                console.log({content: `Error when saving graph image.`});
-            }
-    
-            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-            sleep(500).then(() => {
-                try {
-                    channel.send({files: ['./graph.png']});
-                } catch (e) {
-                    channel.send({content: `Error when sending image.`});
-                    console.log(`Error when sending image.`);
-                }
-            });
-        }
-    },
+        obj.success = true
+        return obj
+    }
 };
