@@ -16,7 +16,7 @@ function resetData(server, msg) {
            
             if(server["enabled"] ){
                let unixTimestamp = Math.floor(new Date(server["next_reset"]).getTime()/1000)
-               let serverInfo = `\n**S${svrNum++}** <t:${unixTimestamp}>`;
+               let serverInfo = `\n**S${svrNum++}** <t:${unixTimestamp}:R> (<t:${unixTimestamp}:d> at <t:${unixTimestamp}:t>)`;
                sendFull += serverInfo; 
                //msg.channel.send(serverInfo);
             }else{
