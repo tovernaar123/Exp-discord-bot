@@ -41,7 +41,7 @@ module.exports = {
                 if(!rcon.connected){
                     const Embed = Discord.MessageEmbed()
                     Embed.addField(`S${server} is not connected to the bot`, `S${server} offline`, false)
-                    await msg.channel.send(Embed);
+                    await msg.channel.send({embeds: [Embed]});
                     return
                 }
                 const responses = await rcon.send(rconToSend);
@@ -51,7 +51,7 @@ module.exports = {
                     const Embed = Discord.MessageEmbed()
                     Embed.addField(`AFK players S${server}`, `request by ${msg.author.username}`, false)
                     Embed.addField(`No players online`, `\u200B`, false);
-                    await msg.channel.send(Embed)
+                    await msg.channel.send({embeds: [Embed]})
                 }
             } catch (err) {
                 return internal_error(err)
@@ -83,7 +83,7 @@ module.exports = {
                         Embed.addField(`${name}:`, `${minutes}m and ${seconds}s`, false);
                     }
                 }
-                await msg.channel.send(Embed)
+                await msg.channel.send({embeds: [Embed]})
             }
 
         }

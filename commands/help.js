@@ -1,3 +1,5 @@
+const { Discord } = require("discord.js");
+
 let prefix = process.env.PREFIX;
 module.exports = {
     name: 'help',
@@ -10,8 +12,8 @@ module.exports = {
     async execute(msg, args) {
         const data = [];
         const { commands } = msg.client;
-        if (!args.length && msg.channel.type == "text") {
-            let canKick = msg.member.hasPermission('KICK_MEMBERS');
+        if (!args.length && msg.channel.type == "GUILD_TEXT") {
+            let canKick = msg.member.permissions.has('KICK_MEMBERS');
             let isStaff = msg.member.roles.cache.has(role.staff);
             let isMod = msg.member.roles.cache.has(role.mod);
             let isAdmin = msg.member.roles.cache.has(role.admin);
@@ -28,9 +30,9 @@ module.exports = {
 
             data.push(`\`${commandList}\``);
             //Semi Restricted Public Items//
-                data.push(`**Special (semi-public) Commands:**`);
-                let semiPublic = commands.filter(command => command.helpLevel === "all").map(command => command.name).join(', ');
-                data.push(`\`${semiPublic}\``);
+            data.push(`**Special (semi-public) Commands:**`);
+            let semiPublic = commands.filter(command => command.helpLevel === "all").map(command => command.name).join(', ');
+            data.push(`\`${semiPublic}\``);
             //Board+//
             if (isBoard || isStaff) {
                 data.push(`**Board Member(s) Commands:**`);
@@ -50,7 +52,7 @@ module.exports = {
                 data.push(`\`${adminStuff}\``);
             }
             data.push(`\nYou can send \`${prefix} help [command name]\` to get info on a specific command!`);
-            return msg.author.send(data, { split: true })// + `K${canKick},S${isStaff},A${isAdmin},B${isBoard} ... \n Check:`+ role.staff +"staff", { split: true })
+            return msg.author.send(data.join('\n'))// + `K${canKick},S${isStaff},A${isAdmin},B${isBoard} ... \n Check:`+ role.staff +"staff", { split: true })
                 .then(() => {
                     if (msg.channel.type === 'dm') return;
                     msg.reply('I\'ve sent you a DM with all my commands!');
@@ -60,7 +62,9 @@ module.exports = {
                     msg.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
                 });
 
-        } else if (!args.length) { return msg.reply(`You can send \`${prefix} help [command name]\` to get info on a specific command! or \`${prefix} help\` any any guild that the bot is in for a full list of commands`); }
+        } else if (!args.length) {
+            return msg.reply(`You can send \`${prefix} help [command name]\` to get info on a specific command! or \`${prefix} help\` any any guild that the bot is in for a full list of commands`);
+        }
 
         const name = args[0].toLowerCase();
         const command = commands.get(name) || commands.find(c => c.aka && c.aka.includes(name));
@@ -76,7 +80,6 @@ module.exports = {
         if (command.usage) data.push(`**Usage:** ${prefix} ${command.name} ${command.usage}`);
 
         data.push(`**Cooldown:** ${command.cooldown || 30} second(s)`);
-
-        msg.channel.send(data, { split: true });
+        msg.channel.send(data.join('\n'));
     },
 };

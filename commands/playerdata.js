@@ -173,8 +173,7 @@ function playerdata2command(name, msg) {
     }
 
     // Send the Embeds, sent as 2 because depending on the length discord would error out if you sent them both.
-    channel.send(Embed);
-    channel.send(Embed2);
+    channel.send({embeds: [Embed, Embed2]});
     return;
 }
 

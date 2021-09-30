@@ -1,4 +1,19 @@
 const Discord = require('discord.js');
+let Discord_Command = require('./../command.js');
+
+
+
+let flags = {
+    name: 'po',
+    aka: ['playersonline'],
+    description: 'how many players are online?',
+    guildOnly: true,
+    args: true,
+    usage: ` <server#>`
+}
+
+
+let prefix = process.env.PREFIX;
 
 /**
  * 
@@ -7,7 +22,7 @@ const Discord = require('discord.js');
  * @param {Discord.Message} send_message if given will send the result in an embed to the channel
  * @returns {string} the players that are online on the server
 */
-    let prefix = process.env.PREFIX;
+
 async function oneCommand(servernum, rcon, msg, client) {
     let res;
     if (rcon.connected) {
@@ -15,7 +30,7 @@ async function oneCommand(servernum, rcon, msg, client) {
     } else if(msg){
         const Embed = Discord.MessageEmbed()
         Embed.addField(`S${servernum} is not connected to the bot`, `S${servernum} offline`, false)
-        await msg.channel.send(Embed);
+        await msg.channel.send({embeds: [Embed]});
         return
     }else{
         res = `S${servernum} is not connected to the bot`
@@ -26,7 +41,7 @@ async function oneCommand(servernum, rcon, msg, client) {
         const Embed = Discord.MessageEmbed()
         Embed.addField('Online Players', `request by ${msg.author.username} \n \u200B`, false)
         Embed.addField(`S${servernum}`, res, true)
-        await msg.channel.send(Embed)
+        await msg.channel.send({embeds: [Embed]})
     }
 }
 /**
@@ -57,7 +72,7 @@ async function allCommand(msg, rcons) {
     }
 
     //Send the embed
-    await msg.channel.send(Embed)
+    await msg.channel.send({embeds: [Embed]})
 }
 
 module.exports = {
