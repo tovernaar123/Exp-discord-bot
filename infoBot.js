@@ -1,6 +1,7 @@
 
 
 require('dotenv').config()
+let Discord_Command = require('./command.js');
 
 //Discord.js imports + init
 const Discord = require('discord.js');
@@ -40,7 +41,7 @@ role = {
 
 
 //array for all ofline servers
-let offline_servers = []
+let offline_servers = [1,2,3,4,5,6,7,8]
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed
@@ -87,6 +88,7 @@ async function start() {
 
         //add to the list
         rcons[i] = rcon
+        Discord_Command.Rcons[i] = rcon;
     }
     //start listing for commands
 
@@ -109,7 +111,7 @@ client.on("ready", async () => {
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
     
     //void all slash commands
-    await client.guilds.cache.get('762249085268656178').commands.set([])
+    //await client.guilds.cache.get('762249085268656178').commands.set([])
 
     //instantiate the list of commands 
     client.commands = new Discord.Collection();
@@ -131,13 +133,9 @@ client.on('interactionCreate', async interaction => {
 
     const { commandName } = interaction;
 
-    client.commands.get(commandName).execute(interaction);
+    await client.commands.get(commandName).execute(interaction);
 
-    if (commandName === 'ping') {
-        await interaction.reply('Pong!');
-    } else if (commandName === 'beep') {
-        await interaction.reply('Boop!');
-    }
+
 });
 
 

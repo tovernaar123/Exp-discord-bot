@@ -2,19 +2,6 @@ const Discord = require('discord.js');
 let Discord_Command = require('./../command.js');
 
 
-
-let flags = {
-    name: 'po',
-    aka: ['playersonline'],
-    description: 'how many players are online?',
-    guildOnly: true,
-    args: true,
-    usage: ` <server#>`
-}
-
-
-let prefix = process.env.PREFIX;
-
 /**
  * 
  * @param {Number} servernum the number name of the server not used for anything but printing
@@ -23,26 +10,12 @@ let prefix = process.env.PREFIX;
  * @returns {string} the players that are online on the server
 */
 
-async function oneCommand(servernum, rcon, msg, client) {
+async function oneCommand(servernum, rcon) {
+
     let res;
-    if (rcon.connected) {
-        res = await rcon.send('/p o')
-    } else if(msg){
-        const Embed = Discord.MessageEmbed()
-        Embed.addField(`S${servernum} is not connected to the bot`, `S${servernum} offline`, false)
-        await msg.channel.send({embeds: [Embed]});
-        return
-    }else{
-        res = `S${servernum} is not connected to the bot`
-    }
-    if (!msg) {
-        return res
-    } else {
-        const Embed = Discord.MessageEmbed()
-        Embed.addField('Online Players', `request by ${msg.author.username} \n \u200B`, false)
-        Embed.addField(`S${servernum}`, res, true)
-        await msg.channel.send({embeds: [Embed]})
-    }
+    if (rcon.connected) res = await rcon.send('/p o');
+    else res = `S${servernum} is not connected to the bot`;
+    return res;
 }
 /**
  * 
@@ -51,30 +24,84 @@ async function oneCommand(servernum, rcon, msg, client) {
  * @returns {void}
 */
 async function allCommand(msg, rcons) {
-    await msg.channel.send("Asked for all online players: Awaiting reply from servers...")
+    await msg.channel.send("Asked for all online players: Awaiting reply from servers...");
 
-    const Embed = Discord.MessageEmbed()
-    Embed.addField('Online Players', `request by ${msg.author.username}`, false)
+    const Embed = Discord.MessageEmbed();
+    Embed.addField('Online Players', `request by ${msg.author.username}`, false);
 
     //adds field for every server
     let amount_of_fields = 0;
     for (let i = 1; i < 9; i++) {
-        let res = await oneCommand(i, rcons[i])
-        Embed.addField(`S${i}`, res, true)
+        let res = await oneCommand(i, rcons[i]);
+        Embed.addField(`S${i}`, res, true);
         amount_of_fields += 1;
     }
 
     //adds empty fields to make the grid look good
-    let amount_of_empty_spaces = 3 - (amount_of_fields % 3)
+    let amount_of_empty_spaces = 3 - (amount_of_fields % 3);
     for (let i = 0; i < amount_of_empty_spaces; i++) {
         //add and empty to make it look nice 
-        Embed.addField(`\u200B`, `\u200B`, true)
+        Embed.addField(`\u200B`, `\u200B`, true);
     }
 
     //Send the embed
-    await msg.channel.send({embeds: [Embed]})
+    return Embed;
 }
 
+
+let args = [
+    {
+        name: 'Server',
+        description: 'The server to check for online players.',
+        usage: '<#number||"all">',
+        optional: false,
+        type: "String",
+    },
+];
+
+let flags = {
+    name: 'Playersonline',
+    aka: ['playersonline'],
+    cooldown: 0.5,
+    description: 'how many players are online?',
+    cooldown_msg: 'please wait a moment before using this command again',
+    guildOnly: true,
+    args: args,
+}
+
+class Playersonline extends Discord_Command {
+
+    constructor() {
+        super(flags);
+    }
+
+    async execute(interaction) {
+        let run_command = await super.execute(interaction, args);
+        if (!run_command) return
+
+        let server = interaction.options.getString('server');
+
+        if (server === 'all') {
+            await interaction.reply(await allCommand(interaction.msg, Discord_Command.rcons))
+        } else {
+            server = parseInt(server);
+            let res = oneCommand(server, Discord_Command.rcons[server], interaction.msg, interaction.client);
+            let embed = new Discord.MessageEmbed();
+            embed.addField('Online Players', `request by ${msg.author.username} \n \u200B`, false);
+            embed.addField(`S${server}`, res, true);
+            await interaction.reply(embed);
+
+        }
+    }
+}
+
+
+{
+    //let command = new Playersonline();
+    //module.exports = command;
+}
+
+/*
 module.exports = {
     name: 'po',
     aka: ['playersonline'],
@@ -119,3 +146,4 @@ module.exports = {
         }
     }
 }
+*/
