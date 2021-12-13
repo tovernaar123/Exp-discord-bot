@@ -1,6 +1,6 @@
 
 
-require('dotenv').config()
+require('dotenv').config();
 let Discord_Command = require('./command.js');
 
 //Discord.js imports + init
@@ -9,7 +9,7 @@ const { Client, Intents } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-const client = new Client({ partials: ["CHANNEL"], intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
+const client = new Client({ partials: ['CHANNEL'], intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
 
 //Rcon script
 const { rcon_connect } = require('./rcon_auto_connect.js');
@@ -18,15 +18,15 @@ const baseport = 34228;
 //Get commands
 const fs = require('fs');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const prefix = `.exp`
+const prefix = '.exp';
 let rcons = {};
 //global for all commands to use this object
 role = {
-    staff: "762264452611440653",
-    admin: "764526097768644618",
-    mod: "762260114186305546",
-    board: "765920803006054431"
-}
+    staff: '762264452611440653',
+    admin: '764526097768644618',
+    mod: '762260114186305546',
+    board: '765920803006054431'
+};
 
 
 /*prod server
@@ -41,17 +41,17 @@ role = {
 
 
 //array for all ofline servers
-let offline_servers = []
+let offline_servers = [1,2,3,4,5,6,7,8,9];
 
 //standard embed settings like color and footer
-let real_discord_embed = Discord.MessageEmbed
+let real_discord_embed = Discord.MessageEmbed;
 Discord.MessageEmbed = function () {
-    let discord_embed = new real_discord_embed()
-    discord_embed.setTimestamp()
-    discord_embed.setFooter(client.user.username, client.user.avatarURL())
-    discord_embed.setColor('53380')
-    return discord_embed
-}
+    let discord_embed = new real_discord_embed();
+    discord_embed.setTimestamp();
+    discord_embed.setFooter(client.user.username, client.user.avatarURL());
+    discord_embed.setColor('53380');
+    return discord_embed;
+};
 
 
 async function start() {
@@ -60,20 +60,19 @@ async function start() {
     for (let i = 1; i < 9; i++) {
         //if servers is offline dont try and connect to it
         if (offline_servers.includes(i)) {
-            rcons[i] = { "connected": false }
-            Discord_Command.Rcons[i] = rcon;
+            rcons[i] = { 'connected': false };
+            Discord_Command.Rcons[i] = rcons[i];
             continue;
         }
 
         //port starts at baseport 34228 and its it server num so s1 is 34229 etc.
-        let port_to_use = baseport + i
+        let port_to_use = baseport + i;
 
         //Use the auto rcon connect
-        rcon = await rcon_connect(port_to_use, i)
+        rcons[i] = await rcon_connect(port_to_use, i);
 
         //add to the list
-        rcons[i] = rcon
-        Discord_Command.Rcons[i] = rcon;
+        Discord_Command.Rcons[i] = rcons[i];
     }
     //start listing for commands
 
@@ -82,21 +81,21 @@ async function start() {
 }
 
 start().catch((err) => {
-    console.log(err)
+    console.log(err);
 });
 
 
-client.on("ready", async () => {
+client.on('ready', async () => {
     let date_string = new Date().toISOString().
         replace(/T/, ' ').      // replace T with a space
-        replace(/\..+/, '')     // delete the dot and everything after
-    console.log(`${date_string}: I am ready!`)
+        replace(/\..+/, '');     // delete the dot and everything after
+    console.log(`${date_string}: I am ready!`);
     //client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
     client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
     
     //void all slash commands
-    await client.guilds.cache.get('762249085268656178').commands.set([])
+    await client.guilds.cache.get('762249085268656178').commands.set([]);
 
     //instantiate the list of commands 
     client.commands = new Discord.Collection();
@@ -125,11 +124,11 @@ client.on('interactionCreate', async interaction => {
 
 
 
-client.on("messageCreate", async msg => {
+client.on('messageCreate', async msg => {
 
     function internal_error(err) {
-        console.log(err)
-        msg.channel.send('Internal error in the command. Please contact an admin.')
+        console.log(err);
+        msg.channel.send('Internal error in the command. Please contact an admin.');
     }
 
     //Ends msg early if author is a bot
@@ -157,29 +156,29 @@ client.on("messageCreate", async msg => {
     }
 
     // only runs if below Guild id's (EXP = `260843215836545025`) 762249085268656178 is testing server
-    if (command.guildOnly && (guild != `762249085268656178` && guild != `260843215836545025`)) {
-        console.log(`Not correct guild`);
-        return msg.reply(`Wrong guild`);
+    if (command.guildOnly && (guild != '762249085268656178' && guild != '260843215836545025')) {
+        console.log('Not correct guild');
+        return msg.reply('Wrong guild');
     }
 
     // Check to see if you have the role you need or a higher one
-    let req_role = command.required_role
+    let req_role = command.required_role;
 
     if (req_role) {
-        let role = await msg.guild.roles.fetch(req_role)
+        let role = await msg.guild.roles.fetch(req_role);
         let allowed = msg.member.roles.highest.comparePositionTo(role) >= 0;
         if (!allowed) {
-            console.log(`Unauthorized `);
+            console.log('Unauthorized ');
             msg.channel.send(`You do not have ${role.name} permission.`);
             return;
         }
 
     } else if (command.validator) {
         let obj = await command.validator(msg, args, internal_error)
-            .catch((err) => { internal_error(err); return })
+            .catch((err) => { internal_error(err); return; });
         if (!obj.success) {
             return msg.channel.send(obj.error)
-                .catch((err) => { internal_error(err); return })
+                .catch((err) => { internal_error(err); return; });
         }
     }
 
@@ -196,10 +195,10 @@ client.on("messageCreate", async msg => {
 
     try {
         command.execute(msg, args, rcons, internal_error)
-            .catch((err) => { internal_error(err); return })
+            .catch((err) => { internal_error(err); return; });
     } catch (error) {
         console.log(error);
-        msg.reply(`there was an error trying to execute that command!`);
+        msg.reply('there was an error trying to execute that command!');
     }
 
-})
+});

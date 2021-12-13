@@ -13,38 +13,38 @@ class Discord_Command {
         if (!this.name) throw new Error('Command name is not defined.');
 
         this.cooldowns = new Map();
-        this.cooldown = flags.cooldown || 1
-        this.cooldown_msg = flags.cooldown_msg || 'Don\'t spam the bot command please.'
+        this.cooldown = flags.cooldown || 1;
+        this.cooldown_msg = flags.cooldown_msg || 'Don\'t spam the bot command please.';
 
-        this.aka = flags.aka
+        this.aka = flags.aka;
 
-        this.description = flags.description || 'No description given.'
-        this.guildOnly = flags.guildOnly
+        this.description = flags.description || 'No description given.';
+        this.guildOnly = flags.guildOnly;
 
-        this.args = flags.args
+        this.args = flags.args;
         this.slash = true;
         this.slashbuilder = new Builders.SlashCommandBuilder();
     }
 
     static builders = {
-        "Boolean": Builders.SlashCommandBooleanOption,
-        "Channel": Builders.SlashCommandChannelOption,
-        "Integer": Builders.SlashCommandIntegerOption,
-        "Mentionable": Builders.SlashCommandMentionableOption,
-        "Role": Builders.SlashCommandRoleOption,
-        "String": Builders.SlashCommandStringOption,
-        "User": Builders.SlashCommandUserOption,	
-    }
+        'Boolean': Builders.SlashCommandBooleanOption,
+        'Channel': Builders.SlashCommandChannelOption,
+        'Integer': Builders.SlashCommandIntegerOption,
+        'Mentionable': Builders.SlashCommandMentionableOption,
+        'Role': Builders.SlashCommandRoleOption,
+        'String': Builders.SlashCommandStringOption,
+        'User': Builders.SlashCommandUserOption,	
+    };
 
     static addoptions = {
-        "Boolean": "addBooleanOption",
-        "Channel": "addChannelOption",
-        "Integer": "addIntegerOption",
-        "Mentionable": "addMentionableOption",
-        "Role": "addRoleOption",
-        "String": "addStringOption",
-        "User": "addUserOption",
-    }
+        'Boolean': 'addBooleanOption',
+        'Channel': 'addChannelOption',
+        'Integer': 'addIntegerOption',
+        'Mentionable': 'addMentionableOption',
+        'Role': 'addRoleOption',
+        'String': 'addStringOption',
+        'User': 'addUserOption',
+    };
     
     AddOption(command, arg) {
         if(!Discord_Command.builders[arg.type]) throw new Error('Invalid option type.');
@@ -58,13 +58,38 @@ class Discord_Command {
     }
 
     static roles = {
-        staff: "762264452611440653",
-        admin: "764526097768644618",
-        mod: "762260114186305546",
-        board: "765920803006054431"
+        staff: '762264452611440653',
+        admin: '764526097768644618',
+        mod: '762260114186305546',
+        board: '765920803006054431'
+    };
+
+    error(error) {
+        console.error(error);
     }
 
-    static Rcons = []
+    static Rcons = [];
+
+    static common_args = {
+        'server':  {
+            name: 'server',
+            description: 'The server to run the command on.',
+            usage: '<#number||"all">',
+            required: true,
+            type: 'String',
+            choices: [
+                ['Sever 1', '1'],
+                ['Sever 2', '2'],
+                ['Sever 3', '3'],
+                ['Sever 4', '4'],
+                ['Sever 5', '5'],
+                ['Sever 6', '6'],
+                ['Sever 7', '7'],
+                ['Sever 8', '8'],
+                ['All servers', 'all'],
+            ]
+        },
+    };
 
     async create_command() {
         this.slashbuilder.setName(this.name);
@@ -81,17 +106,17 @@ class Discord_Command {
     }
 
     get usage() {
-        let usages = this.args.map((arg) => { return arg.usage });
+        let usages = this.args.map((arg) => { return arg.usage; });
 
-        return `/${this.name} ${usages.join(' ')}`
+        return `/${this.name} ${usages.join(' ')}`;
     }
 
     async execute(interaction) {
-        let cooldown_rec = this.cooldowns.get(interaction.user.id)
+        let cooldown_rec = this.cooldowns.get(interaction.user.id);
         if (cooldown_rec) {
             if (Date.now() - cooldown_rec < this.cooldown * 1000) {
                 await interaction.reply(this.cooldown_msg);
-                return false
+                return false;
             }
         }
         this.cooldowns.set(interaction.user.id, Date.now());

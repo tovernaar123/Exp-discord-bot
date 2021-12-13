@@ -1,4 +1,7 @@
 const Discord = require('discord.js');
+let Discord_Command = require('./../command.js');
+
+/*
 module.exports = {
     name: 'afk',
     aka: ['whoisafk', 'afkstreak', 'alwaysafk'],
@@ -89,3 +92,101 @@ module.exports = {
         }
     },
 };
+*/
+
+
+
+let rconToSend = '/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))'; //send afk chat bot
+
+function TimeObject(time) {
+    let hours = Math.floor(time / 3600);
+    let minutes = Math.floor(time / 60) - (hours * 60);
+    let seconds = Math.floor(time - ((hours * 3600) + (minutes * 60)));  
+    return {hours, minutes, seconds };
+
+}
+
+async function runCommand(server, rcon, interaction) {
+    let json_data;
+    if (!rcon.connected) {
+        const Embed = Discord.MessageEmbed();
+        Embed.addField(`S${server} is not connected to the bot`, `S${server} offline`, false);
+        await interaction.editReply({ embeds: [Embed] });
+        return;
+    }
+
+    const responses = await rcon.send(rconToSend);
+
+    if (responses) {
+        json_data = JSON.parse(responses);
+    } else {
+        const Embed = Discord.MessageEmbed();
+        Embed.addField('No players online', '\u200B', false);
+        await interaction.editReply({ embeds: [Embed] });
+    }
+
+    // If Responses is blank (not normal).
+    if (!json_data) {
+        await interaction.editReply('There was no response from the server, this is not normal for this command please ask an admin to check the logs.');
+        throw new Error('no response in the afk command');
+    }
+
+    // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
+    if (json_data) {
+        const Embed = Discord.MessageEmbed();
+        let length = Object.keys(json_data).length;
+
+        if (length === 0) {
+            Embed.addField('No players online', '\u200B', false);
+        }
+
+        for (let name in json_data) {
+            let time = json_data[name] / 60;
+            let {hours, minutes, seconds} = TimeObject(time);
+            if (hours > 0) {
+                Embed.addField(`${name}:`, `${hours}h, ${minutes}m and ${seconds}s`, false);
+            } else {
+                Embed.addField(`${name}:`, `${minutes}m and ${seconds}s`, false);
+            }
+        }
+        await interaction.editReply({ embeds: [Embed] });
+    }
+
+}
+
+
+async function all_servers(server, rcon, msg) {
+    return {server, rcon, msg};
+}
+
+class Adminsonline extends Discord_Command {
+    constructor() {
+        let args = [
+            Discord_Command.common_args.server
+        ];
+        super({
+            name: 'afk',
+            aka: ['whoisafk', 'afkstreak', 'alwaysafk'],
+            description: 'Get the afk players on the server.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true
+        });
+    }
+
+    async execute(interaction) {
+        await interaction.deferReply();
+
+        let server = await interaction.options.getString('server');
+        if (server === 'all') {
+            await all_servers(Discord_Command.Rcons, interaction).catch(this.error);
+        } else {
+            server = parseInt(server);
+            await runCommand(server, Discord_Command.Rcons[server], interaction).catch(this.error);
+        }
+    }
+}
+
+
+let command = new Adminsonline();
+module.exports = command;
