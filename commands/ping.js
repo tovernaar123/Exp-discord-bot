@@ -1,6 +1,6 @@
 let Discord_Command = require('./../command.js');
 
-let flags = {
+let config = {
 	name: 'ping',
 	description: 'Bot will reply with a pong if you wish to test that it is online and responding to proper commands.',
 	aka: ['pings','ping?','p','pingme'],
@@ -13,7 +13,7 @@ let flags = {
 class Ping extends Discord_Command {
 	constructor() {
 
-		super(flags);
+		super(config);
 	}
 
 	async execute(interaction) {
@@ -25,8 +25,8 @@ class Ping extends Discord_Command {
 	
 }
 
-{
-let command = new Ping();
+//{
+//let command = new Ping();
 
-module.exports = command;
-}
+//module.exports = command;
+//}

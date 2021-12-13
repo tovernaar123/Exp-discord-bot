@@ -10,7 +10,7 @@ class Discord_Command {
     */
     constructor(flags) {
         this.name = flags.name;
-        if(!this.name) throw new Error('Command name is not defined.');
+        if (!this.name) throw new Error('Command name is not defined.');
 
         this.cooldowns = new Map();
         this.cooldown = flags.cooldown || 1
@@ -23,6 +23,38 @@ class Discord_Command {
 
         this.args = flags.args
         this.slash = true;
+        this.slashbuilder = new Builders.SlashCommandBuilder();
+    }
+
+    static builders = {
+        "Boolean": Builders.SlashCommandBooleanOption,
+        "Channel": Builders.SlashCommandChannelOption,
+        "Integer": Builders.SlashCommandIntegerOption,
+        "Mentionable": Builders.SlashCommandMentionableOption,
+        "Role": Builders.SlashCommandRoleOption,
+        "String": Builders.SlashCommandStringOption,
+        "User": Builders.SlashCommandUserOption,	
+    }
+
+    static addoptions = {
+        "Boolean": "addBooleanOption",
+        "Channel": "addChannelOption",
+        "Integer": "addIntegerOption",
+        "Mentionable": "addMentionableOption",
+        "Role": "addRoleOption",
+        "String": "addStringOption",
+        "User": "addUserOption",
+    }
+    
+    AddOption(command, arg) {
+        if(!Discord_Command.builders[arg.type]) throw new Error('Invalid option type.');
+
+        let builder = new Discord_Command.builders[arg.type]();
+        if(arg.choices) builder.addChoices(arg.choices);
+        builder.setName(arg.name);
+        builder.setRequired(arg.required);
+        builder.setDescription(arg.description);
+        command[Discord_Command.addoptions[arg.type]](builder);
     }
 
     static roles = {
@@ -34,25 +66,22 @@ class Discord_Command {
 
     static Rcons = []
 
-    async add_command(client) {
-        let command = new Builders.SlashCommandBuilder();
-        command.setName(this.name);
-        command.setDescription(this.description);
-        for(let i = 0; i < this.args.length; i++) {
+    async create_command() {
+        this.slashbuilder.setName(this.name);
+        this.slashbuilder.setDescription(this.description);
+        for (let i = 0; i < this.args.length; i++) {
             let arg = this.args[i];
-            if(arg.type === 'string') {
-                let builder =  new Builders.SlashCommandStringOption();
-                builder.setName(arg.name);
-                builder.setRequired(arg.required);
-                command.addStringOption(builder);
-            }
+            this.AddOption(this.slashbuilder, arg);
         }
+    }
 
-        client.guilds.cache.get(process.env.guild).commands.create(command);
+    async add_command(client) {
+        this.create_command();
+        client.guilds.cache.get(process.env.guild).commands.create( this.slashbuilder);
     }
 
     get usage() {
-        let usages = this.args.map((arg) => { return arg.usage});
+        let usages = this.args.map((arg) => { return arg.usage });
 
         return `/${this.name} ${usages.join(' ')}`
     }

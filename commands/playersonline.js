@@ -23,11 +23,10 @@ async function oneCommand(servernum, rcon) {
  * @param {Rcon} rcons the open rcon connection to the server
  * @returns {void}
 */
-async function allCommand(msg, rcons) {
-    await msg.channel.send("Asked for all online players: Awaiting reply from servers...");
+async function allCommand(interaction, rcons) {
+    await interaction.editReply("Asked for all online players: Awaiting reply from servers...");
 
     const Embed = Discord.MessageEmbed();
-    Embed.addField('Online Players', `request by ${msg.author.username}`, false);
 
     //adds field for every server
     let amount_of_fields = 0;
@@ -49,101 +48,62 @@ async function allCommand(msg, rcons) {
 }
 
 
-let args = [
-    {
-        name: 'Server',
-        description: 'The server to check for online players.',
-        usage: '<#number||"all">',
-        optional: false,
-        type: "String",
-    },
-];
-
-let flags = {
-    name: 'Playersonline',
-    aka: ['playersonline'],
-    cooldown: 0.5,
-    description: 'how many players are online?',
-    cooldown_msg: 'please wait a moment before using this command again',
-    guildOnly: true,
-    args: args,
-}
-
 class Playersonline extends Discord_Command {
 
     constructor() {
-        super(flags);
+        
+        let args = [
+            {
+                name: 'server',
+                description: 'The server to check for online players.',
+                usage: '<#number||"all">',
+                required: true,
+                type: "String",
+                choices: [
+                    ['Sever 1', "1"],
+                    ['Sever 2', "2"],
+                    ['Sever 3', "3"],
+                    ['Sever 4', "4"],
+                    ['Sever 5', "5"],
+                    ['Sever 6', "6"],
+                    ['Sever 7', "7"],
+                    ['Sever 8', "8"],
+                    ['All servers', "all"],
+                ]
+            },
+        ];
+
+        super({
+            name: 'playersonline',
+            aka: ['playersonline'],
+            cooldown: 0.5,
+            description: 'how many players are online?',
+            cooldown_msg: 'Please wait a moment before using this command again.',
+            guildOnly: true,
+            args: args,
+        });
     }
 
     async execute(interaction) {
-        let run_command = await super.execute(interaction, args);
-        if (!run_command) return
+        await interaction.deferReply();
+        let run_command = await super.execute(interaction);
+        if (!run_command) return;
 
-        let server = interaction.options.getString('server');
+        let server = await interaction.options.getString('server');
 
         if (server === 'all') {
-            await interaction.reply(await allCommand(interaction.msg, Discord_Command.rcons))
+            await interaction.editReply({ embeds: [await allCommand(interaction, Discord_Command.Rcons)] });
         } else {
             server = parseInt(server);
-            let res = oneCommand(server, Discord_Command.rcons[server], interaction.msg, interaction.client);
+            let res = await oneCommand(server, Discord_Command.Rcons[server], interaction.msg, interaction.client);
             let embed = new Discord.MessageEmbed();
-            embed.addField('Online Players', `request by ${msg.author.username} \n \u200B`, false);
             embed.addField(`S${server}`, res, true);
-            await interaction.reply(embed);
+            await interaction.editReply({ embeds: [embed] });
 
         }
     }
 }
 
 
-{
-    //let command = new Playersonline();
-    //module.exports = command;
-}
-
-/*
-module.exports = {
-    name: 'po',
-    aka: ['playersonline'],
-    description: 'how many players are online?',
-    guildOnly: true,
-    args: true,
-    usage: ` <server#>`,
-    async execute(msg, args, rcons, internal_error) {
-        const author = msg.author.username; //find author
-        let server = Number(args[0]) || args[0];
-
-        if(!isNaN(server)){
-            server = Math.floor(args[0])
-        }
-
-        if (!server) { // Checks to see if the person specified a server number
-            msg.channel.send(`Please pick a server first just a number (1-8). Usage: \`${prefix} po <server#>\` or \`${prefix} po all\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`po-Did not have server number`);
-            return;
-        }
-        if (args[1]) {
-            msg.channel.send(`No second argument is needed (1-8). correct usage: \`${prefix} po <server#>\` or \`${prefix} po all\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`To many args not have server number`);
-            return
-        }
-
-        if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
-            oneCommand(server, rcons[server], msg)
-                .catch((err) => { internal_error(err); return })
-        } else if (server === 'all') {
-            console.log(`Server is all`);
-            allCommand(msg, rcons, internal_error)
-                .catch((err) => { internal_error(err); return })
-        } else {
-            // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.reply(`Please pick a server first just a number (1-8) or *all*.  Correct usage is \` po <server#>\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`players online by ${author} incorrect server number`);
-        }
-    }
-}
-*/
+let command = new Playersonline();
+module.exports = command;

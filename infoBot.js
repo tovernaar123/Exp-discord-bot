@@ -41,7 +41,7 @@ role = {
 
 
 //array for all ofline servers
-let offline_servers = [1,2,3,4,5,6,7,8]
+let offline_servers = []
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed
@@ -53,30 +53,15 @@ Discord.MessageEmbed = function () {
     return discord_embed
 }
 
-const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
-async function add_slash_commands(commands) {
-    //client.application.commands.create();
-    /*
-    try {
-        await rest.put(
-            Routes.applicationGuildCommands('731078310079103017', '762249085268656178'),
-            { body: [commands] },
-        );
-    } catch (error) {
-        console.error(error);
-    }
-    */
-}
-
 
 async function start() {
-    //await add_slash_commands(Array.from(client.commands.values()))
 
     //9 cause 8 < 9 and we want to inculde 8 and we start at 1 cuase theirs no s0
     for (let i = 1; i < 9; i++) {
         //if servers is offline dont try and connect to it
         if (offline_servers.includes(i)) {
             rcons[i] = { "connected": false }
+            Discord_Command.Rcons[i] = rcon;
             continue;
         }
 
@@ -111,7 +96,7 @@ client.on("ready", async () => {
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
     
     //void all slash commands
-    //await client.guilds.cache.get('762249085268656178').commands.set([])
+    await client.guilds.cache.get('762249085268656178').commands.set([])
 
     //instantiate the list of commands 
     client.commands = new Discord.Collection();
