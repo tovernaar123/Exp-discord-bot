@@ -19,24 +19,23 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 const prefix = '.exp';
 let rcons = {};
 //global for all commands to use this object
+/*
 role = {
     staff: '762264452611440653',
     admin: '764526097768644618',
     mod: '762260114186305546',
     board: '765920803006054431'
 };
-
-
-/*prod server
-role = {
-    staff: "482924291084779532",
-    admin: "290940523844468738",
-    mod: "260893080968888321",
-    board: "693500936491892826",
-    sadmin: "446066482007244821"
-}
 */
 
+
+role = {
+    staff: '482924291084779532',
+    admin: '290940523844468738',
+    mod: '260893080968888321',
+    board: '693500936491892826',
+    sadmin: '446066482007244821'
+};
 
 //array for all ofline servers
 let offline_servers = [];
