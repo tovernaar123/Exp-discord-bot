@@ -49,7 +49,7 @@ async function normal_ban(player, reason, interaction) {
 
     if (rcon) {
         rcon.send(`/ban ${player} ${reason}`);
-        let ReportChannel = interaction.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+        let ReportChannel = interaction.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
         let report = GetReport(server, interaction.user.username, player, reason);
         interaction.editReply(`Player was banned for "${reason}" (but Ban sync failed) check S${server} to make sure it worked.`);
         ReportChannel.send({ embeds: [report] });

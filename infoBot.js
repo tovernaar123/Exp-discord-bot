@@ -38,7 +38,7 @@ role = {
 };
 
 //array for all ofline servers
-let offline_servers = [];
+let offline_servers = [2, 6, 7, 8];
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed;
@@ -87,7 +87,7 @@ client.on('ready', async () => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, '');     // delete the dot and everything after
     console.log(`${date_string}: I am ready!`);
-    //client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
     client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
     
