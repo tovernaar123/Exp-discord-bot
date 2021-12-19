@@ -103,6 +103,9 @@ class Ban extends Discord_Command {
 
                 if (json_data.success === true) {
                     interaction.editReply(`${player} was banned on all servers for "${reason}".`);
+                    let ReportChannel = interaction.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+                    let report = GetReport('<internal>', interaction.user.username, player, reason);
+                    ReportChannel.send({ embeds: [report] });
                 } else {
                     interaction.editReply(`Their was an error tyring to ban ${player} with Ban sync trying rcon... (check logs)`);
                     normal_ban(player, reason, interaction);
