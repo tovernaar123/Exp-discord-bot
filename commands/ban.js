@@ -1,64 +1,121 @@
 
 const Discord = require('discord.js');
-async function runCommand(server, rcon, msg, toBan, reason) {
-    if(!rcon.connected){
-        await msg.channel.send(`S${server} is not connected the bot.`)
-        return;
+let Discord_Command = require('./../command.js');
+const net = require('net');
+let client = new net.Socket();
+client.connect('/tmp/banlist_sync.sock', function () {
+    console.log('Connected to bansync.');
+});
+client.setKeepAlive(true);
+
+//set a timeout for 30 sec and then reconect (it will try 5 times then stop);
+let amount_of_times = 0;
+function reconnect() {
+    if (amount_of_times >= 5) return;
+
+    console.log('Reconnecting to bansync in 30sec ');
+
+    setTimeout(function () {
+        client.connect('/tmp/banlist_sync.sock', function () {
+            console.log('Connected to bansync.');
+            amount_of_times = 0;
+        });
+        client.setKeepAlive(true);
+    }, 30000);
+
+    amount_of_times += 1;
+}
+
+client.on('close', reconnect);
+client.on('error', console.error);
+
+function GetReport(server, by_player, banned, reason) {
+    let ban_report = new Discord.MessageEmbed();
+    ban_report.addField('Ban', 'A player has been Banned', false);
+    ban_report.addField('Server Details', `server: S${server}`, false);
+    ban_report.addField('Player', `${banned}`, true);
+    ban_report.addField('By', `${by_player}`, true);
+    ban_report.addField('Reason', `${reason}`, true);
+    ban_report.setColor('0xb40e0e');
+    return ban_report;
+}
+
+async function normal_ban(player, reason, interaction) {
+    let server;
+    let rcon = Discord_Command.Rcons.find((rcon, index) => {
+        server = index;
+        return rcon?.connected;
+    });
+
+    if (rcon) {
+        rcon.send(`/ban ${player} ${reason}`);
+        let ReportChannel = interaction.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+        let report = GetReport(server, interaction.user.username, player, reason);
+        interaction.editReply(`Player was banned for "${reason}" (but Ban sync failed) check S${server} to make sure it worked.`);
+        ReportChannel.send({ embeds: [report] });
     }
-    await rcon.send(`/ban ${toBan} ${reason}`);
-    await msg.channel.send(`User **${toBan}** has been Baned for *${reason}*, check with someone on S${server} to be sure `);
-    const Embed = Discord.MessageEmbed()
-    Embed.addField('Ban', `A player has been Baned`, false);
-    Embed.addField(`Server Details`, `server: S${server}`, false);
-    Embed.addField(`Player`, `${toBan}`, true);
-    Embed.addField(`By`, `${msg.author.username}`, true);
-    Embed.addField(`Reason`, `${reason}`, true);
-    Embed.setColor("0xb40e0e");
-    let reportChan = msg.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    await reportChan.send({embeds: [Embed]});
 }
 
 
-module.exports = {
-    name: 'ban',
-    aka: ['bannd','banned','permaban','gtfo'],
-    description: 'Ban any user (Admin/Mod only command)',
-    guildOnly: true,
-    args: true,
-    helpLevel: 'role.staff', //helplevel must be in quotes to work
-    required_role: role.staff,
-    usage: ` <#server> <username> <reason>`,
-    async execute(msg, args, rcons, internal_error) {
-        const author = msg.author.username; //find author
-        const server = Math.floor(Number(args[0]));
+class Ban extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                name: 'player_name',
+                description: 'The player to ban.',
+                usage: '<#string>',
+                required: true,
+                type: 'String',
+            },
+            {
+                name: 'reason',
+                description: 'The reason why you are banning this player.',
+                usage: '<#string>',
+                required: false,
+                type: 'String',
+            }
+        ];
+        super({
+            name: 'ban',
+            description: 'Will ban player on every server.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true,
+            // eslint-disable-next-line no-undef
+            required_role: role.staff,
+        });
+    }
 
-        let reason = args.slice(2).join(" ");
-        let toBan = args[1];
+    async execute(interaction) {
+        await interaction.deferReply();
+        let player = await interaction.options.getString('player_name');
+        let reason = await interaction.options.getString('reason') || 'No reason given.';
+        if (client.writable) {
+            client.once('data', function (data) {
+                data = String(data);
+                let json_data;
+                try {
+                    json_data = JSON.parse(data);
+                } catch (error) {
+                    throw new Error(`received malformed json from bansync ${data}`);
+                }
+                console.log(`[BAN SYNC] => ${data}`);
 
-        if (!server) { // Checks to see if the person specified a server number
-            msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`');
-            console.log(`Ban-Did not have server number`);
-            return;
+                if (json_data.success === true) {
+                    interaction.editReply(`${player} was banned on all servers for "${reason}".`);
+                } else {
+                    interaction.editReply(`Their was an error tyring to ban ${player} with Ban sync trying rcon... (check logs)`);
+                    normal_ban(player, reason, interaction);
+                    console.error(json_data.error);
+                }
+            });
+
+            return client.write(JSON.stringify({ request: 'ban-player', player, reason }));
+        }else{
+            normal_ban(player, reason, interaction);
         }
-        if (!toBan) { // if no 2nd argument returns without running with error
-            msg.channel.send(`You need to tell us who you would like to Ban for us to be able to Ban them. \`<#> <username> <reason>\``);
-            console.log(`Ban-Did not have name`);
-            return;
-        }
-        if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
-            msg.channel.send(`Please put a reason, you can always reBan or reban later with a better one.\`<#> <username> <reason>\``);
-            console.log(`Ban-Did not have reason`);
-            return;
-        }
-        if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
-            runCommand(server, rcons[server], msg, toBan, reason)
-                .catch((err) => { internal_error(err); return })
-        } else {
-            // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.reply(`Please pick a server first just a number (1-8) or *all*.  Correct usage is \`.exp ban <server#>\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`players online by ${author} incorrect server number`);
-        }
-    },
-};
+    }
+}
+
+let command = new Ban();
+module.exports = command;

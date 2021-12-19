@@ -6,8 +6,6 @@ let Discord_Command = require('./command.js');
 //Discord.js imports + init
 const Discord = require('discord.js');
 const { Client, Intents } = require('discord.js');
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
 
 const client = new Client({ partials: ['CHANNEL'], intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
 
@@ -41,7 +39,7 @@ role = {
 
 
 //array for all ofline servers
-let offline_servers = [1,2,3,4,5,6,7,8,9];
+let offline_servers = [];
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed;
@@ -95,7 +93,7 @@ client.on('ready', async () => {
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
     
     //void all slash commands
-    await client.guilds.cache.get('762249085268656178').commands.set([]);
+    //await client.guilds.cache.get('762249085268656178').commands.set([]);
 
     //instantiate the list of commands 
     client.commands = new Discord.Collection();
@@ -117,11 +115,10 @@ client.on('interactionCreate', async interaction => {
 
     const { commandName } = interaction;
 
-    await client.commands.get(commandName).execute(interaction);
+    await client.commands.get(commandName)._execute(interaction);
 
 
 });
-
 
 
 client.on('messageCreate', async msg => {

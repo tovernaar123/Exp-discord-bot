@@ -1,5 +1,5 @@
-"use strict";
-const rcon_client = require("rcon-client");
+'use strict';
+const rcon_client = require('rcon-client');
 const rconpw = process.env.RCONPASS;
 //Set up RCON connections for all servers.
 /**
@@ -10,7 +10,7 @@ const rconpw = process.env.RCONPASS;
 exports.rcon_connect = async function(port, i) {
     
     const client = new rcon_client.Rcon({
-        host: "localhost",
+        host: 'localhost',
         port: port,
         password: rconpw,
     });
@@ -24,7 +24,7 @@ exports.rcon_connect = async function(port, i) {
                 console.error(`[Rcon]: Not connected tried to send: ${cmd}`);
                 return;
             }
-            console.log(`S${i}`, cmd, "=>", res.slice(0, -1));
+            console.log(`S${i}`, cmd, '=>', res.slice(0, -1));
             return res;
         });
     };
@@ -43,29 +43,29 @@ exports.rcon_connect = async function(port, i) {
         }).catch(err => {
             Iconnected = false;
             console.log(`Connecting to S${i} failed:`, err.message);
-            console.log("Reconnecting in 30 seconds");
+            console.log('Reconnecting in 30 seconds');
             setTimeout(connect, 30e3).unref();
         });
     }
 
-    client.on("end", function() {
+    client.on('end', function() {
         //Reconnect if a successfull connection was made.
         if (Iconnected) {
             console.log(`Lost connection with S${i}`);
-            console.log("Reconnecting in 30 seconds");
+            console.log('Reconnecting in 30 seconds');
             Iconnected = false;
             setTimeout(connect, 30e3).unref();
         }
     });
 
-    client.on("error", function(err) {
+    client.on('error', function(err) {
         console.log(`Error on rcon for S${i}`, err.message);
     });
     await connect();
     return {
         send: client.send,
         get connected(){
-            return client.socket && client.socket.writable && client.authenticated && Iconnected
+            return client.socket && client.socket.writable && client.authenticated && Iconnected;
         }
-    }
+    };
 };

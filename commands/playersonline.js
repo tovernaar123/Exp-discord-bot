@@ -24,7 +24,7 @@ async function oneCommand(servernum, rcon) {
  * @returns {void}
 */
 async function allCommand(interaction, rcons) {
-    await interaction.editReply("Asked for all online players: Awaiting reply from servers...");
+    await interaction.editReply('Asked for all online players: Awaiting reply from servers...');
 
     const Embed = Discord.MessageEmbed();
 
@@ -40,7 +40,7 @@ async function allCommand(interaction, rcons) {
     let amount_of_empty_spaces = 3 - (amount_of_fields % 3);
     for (let i = 0; i < amount_of_empty_spaces; i++) {
         //add and empty to make it look nice 
-        Embed.addField(`\u200B`, `\u200B`, true);
+        Embed.addField('\u200B', '\u200B', true);
     }
 
     //Send the embed
@@ -58,17 +58,17 @@ class Playersonline extends Discord_Command {
                 description: 'The server to check for online players.',
                 usage: '<#number||"all">',
                 required: true,
-                type: "String",
+                type: 'String',
                 choices: [
-                    ['Sever 1', "1"],
-                    ['Sever 2', "2"],
-                    ['Sever 3', "3"],
-                    ['Sever 4', "4"],
-                    ['Sever 5', "5"],
-                    ['Sever 6', "6"],
-                    ['Sever 7', "7"],
-                    ['Sever 8', "8"],
-                    ['All servers', "all"],
+                    ['Sever 1', '1'],
+                    ['Sever 2', '2'],
+                    ['Sever 3', '3'],
+                    ['Sever 4', '4'],
+                    ['Sever 5', '5'],
+                    ['Sever 6', '6'],
+                    ['Sever 7', '7'],
+                    ['Sever 8', '8'],
+                    ['All servers', 'all'],
                 ]
             },
         ];
@@ -86,9 +86,6 @@ class Playersonline extends Discord_Command {
 
     async execute(interaction) {
         await interaction.deferReply();
-        let run_command = await super.execute(interaction);
-        if (!run_command) return;
-
         let server = await interaction.options.getString('server');
 
         if (server === 'all') {

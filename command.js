@@ -20,10 +20,12 @@ class Discord_Command {
 
         this.description = flags.description || 'No description given.';
         this.guildOnly = flags.guildOnly;
+        this.required_role = flags.required_role;
 
         this.args = flags.args;
         this.slash = true;
         this.slashbuilder = new Builders.SlashCommandBuilder();
+
     }
 
     static builders = {
@@ -111,17 +113,32 @@ class Discord_Command {
         return `/${this.name} ${usages.join(' ')}`;
     }
 
-    async execute(interaction) {
+    async authorize(interaction) {
+        if(this.required_role){
+            let role = await interaction.guild.roles.fetch(this.required_role);
+            let allowed = interaction.member.roles.highest.comparePositionTo(role) >= 0;
+            if (!allowed) {
+                interaction.reply(`You do not have ${role.name} permission.`);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    async _execute(interaction) {
         let cooldown_rec = this.cooldowns.get(interaction.user.id);
         if (cooldown_rec) {
             if (Date.now() - cooldown_rec < this.cooldown * 1000) {
                 await interaction.reply(this.cooldown_msg);
-                return false;
+                return;
             }
         }
         this.cooldowns.set(interaction.user.id, Date.now());
         console.log('Command: ' + this.name + ' has been executed.');
-        return true;
+
+        if(await this.authorize(interaction)) {
+            this.execute(interaction);
+        }
     }
 }
 
