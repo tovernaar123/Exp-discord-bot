@@ -106,13 +106,12 @@ function TimeObject(time) {
 
 }
 
-async function runCommand(server, rcon, interaction) {
+async function runCommand(server, rcon) {
     let json_data;
+    let embedfields = [];
     if (!rcon.connected) {
-        const Embed = Discord.MessageEmbed();
-        Embed.addField(`S${server} is not connected to the bot`, `S${server} offline`, false);
-        await interaction.editReply({ embeds: [Embed] });
-        return;
+        embedfields.push({name: `S${server} is not connected to the bot`, value: `S${server} offline`, inline: false});
+        return embedfields;
     }
 
     const responses = await rcon.send(rconToSend);
@@ -120,43 +119,41 @@ async function runCommand(server, rcon, interaction) {
     if (responses) {
         json_data = JSON.parse(responses);
     } else {
-        const Embed = Discord.MessageEmbed();
-        Embed.addField('No players online', '\u200B', false);
-        await interaction.editReply({ embeds: [Embed] });
+        embedfields.push({name: 'No players online', value: '\u200B', inline: false});
+        return embedfields;
     }
 
     // If Responses is blank (not normal).
     if (!json_data) {
-        await interaction.editReply('There was no response from the server, this is not normal for this command please ask an admin to check the logs.');
-        throw new Error('no response in the afk command');
+        throw new Error('no response in the afk command'); 
     }
 
     // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message *in kicks and bans only if player does nto exist or wrong santax
     if (json_data) {
-        const Embed = Discord.MessageEmbed();
         let length = Object.keys(json_data).length;
 
         if (length === 0) {
-            Embed.addField('No players online', '\u200B', false);
+            embedfields.push({name: 'No players online', value:'\u200B', inline: false});
         }
 
         for (let name in json_data) {
-            let time = json_data[name] / 60;
+            let time = json_data[name] / 60; //this is uses tick and the game runs at 60ups
             let {hours, minutes, seconds} = TimeObject(time);
             if (hours > 0) {
-                Embed.addField(`${name}:`, `${hours}h, ${minutes}m and ${seconds}s`, false);
+                embedfields.push({name: `${name}:`, value: `${hours}h, ${minutes}m and ${seconds}s`, inline: false});
             } else {
-                Embed.addField(`${name}:`, `${minutes}m and ${seconds}s`, false);
+                embedfields.push({name: `${name}:`, value: `${minutes}m and ${seconds}s`, inline: false});
             }
         }
-        await interaction.editReply({ embeds: [Embed] });
     }
-
+    return embedfields;
 }
 
 
-async function all_servers(server, rcon, msg) {
-    return {server, rcon, msg};
+async function all_servers(rcons, interaction) {
+    for(let i =0; i < rcons.length; i++){
+        let res = await runCommand(i, Discord_Command.Rcons[i], interaction);
+    }
 }
 
 class Adminsonline extends Discord_Command {
@@ -182,7 +179,10 @@ class Adminsonline extends Discord_Command {
             await all_servers(Discord_Command.Rcons, interaction).catch(this.error);
         } else {
             server = parseInt(server);
-            await runCommand(server, Discord_Command.Rcons[server], interaction).catch(this.error);
+            let res = await runCommand(server, Discord_Command.Rcons[server], interaction).catch(this.error);
+            const Embed = Discord.MessageEmbed();
+            Embed.addFields(...res);
+            await interaction.editReply({ embeds: [Embed] });
         }
     }
 }
