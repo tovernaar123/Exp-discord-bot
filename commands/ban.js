@@ -4,14 +4,7 @@ let Discord_Command = require('./../command.js');
 const net = require('net');
 let client = new net.Socket();
 
-//set a timeout for 30 sec and then reconect (it will try 5 times then stop);
 
-/*
-client.connect('/tmp/banlist_sync.sock', function () {
-            console.log('Connected to bansync.');
-            amount_of_times = 0;
-        });
-*/
 function GetReport(server, by_player, banned, reason) {
     let ban_report = new Discord.MessageEmbed();
     ban_report.addField('Ban', 'A player has been Banned', false);
@@ -64,18 +57,17 @@ class Ban extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            // eslint-disable-next-line no-undef
-            required_role: role.staff,
+            required_role: Discord_Command.roles.staff,
         });
     }
 
     async execute(interaction) {
         await interaction.deferReply();
-        let player = await interaction.options.getString('player_name');
-        let reason = await interaction.options.getString('reason') || 'No reason given.';
+        let player = interaction.options.getString('player_name');
+        let reason = interaction.options.getString('reason') || 'No reason given.';
         client.connect('/tmp/banlist_sync.sock', function () {
             client.write(JSON.stringify({ request: 'ban-player', player, reason }));
-            client.once('data', function (data) {
+            client.once('data', async function (data) {
                 data = String(data);
                 let json_data;
                 try {
@@ -87,12 +79,12 @@ class Ban extends Discord_Command {
                 console.log(`[BAN SYNC] => ${data}`);
     
                 if (json_data.success === true) {
-                    interaction.editReply(`${player} was banned on all servers for "${reason}".`);
+                    await interaction.editReply(`${player} was banned on all servers for "${reason}".`);
                     let ReportChannel = interaction.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
                     let report = GetReport('<internal>', interaction.user.username, player, reason);
                     ReportChannel.send({ embeds: [report] });
                 } else {
-                    interaction.editReply(`Their was an error tyring to ban ${player} with Ban sync trying rcon... (check logs)`);
+                    await interaction.editReply(`Their was an error tyring to ban ${player} with Ban sync trying rcon... (check logs)`);
                     normal_ban(player, reason, interaction);
                     console.error(json_data.error);
                 }

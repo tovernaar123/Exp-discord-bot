@@ -1,22 +1,39 @@
-const { Role } = require("discord.js");
-const Discord = require('discord.js');
+let Discord_Command = require('./../command.js');
 
-module.exports = {
-    name: 'unpindiscord',
-    aka: ['unpin', 'unpinpost',`discordpinun`],
-    description: 'Unpins a post in our discord. Must run command in the same channel as the message you want to unpin (Mod+ only)',
-    guildOnly: true,
-    args: true,
-    helpLevel: 'role.staff',
-    required_role: role.staff,
-    usage: `<id>`,
-    async execute(msg, args, _, internal_error) {
+class discord_unpin extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                name: 'message_id',
+                description: 'The message to unpin.',
+                required: true,
+                type: 'String'	
+            }
+        ];
+        super({
+            name: 'unpin',
+            description: 'Unpins the message by message id.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true,
+            required_role: Discord_Command.roles.staff,
+        });
+    }
 
-        let idToPin = args[0];
+    async execute(interaction) {
+        await interaction.deferReply();
+        
+        let message_id = interaction.options.getString('message_id');
+        try{
+            let msg = await interaction.channel.messages.fetch(message_id);
+            await msg.unpin();
+            await interaction.editReply(`Message ${message_id} has been unpinned in ${msg.channel.name}.`);
+        }catch{
+            await interaction.editReply(`Invalid message id: ${message_id}.`);
+        }
+    }
+}
 
-        msg.channel.messages.fetch(idToPin)
-            .then(msg => msg.unpin())
-            .then(console.log(`message ${idToPin} has been requested to be unpinned in ${msg.channel.name}`))
-            .catch((err) => { internal_error(err); return })
-    },
-};
+
+let command = new discord_unpin();
+module.exports = command;

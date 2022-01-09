@@ -25,6 +25,7 @@ class Discord_Command {
         this.args = flags.args;
         this.slash = true;
         this.slashbuilder = new Builders.SlashCommandBuilder();
+        this.Subcommands = [];
 
     }
 
@@ -36,6 +37,7 @@ class Discord_Command {
         'Role': Builders.SlashCommandRoleOption,
         'String': Builders.SlashCommandStringOption,
         'User': Builders.SlashCommandUserOption,	
+        'Subcommand': Builders.SlashCommandSubcommandBuilder,
     };
 
     static addoptions = {
@@ -46,29 +48,15 @@ class Discord_Command {
         'Role': 'addRoleOption',
         'String': 'addStringOption',
         'User': 'addUserOption',
+        'Subcommand': 'addSubcommand',
     };
     
-    AddOption(command, arg) {
-        if(!Discord_Command.builders[arg.type]) throw new Error('Invalid option type.');
-
-        let builder = new Discord_Command.builders[arg.type]();
-        if(arg.choices) builder.addChoices(arg.choices);
-        builder.setName(arg.name);
-        builder.setRequired(arg.required);
-        builder.setDescription(arg.description);
-        command[Discord_Command.addoptions[arg.type]](builder);
-    }
-
     static roles = {
         staff: '762264452611440653',
         admin: '764526097768644618',
         mod: '762260114186305546',
         board: '765920803006054431'
     };
-
-    error(error) {
-        console.error(error);
-    }
 
     static Rcons = [];
 
@@ -91,7 +79,48 @@ class Discord_Command {
                 ['All servers', 'all'],
             ]
         },
+        'server_NoAll': {  
+            name: 'server',
+            description: 'The server to run the command on.',
+            usage: '<#number||"all">',
+            required: true,
+            type: 'String',
+            choices: [
+                ['Sever 1', '1'],
+                ['Sever 2', '2'],
+                ['Sever 3', '3'],
+                ['Sever 4', '4'],
+                ['Sever 5', '5'],
+                ['Sever 6', '6'],
+                ['Sever 7', '7'],
+                ['Sever 8', '8'],
+            ]
+        }
     };
+    static client;
+
+
+    AddOption(command, arg) {
+        if(!Discord_Command.builders[arg.type]) throw new Error('Invalid option type.');
+
+        //add and create the subcommand
+        if(arg.type === 'Subcommand') {
+            arg.command.slashbuilder = new Builders.SlashCommandSubcommandBuilder();
+            arg.command.create_command();
+            let builder = arg.command.slashbuilder;
+            builder.type = 1;
+            this.Subcommands.push(arg.command);
+
+            return command[Discord_Command.addoptions[arg.type]](builder);
+        }
+
+        let builder = new Discord_Command.builders[arg.type]();
+        if(arg.choices) builder.addChoices(arg.choices);
+        builder.setName(arg.name);
+        builder.setRequired(arg.required);
+        builder.setDescription(arg.description);
+        command[Discord_Command.addoptions[arg.type]](builder);
+    }
 
     async create_command() {
         this.slashbuilder.setName(this.name);
@@ -104,11 +133,13 @@ class Discord_Command {
 
     async add_command(client) {
         this.create_command();
-        client.guilds.cache.get(process.env.guild).commands.create( this.slashbuilder);
+        client.guilds.cache.get(process.env.guild).commands.create(this.slashbuilder);
     }
 
     get usage() {
-        let usages = this.args.map((arg) => { return arg.usage; });
+        let usages = this.args.map((arg) => { 
+            return `<${arg.name}:${arg.type}>`;
+        });
 
         return `/${this.name} ${usages.join(' ')}`;
     }
@@ -137,7 +168,7 @@ class Discord_Command {
         console.log('Command: ' + this.name + ' has been executed.');
 
         if(await this.authorize(interaction)) {
-            this.execute(interaction);
+            this.execute(interaction).catch(console.error);
         }
     }
 }

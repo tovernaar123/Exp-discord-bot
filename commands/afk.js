@@ -21,15 +21,15 @@ async function runCommand(server, rcon) {
     const responses = await rcon.send(rconToSend);
 
     if (responses) {
-        try{
+        try {
             json_data = JSON.parse(responses);
-        }catch{
+        } catch {
             throw new Error('Malformed json in afk command');
-        }   
-    } 
+        }
+    }
 
-    if(!responses || Object.keys(json_data)?.length === 0 ){
-        embedfields.push({  name: `S${server}:`, value: 'No players online', inline: true });
+    if (!responses || Object.keys(json_data)?.length === 0) {
+        embedfields.push({ name: `S${server}:`, value: 'No players online', inline: true });
         return embedfields;
     }
 
@@ -67,7 +67,7 @@ async function all_servers(rcons, interaction) {
     await interaction.editReply({ embeds: [Embed] });
 }
 
-class Adminsonline extends Discord_Command {
+class Afk extends Discord_Command {
     constructor() {
         let args = [
             Discord_Command.common_args.server
@@ -84,13 +84,13 @@ class Adminsonline extends Discord_Command {
 
     async execute(interaction) {
         await interaction.deferReply();
-        
-        let server = await interaction.options.getString('server');
+
+        let server = interaction.options.getString('server');
         if (server === 'all') {
-            await all_servers(Discord_Command.Rcons, interaction).catch(this.error);
+            await all_servers(Discord_Command.Rcons, interaction).catch(console.error);
         } else {
             server = parseInt(server);
-            let res = await runCommand(server, Discord_Command.Rcons[server], interaction).catch(this.error);
+            let res = await runCommand(server, Discord_Command.Rcons[server], interaction).catch(console.error);
             const Embed = Discord.MessageEmbed();
             Embed.addFields(...res);
             await interaction.editReply({ embeds: [Embed] });
@@ -99,5 +99,5 @@ class Adminsonline extends Discord_Command {
 }
 
 
-let command = new Adminsonline();
+let command = new Afk();
 module.exports = command;

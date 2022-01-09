@@ -86,7 +86,7 @@ class Playersonline extends Discord_Command {
 
     async execute(interaction) {
         await interaction.deferReply();
-        let server = await interaction.options.getString('server');
+        let server = interaction.options.getString('server');
 
         if (server === 'all') {
             await interaction.editReply({ embeds: [await allCommand(interaction, Discord_Command.Rcons)] });

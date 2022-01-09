@@ -1,85 +1,113 @@
-const { Discord } = require("discord.js");
-
-let prefix = process.env.PREFIX;
-module.exports = {
-    name: 'help',
-    aka: ['helpme', 'h', 'a'],
-    description: 'List all of my commands or info about a specific command.',
-    aliases: ['commands'],
-    usage: '[command name]',
-    guildOnly: false,
-    cooldown: 5,
-    async execute(msg, args) {
-        const data = [];
-        const { commands } = msg.client;
-        if (!args.length && msg.channel.type == "GUILD_TEXT") {
-            let canKick = msg.member.permissions.has('KICK_MEMBERS');
-            let isStaff = msg.member.roles.cache.has(role.staff);
-            let isMod = msg.member.roles.cache.has(role.mod);
-            let isAdmin = msg.member.roles.cache.has(role.admin);
-            let isSadmin = msg.member.roles.cache.has(role.sadmin);
-            let isBoard = msg.member.roles.cache.has(role.board);
-            data.push(`Only commands you have access to will be listed: (Your permissions ->): *Board:${isBoard}, Staff:${isStaff}, Mod:${isMod} , Admin:${isAdmin}, Senior Admin:${isSadmin}* `);
-            data.push('\nHere\'s a list of all my commands:\n**Public Commands**');
-            let commandList = commands
-                .filter(command => command.required_role != role.board)
-                .filter(command => command.required_role != role.staff)
-                .filter(command => command.required_role != role.admin)
-                .filter(command => command.helpLevel != "owner")
-                .map(command => command.name).join(', ');
-
-            data.push(`\`${commandList}\``);
-            //Semi Restricted Public Items//
-            data.push(`**Special (semi-public) Commands:**`);
-            let semiPublic = commands.filter(command => command.helpLevel === "all").map(command => command.name).join(', ');
-            data.push(`\`${semiPublic}\``);
-            //Board+//
-            if (isBoard || isStaff) {
-                data.push(`**Board Member(s) Commands:**`);
-                let boardStuff = commands.filter(command => command.required_role === role.board).map(command => command.name).join(', ');
-                data.push(`\`${boardStuff}\``);
-
+let Discord_Command = require('./../command.js');
+class Help extends Discord_Command {
+    constructor() {
+        let commands = Discord_Command.client.commands.map(
+            (command) => {
+                return [command.name, command.name];
             }
-            if (canKick || isStaff || isAdmin || isMod || isSadmin) {
-                data.push(`**Staff (role) Commands:**`);
-                //data.push(commands.filter(command => command.required_role === "bob").map(command =>command.name).join('\n'));
-                //data.push(commands.filter(command => command.required_role === role.admin).map(command =>command.name).join('\n'));
-                let staffStuff = commands.filter(command => command.required_role === role.staff).map(command => command.name).join(', ');
-                data.push(`\`${staffStuff}\``)
-            } if (isAdmin || isSadmin) {
-                data.push(`**Amdin (role) Commands:**`);
-                let adminStuff = commands.filter(command => command.required_role === role.admin).map(command => command.name).join(', ');
-                data.push(`\`${adminStuff}\``);
+        );
+        let args = [
+            {
+                name: 'command',
+                type: 'String',
+                required: false,
+                description: 'The command to get info on.',
+                choices: commands
+            },
+            {
+                name: 'argument',
+                type: 'String',
+                required: false,
+                description: 'The argument to get info on.',
             }
-            data.push(`\nYou can send \`${prefix} help [command name]\` to get info on a specific command!`);
-            return msg.author.send(data.join('\n'))// + `K${canKick},S${isStaff},A${isAdmin},B${isBoard} ... \n Check:`+ role.staff +"staff", { split: true })
-                .then(() => {
-                    if (msg.channel.type === 'dm') return;
-                    msg.reply('I\'ve sent you a DM with all my commands!');
-                })
-                .catch(error => {
-                    console.error(`Could not send help DM to ${msg.author.tag}.\n`, error);
-                    msg.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
-                });
+        ];
+        super({
+            name: 'help',
+            aka: ['helpme', 'h', 'a'],
+            description: 'Get a list of all my commands or get info about a specific command.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true
+        });
+    }
 
-        } else if (!args.length) {
-            return msg.reply(`You can send \`${prefix} help [command name]\` to get info on a specific command! or \`${prefix} help\` any any guild that the bot is in for a full list of commands`);
+    async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true });
+        let command_name = interaction.options.getString('command');
+        let argument = interaction.options.getString('argument');
+        if (command_name) {
+            let cmd = Discord_Command.client.commands.find(c => c.name === command_name || c.aka?.includes(command_name));
+            if (!cmd) {
+                await interaction.editReply('That\'s not a valid command!');
+                return;
+            }
+            if (argument) {
+                let arg = cmd.args.find(a => a.name === argument);
+                if (!arg) {
+                    await interaction.editReply('That\'s not a valid argument!');
+                    return;
+                }
+                await interaction.editReply(`**Name:** ${arg.name}\n**Type:** ${arg.type}\n**Required:** ${arg.required}\n**Description:** ${arg.description}`);
+                return;
+            }
+            let data = [];
+            data.push(`**Name:** ${cmd.name}`);
+            if (cmd.aka) data.push(`**Aliases:** ${cmd.aka.join(', ')}`);
+            if (cmd.description) data.push(`**Description:** ${cmd.description}`);
+            if (cmd.usage) data.push(`**Usage:** ${cmd.usage}`);
+            data.push(`**Cooldown:** ${cmd.cooldown || 5} second(s)`);
+            await interaction.editReply(data.join('\n'));
+        } else {
+            if (this.required_role) {
+                let role = await interaction.guild.roles.fetch(this.required_role);
+                let allowed = interaction.member.roles.highest.comparePositionTo(role) >= 0;
+                if (!allowed) {
+                    interaction.reply(`You do not have ${role.name} permission.`);
+                    return false;
+                }
+            }
+            let admin = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.admin)) >= 0;
+            let mod = (interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.mod)) >= 0) || admin;
+            let staff = (interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.staff)) >= 0) || mod;
+            let board = (interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.board)) >= 0) || staff;
+
+            let data = [];
+            data.push('Here\'s a list of all my commands (that you can use):\n');
+
+            if (admin) {
+                data.push('**Admin Commands**');
+                let adminCommands = Discord_Command.client.commands.filter(cmd => cmd.required_role === Discord_Command.roles.admin);
+                data.push(adminCommands.map(cmd => `\`${cmd.name}\``).join(', '));
+            }
+
+            if (mod) {
+                data.push('**Mod Commands**');
+                let ModCommands = Discord_Command.client.commands.filter(cmd => cmd.required_role === Discord_Command.roles.mod);
+                data.push(ModCommands.map(cmd => `\`${cmd.name}\``).join(', '));
+            }
+
+            if (staff) {
+                data.push('**Staff Commands**');
+                let staffCommands = Discord_Command.client.commands.filter(cmd => cmd.required_role === Discord_Command.roles.staff);
+                data.push(staffCommands.map(cmd => `\`${cmd.name}\``).join(', '));
+            }
+
+            if (board) {
+                data.push('**Board Commands**');
+                let boardCommands = Discord_Command.client.commands.filter(cmd => cmd.required_role === Discord_Command.roles.board);
+                data.push(boardCommands.map(cmd => `\`${cmd.name}\``).join(', '));
+            }
+
+
+            data.push('**Public Commands**');
+            let publicCommands = Discord_Command.client.commands.filter(cmd => !cmd.required_role);
+            data.push(publicCommands.map(cmd => `\`${cmd.name}\``).join(', '));
+
+            data.push('\nYou can send `/help [command name]` to get info on a specific command!');
+            await interaction.editReply(data.join('\n'));
+
         }
-
-        const name = args[0].toLowerCase();
-        const command = commands.get(name) || commands.find(c => c.aka && c.aka.includes(name));
-
-        if (!command) {
-            return msg.reply('that\'s not a valid command!');
-        }
-
-        data.push(`**Name:** ${command.name}`);
-
-        if (command.aka) data.push(`**Aliases:** ${command.aka.join(', ')}`);
-        if (command.description) data.push(`**Description:** ${command.description}`);
-        if (command.usage) data.push(`**Usage:** ${prefix} ${command.name} ${command.usage}`);
-
-        data.push(`**Cooldown:** ${command.cooldown || 30} second(s)`);
-        msg.channel.send(data.join('\n'));
-    },
-};
+    }
+}
+let command = new Help();
+module.exports = command;

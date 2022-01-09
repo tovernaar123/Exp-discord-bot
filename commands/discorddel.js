@@ -1,39 +1,42 @@
-const { Role } = require("discord.js");
+let Discord_Command = require('./../command.js');
+class discord_delete extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                name: 'amount',
+                description: 'The amount of posts you want to delete.',
+                required: true,
+                type: 'Integer'	
+            }
+        ];
+        super({
+            name: 'delete',
+            description: 'Delets the requested amount of posts in this channel.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true,
+            required_role: Discord_Command.roles.admin,
+        });
+    }
 
-module.exports = {
-    name: 'del',
-    aka: ['delete', 'dels'],
-    description: 'delete posts (Admin/Mod only command)',
-    guildOnly: true,
-    args: true,
-    helpLevel: 'role.admin',
-    required_role: role.admin,
-    usage: `<num of posts>`,
-    async execute(msg, args, _, internal_error) {
-        const bulknum = Math.floor(Number(args[0]));
-        if (!bulknum) {
-            msg.channel.send('please pick a number first');
-            console.log(`wanted to delete but did not tell us how many posts`);
+    async execute(interaction) {
+        await interaction.deferReply();
+        
+        let amount = interaction.options.getInteger('amount');
+        if (amount > 20) {
+            await interaction.editReply('You can`t delete more than 20 messages at once!'); // makes sure less than 20 posts
+            return;
+        }
+        if (amount < 1) {
+            await interaction.editReply('You have to delete at least 1 message!'); // makes sure 1 or more posts  
             return;
         }
 
-        if (isNaN(bulknum)) { // Checks if the `amount` parameter is a number. If not, the command throws an error
-            msg.reply('The amount parameter isn`t a number!');
-            console.log(`Not a number`);
-            return;
-        }
-        if (bulknum > 20) {
-            msg.reply('You can`t delete more than 20 messages at once!'); // makes sure less than 20 posts
-            return;
-        }
-        if (bulknum < 1) {
-            msg.reply('You have to delete at least 1 message!'); // makes sure 1 or more posts  
-            return;
-        }
+        let messages = await interaction.channel.messages.fetch({ limit: amount });
+        await interaction.channel.bulkDelete(messages);
+    }
+}
 
-        msg.channel.messages.fetch({ limit: bulknum }).then(messages => { // finds (feteches) messages
-            msg.channel.bulkDelete(messages).catch((err) => { internal_error(err); return });
-        }).catch((err) => { internal_error(err); return });
 
-    },
-};
+let command = new discord_delete();
+module.exports = command;

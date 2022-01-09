@@ -8,27 +8,28 @@ const Discord = require('discord.js');
 const { Client, Intents } = require('discord.js');
 
 const client = new Client({ partials: ['CHANNEL'], intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
+Discord_Command.client = client;
 
 //Rcon script
 const { rcon_connect } = require('./rcon_auto_connect.js');
 const baseport = 34228;
 
 //Get commands
-const fs = require('fs');
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = require('./file_loader.json');
 const prefix = '.exp';
 let rcons = {};
+
 //global for all commands to use this object
-/*
+// eslint-disable-next-line no-global-assign
 role = {
     staff: '762264452611440653',
     admin: '764526097768644618',
     mod: '762260114186305546',
     board: '765920803006054431'
 };
-*/
 
 
+/*
 role = {
     staff: '482924291084779532',
     admin: '290940523844468738',
@@ -36,9 +37,9 @@ role = {
     board: '693500936491892826',
     sadmin: '446066482007244821'
 };
-
+*/
 //array for all ofline servers
-let offline_servers = [2, 6, 7, 8];
+let offline_servers = [];
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed;
@@ -87,15 +88,16 @@ client.on('ready', async () => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, '');     // delete the dot and everything after
     console.log(`${date_string}: I am ready!`);
-    client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+    //client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
     client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
     //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
     
     //void all slash commands
     //await client.guilds.cache.get('762249085268656178').commands.set([]);
 
-    //instantiate the list of commands 
+    //instantiate the list of commands
     client.commands = new Discord.Collection();
+
     for (const file of commandFiles) {
         //require to file so its loaded
         const command = require(`./commands/${file}`);
@@ -114,7 +116,16 @@ client.on('interactionCreate', async interaction => {
 
     const { commandName } = interaction;
 
-    await client.commands.get(commandName)._execute(interaction);
+    let command = client.commands.get(commandName);
+    if(!command){ await interaction.reply('Command not found'); return; }
+
+    if(command.Subcommands.length > 0) {
+        let name = interaction.options.getSubcommand();
+        command = command.Subcommands.find((c) => c.name === name);
+        await command._execute(interaction);
+    }else{
+        await command._execute(interaction);
+    }
 
 
 });

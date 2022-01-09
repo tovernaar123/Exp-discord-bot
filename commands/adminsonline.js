@@ -80,7 +80,7 @@ class Adminsonline extends Discord_Command {
     async execute(interaction) {
         await interaction.deferReply();
 
-        let server = await interaction.options.getString('server');
+        let server = interaction.options.getString('server');
         if (server === 'all') {
             await all_servers(Discord_Command.Rcons, interaction);
         } else {
