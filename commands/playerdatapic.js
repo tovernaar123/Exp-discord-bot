@@ -13,9 +13,9 @@ function playerdata3command(name, msg) {
             return 0;
         } else {
             let i = Math.round(Number(x) * 100) / 100;
-            var d = i.toFixed(nd).split(".");
+            var d = i.toFixed(nd).split('.');
             try {
-                return d[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (d[1] ? "." + d[1] : "");
+                return d[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (d[1] ? '.' + d[1] : '');
             } catch (e) {
                 return 0;
             }
@@ -111,24 +111,55 @@ function playerdata3command(name, msg) {
 
     // Find "items" from datastore 
     // get raw data
-    let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json'); 
+    //let rawdata = fs.readFileSync('/home/exp_admin/api_v2/persistent_storage.json'); 
     // Take raw data and change it into Json format, to make it simpler to format/lookup
-    let mydata = JSON.parse(rawdata);
+    //let mydata = JSON.parse(rawdata);
+    let mydata = {
+        PlayerData:{
+            tovernaar123:{
+                Statistics:{
+                    'MapsPlayed': 24,
+                    'JoinCount': 51,
+                    'Playtime': 1715,
+                    'CommandsUsed': 325,
+                    'DistanceTravelled': 373267,
+                    'ItemsCrafted': 7043,
+                    'RocketsLaunched': 844,
+                    'ItemsPickedUp': 31452,
+                    'ChatMessages': 1183,
+                    'MachinesBuilt': 14622,
+                    'MachinesRemoved': 8716,
+                    'AfkTime': 38,
+                    'ResearchCompleted': 87,
+                    'OreMined': 3,
+                    'TilesBuilt': 299,
+                    'DeconstructionPlannerUsed': 178,
+                    'TreesDestroyed': 6414,
+                    'EntityRepaired': 2074,
+                    'CapsulesUsed': 380,
+                    'DamageDealt': 95055,
+                    'Kills': 749,
+                    'Deaths': 2
+                }
+            }
+        }
+
+    };
     // Use the key to look up the player data, for this current data key needs to be the player name to look up.
     // in dataFile
     let key1 = `${name}`;
     // check data is the parsed data, but only the PlayerData, and that that matches the key1 (name)
-    let checkdata = mydata["PlayerData"][key1];
+    let checkdata = mydata['PlayerData'][key1];
     // Checks to see if any data was retured at all, if the name is not in the database, or the database is not accessable than it will return an error and stop running the command
 
     if (!checkdata) {
         msg.channel.send('Error: Name not found. Check the name or try again later.');
-        console.log(`Name not found`);
+        console.log('Name not found');
         return;
     }
 
     // if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc)
-    let finaldata = mydata["PlayerData"][key1]["Statistics"];
+    let finaldata = mydata['PlayerData'][key1]['Statistics'];
 
     let channel = msg.channel;
     let result = profile(finaldata);
@@ -154,12 +185,12 @@ function playerdata3command(name, msg) {
 
     // font-weight:bold
     let html_code = ['<html>\n<head>\n<title></title>\n</head>\n<body style="background-color:' + html_background_color + '"><hr style="height:5px; visibility:hidden;margin:0px;border:0px;">',
-    '<h2 style="width:100%;text-align:center;border-bottom:1px solid ' + html_table_border_color + ';line-height:0.1em;margin:10px 0 20px;color:' + html_font_color + '"><span style="background-color:' + html_background_color + ';padding:0 10px;font-family:' + html_font_family + ';">Data</span></h2>',
-    '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Player data requested by: ' + msg.author + ' </p>',
-    '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Username: ' + lookup + ' </p>',
-    '<table style="border-collapse:collapse;width=' + html_table_width_total + 'px;">']
+        '<h2 style="width:100%;text-align:center;border-bottom:1px solid ' + html_table_border_color + ';line-height:0.1em;margin:10px 0 20px;color:' + html_font_color + '"><span style="background-color:' + html_background_color + ';padding:0 10px;font-family:' + html_font_family + ';">Data</span></h2>',
+        '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Player data requested by: ' + msg.author + ' </p>',
+        '<p style="font-family:' + html_font_family + ';font-size:' + html_font_size + ';color:' + html_font_color + '">Username: ' + lookup + ' </p>',
+        '<table style="border-collapse:collapse;width=' + html_table_width_total + 'px;">'];
 
-    let table_td_style = '<td style="padding:5px;border:1px solid ' + html_table_border_color + ';font-family:' + html_font_family + ';font-size:' + html_font_size + ';text-align:left;color:' + html_font_color + ';'
+    let table_td_style = '<td style="padding:5px;border:1px solid ' + html_table_border_color + ';font-family:' + html_font_family + ';font-size:' + html_font_size + ';text-align:left;color:' + html_font_color + ';';
     let table_td_width = ['width:' + html_table_width[0] + 'px;">', 'width:' + html_table_width[1] + 'px;">'];
 
     // Table Contents
@@ -186,19 +217,20 @@ function playerdata3command(name, msg) {
             const browser = await puppeteer.launch({
                 args: ['--no-sandbox', '--disable-setuid-sandbox'],
             });
-            const page = await browser.newPage()
+            const page = await browser.newPage();
             await page.setViewport({
                 width: html_table_width_total,
                 height: html_body_height,
                 deviceScaleFactor: 1,
             });
             // page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
-            await page.setContent(html_code.join('\n'))
-            await page.screenshot({ path: './.cache/graph.png' })
-            await browser.close()
-            await channel.send({ files: ['./.cache/graph.png'] })
+            await page.setContent(html_code.join('\n'));
+            console.log(html_code.join('\n'));
+            await page.screenshot({ path: './.cache/graph.png' });
+            await browser.close();
+            await channel.send({ files: ['./.cache/graph.png'] });
         })().catch((err) => {
-            console.log(err)
+            console.log(err);
         });
     } catch (e) {
         channel.send('Error when creating image.');
@@ -214,8 +246,8 @@ module.exports = {
     description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
     guildOnly: true,
     args: false,
-    helpLevel: "all",
-    usage: ` <name>`,
+    helpLevel: 'all',
+    usage: ' <name>',
     async execute(msg, args, _, internal_error) {
         async function runCommand() {
             //board
@@ -228,7 +260,7 @@ module.exports = {
                     // If the user is authorized to use the command and supplied a name
                     playerdata3command(name, msg);
                 } else {
-                    msg.channel.send(`Error: You are not authorized to perform this action.`);
+                    msg.channel.send('Error: You are not authorized to perform this action.');
                 }
             } else {
                 // User doesnt need to get authorized for a self lookup
