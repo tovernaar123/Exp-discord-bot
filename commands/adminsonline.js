@@ -1,3 +1,4 @@
+/*eslint require-await: "error"*/
 const Discord = require('discord.js');
 const rconToSend = '/sc local admins, ctn = {}, 0 for _, p in ipairs(game.connected_players) do if p.admin then ctn = ctn + 1 admins[ctn] = p.name end end rcon.print(\'Online(\'..ctn..\') : \\n\'..table.concat(admins, \'\\n\'))'; //get Admins, then add count, then display.
 let Discord_Command = require('./../command.js');
@@ -43,7 +44,6 @@ async function runCommand(server, rcon, interaction) {
 async function all_servers(rcons, interaction) {
     await interaction.editReply('Asked for all online admins: Awaiting reply from servers...');
     const Embed = Discord.MessageEmbed();
-
     //adds fields for every server
     let amount_of_fields = 0;
     for (let i = 1; i < 9; i++) {
