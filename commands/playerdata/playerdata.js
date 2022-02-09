@@ -3,7 +3,7 @@
 //this helpLevel:"all" is required to show up on "semi public commands" it is not needed if the regular command was not restricted to role.board
 const Discord = require('discord.js');
 const fs  = require('fs');
-
+/*
 function playerdata2command(name, msg) {
     //thousands separator
     function ts(x, nd) {
@@ -211,3 +211,33 @@ module.exports = {
         runCommand();
     },
 };
+*/
+
+let Discord_Command = require('./../command.js');
+class Playerdata extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                name: 'name',
+                description: 'The name of the player to lookup',
+                required: true,
+                type: 'string',
+            }
+        ];
+        super({
+            name: 'Playerdata',
+            aka: [''],
+            description: 'Returns a foto of the player\'s data',
+            cooldown: 5,
+            args: args,
+            guildOnly: true
+        });
+    }
+
+    async execute(interaction) {
+        await interaction.deferReply();
+        let name = interaction.options.getString('name');
+    }
+}
+let command = new Playerdata();
+module.exports = command;

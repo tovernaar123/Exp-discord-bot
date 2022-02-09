@@ -60,3 +60,32 @@ module.exports = {
         }
     },
 };
+
+let Discord_Command = require('./../../command.js');
+class Playerdata extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                name: 'name',
+                description: 'The name of the player to lookup',
+                required: true,
+                type: 'string',
+            }
+        ];
+        super({
+            name: 'Playerdata',
+            aka: [''],
+            description: 'Returns a foto of the player\'s data',
+            cooldown: 5,
+            args: args,
+            guildOnly: true
+        });
+    }
+
+    async execute(interaction) {
+        await interaction.deferReply();
+        let name = interaction.options.getString('name');
+    }
+}
+let command = new Playerdata();
+module.exports = command;
