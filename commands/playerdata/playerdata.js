@@ -1,8 +1,7 @@
 //player data storage access with new format
 //required_role has an exception for the user to look upthemselves, nothing needed here it is handeled in infoBot.js...
 //this helpLevel:"all" is required to show up on "semi public commands" it is not needed if the regular command was not restricted to role.board
-const Discord = require('discord.js');
-const fs  = require('fs');
+
 /*
 function playerdata2command(name, msg) {
     //thousands separator
@@ -212,8 +211,40 @@ module.exports = {
     },
 };
 */
-
+let Eta = require('eta');
 let Discord_Command = require('./../command.js');
+const Discord = require('discord.js');
+const fs = require('fs');
+const { table } = require('console');
+
+
+var grid_layout = {
+    'Playtime': 'Play Time',
+    'AfkTime': 'AFK Time',
+    'MapsPlayed': 'Maps Played',
+    'JoinCount': 'Join Count',
+    'ChatMessages': 'Chat Messages',
+    'CommandsUsed': 'Commands',
+    'RocketsLaunched': 'Rockets Launched',
+    'ResearchCompleted': 'Research Completed',
+    'MachinesBuilt': 'Machines Built',
+    'MachinesRemoved': 'Machines Removed',
+    'TilesBuilt': 'Tiles Placed',
+    'TilesRemoved': 'Tiles Removed',
+    'TreesDestroyed': 'Trees Destroyed',
+    'OreMined': 'Ore Mined',
+    'ItemsCrafted': 'Items Crafted',
+    'ItemsPickedUp': 'Items Picked Up',
+    'Kills': 'Kills',
+    'Deaths': 'Deaths',
+    'DamageDealt': 'Damage Dealt',
+    'DistanceTravelled': 'Distance Travelled',
+    'CapsulesUsed': 'Capsules Used',
+    'EntityRepaired': 'Machines Repaired',
+    'DeconstructionPlannerUsed': 'Decon Planner Used',
+    'MapTagsMade': 'Map Tags Created'
+};
+
 class Playerdata extends Discord_Command {
     constructor() {
         let args = [
@@ -236,7 +267,43 @@ class Playerdata extends Discord_Command {
 
     async execute(interaction) {
         await interaction.deferReply();
+        let grid = [];
         let name = interaction.options.getString('name');
+        console.log(name);
+        let stats = {
+            'MapsPlayed': 24,
+            'JoinCount': 51,
+            'Playtime': 1715,
+            'CommandsUsed': 325,
+            'DistanceTravelled': 373267,
+            'ItemsCrafted': 7043,
+            'RocketsLaunched': 844,
+            'ItemsPickedUp': 31452,
+            'ChatMessages': 1183,
+            'MachinesBuilt': 14622,
+            'MachinesRemoved': 8716,
+            'AfkTime': 38,
+            'ResearchCompleted': 87,
+            'OreMined': 3,
+            'TilesBuilt': 299,
+            'DeconstructionPlannerUsed': 178,
+            'TreesDestroyed': 6414,
+            'EntityRepaired': 2074,
+            'CapsulesUsed': 380,
+            'DamageDealt': 95055,
+            'Kills': 749,
+            'Deaths': 2
+        };
+
+
+
+        let data = fs.readFileSync('./grid.eta', 'utf8');
+        let html = Eta.render(data, grid);
+
+        for (const [json_key, grid_name] of grid_layout) {
+            let value = stats[json_key];
+            table[table.length] = [];
+        }
     }
 }
 let command = new Playerdata();
