@@ -1,5 +1,6 @@
 //player data storage access
 const fs = require('fs');
+const puppeteer = require('puppeteer');
 
 function playerdata1command(name, msg) {
     // Find "items" from datastore 
@@ -69,11 +70,11 @@ class Playerdata extends Discord_Command {
                 name: 'name',
                 description: 'The name of the player to lookup',
                 required: true,
-                type: 'string',
+                type: 'String',
             }
         ];
         super({
-            name: 'Playerdata',
+            name: 'playerdatajson',
             aka: [''],
             description: 'Returns a foto of the player\'s data',
             cooldown: 5,

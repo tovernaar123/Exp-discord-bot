@@ -7,19 +7,9 @@
             border-collapse:collapse;
             width:680px;
         }
-        .grid > tr:nth-child(even){
-            padding:5px;
-            border:1px solid #6F6F6F;
-            font-family:Helvetica;
-            font-size:1em;
-            text-align:left;
-            color:#F0F0F0;
-            width:200px;
-        }
-
-        .grid > tr:nth-child(odd){
-            padding:5px;
-            border:1px solid #6F6F6F;
+        td {
+            padding:5px !important;
+            border:1px solid #6F6F6F !important;
             font-family:Helvetica;
             font-size:1em;
             text-align:left;
@@ -35,7 +25,7 @@
             color:#F0F0F0;
         }
     </style>
-    <body style="background-color:#4F4F4F">
+    <body style="background-color:#2f3136">
         <hr style="height:5px; visibility:hidden;margin:0px;border:0px;">
         <h2 class="title">
             <span style="background-color:#4F4F4F;padding:0 10px;font-family:Helvetica;">Data</span>
@@ -43,11 +33,17 @@
         <p style="font-family:Helvetica;font-size:1em;color:#F0F0F0">Player data requested by: 420204969027698688 </p>
         <p style="font-family:Helvetica;font-size:1em;color:#F0F0F0">Username: tovernaar123 </p>
         <table class="grid">
-        <% for (let row of it.table) { %>
+        <% let i = 0 %>
+        <% for (let row of it.grid) { %>
             <tr>
-
             <% for (let entry of row) { %>
-                <td><%= entry %></td>
+                <% if(i % 2 === 0) { %>
+                    <td style="width:200px"><%= entry %></td>
+                <%} else {%>
+                    <td style="width:140px;"><%= entry %></td>
+                <%}%>
+                <% i = i + 1%>
+                <% console.log(i) %>
             <%}%>
 
             </tr>

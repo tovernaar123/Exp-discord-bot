@@ -212,10 +212,10 @@ module.exports = {
 };
 */
 let Eta = require('eta');
-let Discord_Command = require('./../command.js');
+let Discord_Command = require('./../../command.js');
 const Discord = require('discord.js');
 const fs = require('fs');
-const { table } = require('console');
+const puppeteer = require('puppeteer');
 
 
 var grid_layout = {
@@ -245,6 +245,7 @@ var grid_layout = {
     'MapTagsMade': 'Map Tags Created'
 };
 
+
 class Playerdata extends Discord_Command {
     constructor() {
         let args = [
@@ -252,11 +253,11 @@ class Playerdata extends Discord_Command {
                 name: 'name',
                 description: 'The name of the player to lookup',
                 required: true,
-                type: 'string',
+                type: 'String',
             }
         ];
         super({
-            name: 'Playerdata',
+            name: 'playerdata',
             aka: [''],
             description: 'Returns a foto of the player\'s data',
             cooldown: 5,
@@ -267,7 +268,7 @@ class Playerdata extends Discord_Command {
 
     async execute(interaction) {
         await interaction.deferReply();
-        let grid = [];
+
         let name = interaction.options.getString('name');
         console.log(name);
         let stats = {
@@ -297,13 +298,49 @@ class Playerdata extends Discord_Command {
 
 
 
-        let data = fs.readFileSync('./grid.eta', 'utf8');
-        let html = Eta.render(data, grid);
+        let data = fs.readFileSync('./commands/playerdata/grid.eta', 'utf8');
 
-        for (const [json_key, grid_name] of grid_layout) {
+        //The grid is a 2d array of strings.
+        //The number of columns in the grid.
+        let colums = 4;
+
+
+        let grid = [];
+
+        //The index so that the data can be split into rows.
+        let i = 0;
+        //Loop over all the required item for the grid.
+        for (const [json_key, grid_name] of Object.entries(grid_layout)) {
+
             let value = stats[json_key];
-            table[table.length] = [];
+            if(!value) value = 'fix this';
+
+            //if we have more then the required columns, we need to split the data into a new row.
+            if(i % colums === 0  || i === 0) grid[grid.length] = [];
+
+            //Add the data to the grid.
+            grid[grid.length - 1].push(grid_name);
+            grid[grid.length - 1].push(value);
+
+            //plus 2 cause we add both name and value.
+            i = i + 2;
         }
+        let html = Eta.render(data, {grid});
+
+        const browser = await puppeteer.launch({
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        });
+        const page = await browser.newPage();
+        page.setJavaScriptEnabled(false);
+        await page.setViewport({
+            width: 680,
+            height: 600,
+            deviceScaleFactor: 1,
+        });
+        await page.setContent(html);
+        await page.screenshot({ path: './.cache/profile.png' });
+        await browser.close();
+        await interaction.editReply({ files: ['./.cache/profile.png'] });
     }
 }
 let command = new Playerdata();

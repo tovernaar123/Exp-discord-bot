@@ -115,7 +115,7 @@ function playerdata3command(name, msg) {
     // Take raw data and change it into Json format, to make it simpler to format/lookup
     //let mydata = JSON.parse(rawdata);
     let mydata = {
-        PlayerData:{
+        PlayerDat:{
             tovernaar123:{
                 Statistics:{
                     'MapsPlayed': 24,
