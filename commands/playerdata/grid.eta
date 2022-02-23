@@ -1,46 +1,65 @@
-<html>
 <head>
-<title></title>
+    <title></title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
-    <style>
-        .grid {
-            border-collapse:collapse;
-            width:680px;
-        }
-        td {
-            padding:5px !important;
-            border:1px solid #6F6F6F !important;
-            font-family:Helvetica;
-            font-size:1em;
-            text-align:left;
-            color:#F0F0F0;
-            width:140px;
-        }
-        .title {
-            width:100%;
-            text-align:center;
-            border-bottom:1px solid #6F6F6F;
-            line-height:0.1em;
-            margin:10px 0 20px;
-            color:#F0F0F0;
-        }
-    </style>
-    <body style="background-color:#2f3136">
-        <hr style="height:5px; visibility:hidden;margin:0px;border:0px;">
-        <h2 class="title">
-            <span style="background-color:#4F4F4F;padding:0 10px;font-family:Helvetica;">Data</span>
-        </h2>
-        <p style="font-family:Helvetica;font-size:1em;color:#F0F0F0">Player data requested by: 420204969027698688 </p>
-        <p style="font-family:Helvetica;font-size:1em;color:#F0F0F0">Username: tovernaar123 </p>
-        <table class="grid">
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #222831
+    }
+    
+    .grid {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    td {
+        padding: 5px !important;
+        border: 1px solid #00ADB5 !important;
+        font-size: 1em;
+        text-align: left;
+        color: #F0F0F0;
+        width: 140px;
+    }
+    
+    td.first {
+        width: 30%;
+        font-weight: 700;
+    }
+    
+    td.second {
+        width: 20%;
+        font-weight: 400;
+    }
+    
+    .title {
+        width: 100%;
+        text-align: center;
+        margin: 5px 0 5px;
+        color: #F0F0F0;
+    }
+    
+    p {
+        font-size: 1em;
+        color: #F0F0F0;
+    }
+</style>
+
+<body>
+    <h2 class="title">
+        Data
+    </h2>
+    <p><strong>Player data requested by:</strong> 420204969027698688 </p>
+    <p><strong>Username:</strong> tovernaar123 </p>
+    <table class="grid">
         <% let i = 0 %>
         <% for (let row of it.grid) { %>
             <tr>
             <% for (let entry of row) { %>
                 <% if(i % 2 === 0) { %>
-                    <td style="width:200px"><%= entry %></td>
+                    <td class="first"><%= entry %></td>
                 <%} else {%>
-                    <td style="width:140px;"><%= entry %></td>
+                    <td class="second"><%= entry %></td>
                 <%}%>
                 <% i = i + 1%>
                 <% console.log(i) %>
@@ -50,5 +69,6 @@
         <% } %>
 
         </table>
-    </body>
+</body>
+
 </html>
