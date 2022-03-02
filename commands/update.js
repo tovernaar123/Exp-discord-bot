@@ -1,13 +1,6 @@
-let { spawn } = require('child_process');
-let shell = spawn('/bin/bash');
+let { spawnSync } = require('child_process');
 
-shell.stdout.on('data', data => {
-    console.log(`[SHELL]: ${data}`);
-});
 
-shell.stderr.on('data', data => {
-    console.error(`[SHELL ERROR]: ${data}`);
-});
 
 let Discord_Command = require('./../command.js');
 class Update extends Discord_Command {
@@ -47,10 +40,19 @@ class Update extends Discord_Command {
     async execute(interaction) {
         await interaction.deferReply();
         let branch = interaction.options.getString('branch');
-
-        shell.stdin.write(`git fetch; git checkout origin/${branch}\n`);
+        let res = spawnSync('git', ['fetch']);
+        res = spawnSync('git', ['checkout', `origin/${branch}`]);
+        if (res.stdout) console.log(res.stdout.toString());
+        if (res.stderr) console.log(res.stderr.toString());
+        // shell.stdin.write(`git fetch; git checkout origin/${branch}\n`);
         await interaction.editReply('Updating bot will restart now');
-        shell.stdin.write('npm i; pm2 restart infoBot\n');
+        res = spawnSync('npm', ['install']);
+        if (res.stdout) console.log(res.stdout.toString());
+        if (res.stderr) console.log(res.stderr.toString());
+        res = spawnSync('pm2', ['restart', 'infoBot']);
+        if (res.stdout) console.log(res.stdout.toString());
+        if (res.stderr) console.log(res.stderr.toString());
+        // shell.stdin.write('npm i; pm2 restart infoBot\n');
     }
 }
 let command = new Update();

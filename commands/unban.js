@@ -26,7 +26,7 @@ async function normal_unban(player, reason, interaction) {
     await rcon.send(`/sc unban ${player}`);
 
     //Send the message to the discord.
-    await interaction.editReply(`${player} has been unbanned (without out ban sync) on S${server}.`);
+    await interaction.editReply(`${player} has been unbanned (Without out ban sync) on S${server}.`);
     //Send the report to the reports channel.
     let report = GetReport(server, interaction.member.displayName, player, reason);
     let channel = await interaction.guild.channels.cache.get('764881627893334047');
