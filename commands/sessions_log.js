@@ -3,7 +3,7 @@ function Millisec_Converter(mill) {
     let hrs = Math.floor(mill / 3600000); // hours
     let mins = Math.round((mill % 3600000) / 60000); // minutes
     let seconds = Math.round(((mill % 3600000) % 60000) / 1000); // seconds
-    return {hrs, mins, seconds}
+    return {hrs, mins, seconds};
 }
 
 function create_session(join, leave) {
@@ -23,7 +23,7 @@ function create_session(join, leave) {
         let time_obj = Millisec_Converter(diff);
         
         //return the msg
-        return `    ${join_time_date}, ${join_date_time} => ${leave_time_date}, ${leave_date_time}; ${time_obj.hrs}hrs ${time_obj.mins}min ${time_obj.seconds}sec \n`
+        return `    ${join_time_date}, ${join_date_time} => ${leave_time_date}, ${leave_date_time}; ${time_obj.hrs}hrs ${time_obj.mins}min ${time_obj.seconds}sec \n`;
     } else if (!leave) {
         //get the data.
         let join_time_date = join[0];
@@ -38,20 +38,20 @@ function create_session(join, leave) {
         let time_obj = Millisec_Converter(diff);
         
         //return the msg
-        return `    ${join_time_date}, ${join_date_time} => Still online; ${time_obj.hrs}hrs ${time_obj.mins}min ${time_obj.seconds}sec \n`
+        return `    ${join_time_date}, ${join_date_time} => Still online; ${time_obj.hrs}hrs ${time_obj.mins}min ${time_obj.seconds}sec \n`;
     } else {
         let leave_time_date = leave[0];
         let leave_date_time = leave[1];
         
         //return the msg
-        return `    No join event => ${leave_time_date}, ${leave_date_time};\n`
+        return `    No join event => ${leave_time_date}, ${leave_date_time};\n`;
     }
 }
 
 function parse_log(log) {
     //just the same as /.*?\[CHAT\].*?\n/ but does it for JOIN and LEAVE.
     let join_and_leave = log.match(/.*?(\[JOIN\]|\[LEAVE\]).*?\n/g);
-    let sessions = {}
+    let sessions = {};
 
     /*
         Regex explanation:
@@ -65,11 +65,11 @@ function parse_log(log) {
         Now we have another (.*?) which will get the name as that is next in the message (so tovernaar123).
         And then to finnalize it we do .*?\n to stop at a enter.
     */
-    let name_regex = /(.*?) (.*?) (\[JOIN\]|\[LEAVE\]) (.*?) .*?\n/
-    if(!join_and_leave){ return 'No joins or leaves'}
+    let name_regex = /(.*?) (.*?) (\[JOIN\]|\[LEAVE\]) (.*?) .*?\n/;
+    if(!join_and_leave){ return 'No joins or leaves';}
     for (let i = 0; i < join_and_leave.length; i++) {
         //Line like: 2020-12-07 17:41:34 [JOIN] tovernaar123 joined the game
-        let event = join_and_leave[i]
+        let event = join_and_leave[i];
 
         //Run the regex on the line it will split it up in 4 data chunks (5 but the first one is not used).
         let data = name_regex.exec(event);
@@ -94,10 +94,10 @@ function parse_log(log) {
         //If its a join make the string joined at else make left at.
         if (type === '[JOIN]') {
             //Push the data.
-            sessions[name].joins.push([date_year, date_time])
+            sessions[name].joins.push([date_year, date_time]);
         } else {
             //Push the data.
-            sessions[name].leaves.push([date_year, date_time])
+            sessions[name].leaves.push([date_year, date_time]);
         }
     }
 
@@ -107,11 +107,11 @@ function parse_log(log) {
     //Loop over the sessions obj data is made up of leaves and joins.
     for (const [name, data] of Object.entries(sessions)) {
         //Get the joins array.
-        let joins = data.joins
+        let joins = data.joins;
         //Get the leaves array.
-        let leaves = data.leaves
+        let leaves = data.leaves;
         //Adds the name and an enter
-        final_message += `${name}:\n`
+        final_message += `${name}:\n`;
 
         let loop_length = Math.max(joins.length, leaves.length);
         //Loop for as long as loop_length
@@ -120,33 +120,33 @@ function parse_log(log) {
             final_message += create_session(joins[i], leaves[i]);
         }
     }
-    return final_message
+    return final_message;
 }
 const readline = require('readline');
 const fs = require('fs');
 function getLines(server) {
-    return new Promise((resolve, reject) => {
-        let lines = []
+    return new Promise((resolve) => {
+        let lines = [];
 
         const rl = readline.createInterface({
             input: fs.createReadStream(`/home/factorio/servers/eu-0${server}/console.log`),
-        })
+        });
 
         rl.on('line', line => {
-            lines.push(line)
+            lines.push(line);
             if (line.startsWith('=')) {
-                lines = []
+                lines = [];
             }
-        })
+        });
 
         rl.on('close', () => {
-            resolve(lines)
-        })
+            resolve(lines);
+        });
 
-    })
+    });
 }
 const max_size = 50;
-async function get_logs(server, msg) {
+async function get_logs(server, interaction) {
     let lines = await getLines(server);
     lines = lines.join('\n');
     lines = lines.replace(/\[special-item=.*?\]/g, '<blueprint>');
@@ -156,37 +156,33 @@ async function get_logs(server, msg) {
     lines = lines.join('\n');
     lines = lines.match(/[\s\S]{1,1500}/g);
     for (let i = 0; i < lines.length; i++) {
-        await msg.channel.send(`\`\`\`log\n${lines[i]}\`\`\``)
+        await interaction.channel.send(`\`\`\`log\n${lines[i]}\`\`\``);
     }
 }
-module.exports = {   
-    name: 'sessions',
-    aka: ['joins', 'log-sessions'],
-    description: 'get previous sessions (last 10 lines) (Board+ command)',
-    guildOnly: true,
-    args: true,
-    helpLevel: 'staff',
-    required_role: role.board,
-    usage: ` <server#>`,
-    async execute(msg, args, _, internal_error) {
-        const server = Math.floor(Number(args[0]));
 
-        if (!server) {
-            msg.channel.send('Please pick a server first. Just the number (1-8)')
-                .catch((err) => {internal_error(err); return});
-            return;
-        }
-        
-        
-        if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
-            get_logs(server, msg, internal_error)
-                .catch((err) => {internal_error(err); return})
-        } else {
-            msg.reply(`Please pick a server first. Just the number (currently 1-8). Correct usage is \` .exp sessions ${module.exports.usage}\``)
-                .catch((err) => {internal_error(err); return})
-            console.log(`chatlog look up by ${msg.author.username} incorrect server number`);
-            return;
-        }
-    },
-};
+let Discord_Command = require('./../command.js');
+class Sessions extends Discord_Command {
+    constructor() {
+        let args = [
+            Discord_Command.common_args.server_NoAll,
+        ];
+        super({
+            name: 'sessions',
+            aka: [''],
+            description: 'Gets the session from the log.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true,
+            required_role: Discord_Command.roles.board,
+        });
+    }
+
+    async execute(interaction) {
+        await interaction.deferReply();
+        let server = interaction.options.getString('server');
+        await interaction.editReply(`Getting sessions for server S${server}...`);
+        await get_logs(server, interaction);
+    }
+}
+let command = new Sessions();
+module.exports = command;

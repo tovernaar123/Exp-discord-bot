@@ -2,44 +2,56 @@ let { spawn } = require('child_process');
 let shell = spawn('/bin/bash');
 
 shell.stdout.on('data', data => {
-    console.log(`stdout:\n${data}`);
+    console.log(`[SHELL]: ${data}`);
 });
 
 shell.stderr.on('data', data => {
-    console.error(`stderr: ${data}`);
+    console.error(`[SHELL ERROR]: ${data}`);
 });
 
-async function run_command(msg, args, internal_error) {
-    let branch = args[0];
-    if (branch) {
+let Discord_Command = require('./../command.js');
+class Update extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                name: 'branch',
+                type: 'String',
+                required: true,
+                description: 'The branch to update to.'
+            }
+        ];
+        super({
+            name: 'update-bot',
+            aka: [''],
+            description: 'This will update the bot to the specified branch.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true,
+            required_role: Discord_Command.roles.staff
+        });
+    }
+    async authorize(interaction) {
+        let admin = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.admin)) >= 0;
+        
+        let staff = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.staff)) >= 0;
+        let contributing = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.contributor)) >= 0;
+        let authorize = admin || (staff && contributing);
+        if (!authorize) {
+            await interaction.reply('You need either the Admin or Staff and contributing dev role to use this command.');
+            console.log(`${interaction.member.displayName} tried to use the update command but does not have the right role`);
+            return false;
+        }
+        return authorize;
+    }
+
+    async execute(interaction) {
+        await interaction.deferReply();
+        let branch = interaction.options.getString('branch');
+
         shell.stdin.write(`git fetch; git checkout origin/${branch}\n`);
-        await msg.reply('Updating bot will restart now');
+        await interaction.editReply('Updating bot will restart now');
         shell.stdin.write('npm i; pm2 restart infoBot\n');
-    } else {
-        await msg.reply('need a branch.');
     }
 }
-
-module.exports = {
-    name: 'update-bot',
-    aka: ['upb, update'],
-    description: 'update the bot from the github',
-    guildOnly: true,
-    args: true,
-    helpLevel: 'staff',
-    required_role: role.staff,
-    usage: '<branch>',
-    async execute(msg, args, _, internal_error) {
-
-        if (msg.member.roles.cache.find(r => r.id === '678245941639381010') || msg.member.roles.cache.find(r => r.id === '290940523844468738') || msg.member.roles.cache.find(r => r.id === '764526097768644618')) // if Contributing Dev (PROD), Admin (PROD), Admin (test server)
-        {
-            run_command(msg, args, internal_error)
-                .catch((err) => { internal_error(err); return; });
-        }
-        else {
-            msg.channel.send('You do not seem to have the right role');
-            console.log('someone (${msg.member.displayName}) Tried to update the bot but does not have access');
-        }
-
-    }
-};
+let command = new Update();
+module.exports = command;

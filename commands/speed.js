@@ -1,65 +1,51 @@
-const Discord = require('discord.js');
-/**
- * 
- * @param {Number} server 
- * @param {Rcon} rcon 
- * @param {Discord.Message} msg 
-*/
-async function runcommand(server, rcon, msg, newSpeed) {
-    if (!rcon.connected) {
-        await msg.channel.send(`S${server} is not connected the bot.`)
-        return;
+let Discord_Command = require('./../command.js');
+class Speed extends Discord_Command {
+    constructor() {
+        let args = [
+            Discord_Command.common_args.server_NoAll,
+            {
+                name: 'speed',
+                description: 'The new speed to set the server to',
+                required: true,
+                type: 'Number',
+                min: 0.1,
+                max: 1,
+            }
+        ];
+        super({
+            name: 'speed',
+            aka: [''],
+            description: 'Set the game speed of the server.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true,
+            required_role: Discord_Command.roles.staff,
+        });
     }
-    //let res = await rcon.send(`/jail ${tojail} ${reason}`)
-    let res = await rcon.send(`/c game.speed = ${newSpeed}`)
-    if (!res) { // this command should not get a reply from the server. The new game speed should have printed in the map though.
-        rcon.send(`The server speed has been set by ${msg.member.displayName}. Please @staff on the discord if this was done by mistake.`);
-        await msg.channel.send(`No Error - Thus a new speed of **${newSpeed}** should have been set on S${server}. Speed requested by *${msg.member.displayName}*.`);
-        console.log(`${msg.author.displayName} has set a new game speed on the server*`);
-    } else {
-        await msg.channel.send(`Command might have failed result: \`\`\` ${res} \`\`\``);
-    } 
-}
- 
-module.exports = {
-    name: 'speed',
-    aka: ['gamespeed','speeds','slowdown','slow','newspeed'],
-    description: 'Slow down (or speed up) server (Currently Admin/Mod only command)',
-    guildOnly: true,
-    args: true,
-    helpLevel: 'staff',
-    required_role: role.staff,
-    usage: `<#> <NewGameSpeed> (.10-1.0)`,
-    async execute(msg, args, rcons, internal_error) {
-        const server = Math.floor(Number(args[0]));
-        //let reason = args.slice(2).join(" ");
-        let newSpeed = args[1];
-        if (!server) {
-            msg.channel.send('Please pick a server first just a number (1-8)')
-                .catch((err) => { internal_error(err); return });
+
+    async execute(interaction) {
+        await interaction.deferReply();
+        let server = interaction.options.getString('server');
+        let speed = interaction.options.getNumber('speed');
+        let rcon = Discord_Command.Rcons[server];
+
+        if (!rcon.connected) {
+            await interaction.editReply(`S${server} is not connected the bot.`);
             return;
         }
-        if (!newSpeed) {
-            msg.channel.send(`No speed requested - You need to tell us what speed to use`)
-                .catch((err) => { internal_error(err); return })
-            return;
-        }
-        if (newSpeed > 1 || newSpeed < 0.1) {
-            //console.log(`Speed to set (newSpeed) is ${newSpeed}`);
-            msg.channel.send(`You need to tell us what speed to use (0.10-1.0)`)
-                .catch((err) => { internal_error(err); return })
-            return;
-        }
-        if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
-            console.log(`server spped to set is ${newSpeed}`)
-            runcommand(server, rcons[server], msg, newSpeed)
-                .catch((err) => { internal_error(err); return })
+        //Set the game speed
+        let res = await rcon.send(`/c game.speed = ${speed}`);
+        // this command should not get a reply from the server. The new game speed should have printed in the map though.
+        if (!res) {
+            //Send the message to the server.
+            await rcon.send(`The server speed has been set by ${interaction.member.displayName}. Please @staff on the discord if this was done by mistake.`);
+            //send the message to the discord.
+            await interaction.editReply(`No Error - Thus a new speed of **${speed}** should have been set on S${server}. Speed requested by *${interaction.member.displayName}*.`);
         } else {
-            msg.reply(`Please pick a server first just a number (Currently 1-8). Correct usage is \` .exp jail <server#> <username> <reason>\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`jail by ${msg.author.username} incorrect server number`);
-            return;
-        }
-    },
-};
+            //send error to the discord.
+            await interaction.editReply(`Command might have failed result: \`\`\` ${res} \`\`\``);
+        } 
+    }
+}
+let command = new Speed();
+module.exports = command;

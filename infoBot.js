@@ -39,14 +39,14 @@ role = {
 };
 */
 //array for all ofline servers
-let offline_servers = [];
+let offline_servers = [8];
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed;
 Discord.MessageEmbed = function () {
     let discord_embed = new real_discord_embed();
     discord_embed.setTimestamp();
-    discord_embed.setFooter(client.user.username, client.user.avatarURL());
+    discord_embed.setFooter({text: client.user.username, iconURL: client.user.avatarURL()});
     discord_embed.setColor('53380');
     return discord_embed;
 };

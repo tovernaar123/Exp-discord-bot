@@ -33,6 +33,7 @@ class Discord_Command {
         'Boolean': Builders.SlashCommandBooleanOption,
         'Channel': Builders.SlashCommandChannelOption,
         'Integer': Builders.SlashCommandIntegerOption,
+        'Number': Builders.SlashCommandNumberOption,
         'Mentionable': Builders.SlashCommandMentionableOption,
         'Role': Builders.SlashCommandRoleOption,
         'String': Builders.SlashCommandStringOption,
@@ -44,6 +45,7 @@ class Discord_Command {
         'Boolean': 'addBooleanOption',
         'Channel': 'addChannelOption',
         'Integer': 'addIntegerOption',
+        'Number':   'addNumberOption',
         'Mentionable': 'addMentionableOption',
         'Role': 'addRoleOption',
         'String': 'addStringOption',
@@ -55,7 +57,8 @@ class Discord_Command {
         staff: '762264452611440653',
         admin: '764526097768644618',
         mod: '762260114186305546',
-        board: '765920803006054431'
+        board: '765920803006054431',
+        contributor: '948637731842572319',
     };
 
     static Rcons = [];
@@ -116,6 +119,8 @@ class Discord_Command {
 
         let builder = new Discord_Command.builders[arg.type]();
         if(arg.choices) builder.addChoices(arg.choices);
+        if(arg.min) builder.setMinValue(arg.min);
+        if(arg.max) builder.setMaxValue(arg.max);
         builder.setName(arg.name);
         builder.setRequired(arg.required);
         builder.setDescription(arg.description);
@@ -149,7 +154,7 @@ class Discord_Command {
             let role = await interaction.guild.roles.fetch(this.required_role);
             let allowed = interaction.member.roles.highest.comparePositionTo(role) >= 0;
             if (!allowed) {
-                interaction.reply(`You do not have ${role.name} permission.`);
+                await interaction.reply(`You do not have ${role.name} permission.`);
                 return false;
             }
         }

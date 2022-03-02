@@ -1,43 +1,99 @@
-//player data storage access with new format
-//required_role has an exception for the user to look upthemselves, nothing needed here it is handeled in infoBot.js...
-//this helpLevel:"all" is required to show up on "semi public commands" it is not needed if the regular command was not restricted to role.board
-
 let Eta = require('eta');
 let Discord_Command = require('./../../command.js');
-//const Discord = require('discord.js');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 
 
-let grid_layout = {
-    'Playtime': 'Play Time',
-    'AfkTime': 'AFK Time',
-    'MapsPlayed': 'Maps Played',
-    'JoinCount': 'Join Count',
-    'ChatMessages': 'Chat Messages',
-    'CommandsUsed': 'Commands',
-    'RocketsLaunched': 'Rockets Launched',
-    'ResearchCompleted': 'Research Completed',
-    'MachinesBuilt': 'Machines Built',
-    'MachinesRemoved': 'Machines Removed',
-    'TilesBuilt': 'Tiles Placed',
-    'TilesRemoved': 'Tiles Removed',
-    'TreesDestroyed': 'Trees Destroyed',
-    'OreMined': 'Ore Mined',
-    'ItemsCrafted': 'Items Crafted',
-    'ItemsPickedUp': 'Items Picked Up',
+//Formats the numbers to be displayed in the grid (So that they have comma's every 3 digits).
+const nf = new Intl.NumberFormat('en-US');
+let layout = {
+    'Play time': (stats) => {
+        let hours = Math.floor(stats.Playtime / 60);
+        let minutes = stats.Playtime % 60;
+        return `${hours} h ${minutes} m`;
+    },
+    'AFK time': (stats) => {
+        let hours = Math.floor(stats.AfkTime / 60);
+        let minutes = stats.AfkTime % 60;
+        return `${hours} h ${minutes} m`;
+    },
+
+    'Maps played': 'MapsPlayed',
+    'Join count': 'JoinCount',
+    'Chat messages': 'ChatMessages',
+    'Commands used': 'CommandsUsed',
+    'Rockets launched': 'RocketsLaunched',
+    'Research completed': 'ResearchCompleted',
+    'Machines built': 'MachinesBuilt',
+    'Machines removed': 'MachinesRemoved',
+    'Tiles placed': 'TilesBuilt',
+    'Tiles removed': 'TilesRemoved',
+    'Trees destroyed': 'TreesDestroyed',
+    'Ore mined': 'OreMined',
+    'Items crafted': 'ItemsCrafted',
+    'Items picked up': 'ItemsPickedUp',
     'Kills': 'Kills',
     'Deaths': 'Deaths',
-    'DamageDealt': 'Damage Dealt',
-    'DistanceTravelled': 'Distance Travelled',
-    'CapsulesUsed': 'Capsules Used',
-    'EntityRepaired': 'Machines Repaired',
-    'DeconstructionPlannerUsed': 'Decon Planner Used',
-    'MapTagsMade': 'Map Tags Created'
+    'Damage dealt': 'DamageDealt',
+    'Distance travelled': 'DistanceTravelled',
+    'Capsules used': 'CapsulesUsed',
+    'Machines repaired': 'EntityRepaired',
+    'Decon planner used': 'DeconstructionPlannerUsed',
+    'Map tags made': 'MapTagsMade',
+
+    'Damage Death ratio': (stats) => {
+        return nf.format((stats.DamageDealt / stats.Deaths).toFixed(2));
+    },
+    'Kill Death Ratio': (stats) => {
+        return nf.format((stats.Kills / stats.Deaths).toFixed(2));
+    },
+    'Average Session time': (stats) => {
+        return (stats.Playtime / stats.MapsPlayed).toFixed(2);
+    },
+    'Build to remove ratio': (stats) => {
+        return (stats.MachinesBuilt / stats.MachinesRemoved).toFixed(2);
+    },
+    'Rockets per hour': (stats) => {
+        return (stats.RocketsLaunched / (stats.Playtime / 60)).toFixed(2);
+    },
+    'TKPM (Tree kills per min)': (stats) => {
+        return (stats.TreesDestroyed / (stats.Playtime)).toFixed(2);
+    },
+    'Net Play Time': (stats) => {
+        let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60);
+        let minutes = stats.Playtime % 60;
+        return `${hours} h ${minutes} m`;
+    },
+    'AFK Time ratio (%)': (stats) => {
+        return `${(stats.AfkTime / stats.Playtime * 100).toFixed(2)}%`;
+    },
+
 };
+function player_data(name) {
+    //Read the player data file.
+    let rawdata = fs.readFileSync('/mnt/c/programming/tools/factorio_servers/playerdata.json');
+    //Take raw data and change it into Json format, to make it simpler to format/lookup
+    let DataStore = JSON.parse(rawdata);
+
+    //Get the Data of the Player.
+    let PlayerData = DataStore['PlayerData'][name];
+    //Checks to see if any data was retured at all, if the name is not in the database, or the database is not accessable than it will return an error and stop running the command
+
+    if (!PlayerData) {
+        return {error: 'Error: Name not found. Check the name or try again later.'};
+    }
+
+    //Get the boolean to check if the player has agreed to the privacy policy.
+    let privacyData = PlayerData['DataSavingPreference'];
+    if (privacyData) {
+        return  {error: 'Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.'};
+    }
+    //if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc).
+    return {error: false, stats: PlayerData['Statistics']};
+}
 
 
-class Playerdata extends Discord_Command {
+class Picture extends Discord_Command {
     constructor() {
         let args = [
             {
@@ -46,76 +102,63 @@ class Playerdata extends Discord_Command {
                 required: true,
                 type: 'String',
             },
-            {
-                name: 'style',
-                description: 'The style the foto will be send in.',
-                required: true,
-                type: 'String',
-            }
         ];
         super({
-            name: 'playerdata',
+            name: 'picture',
             aka: [''],
             description: 'Returns a foto of the player\'s data',
             cooldown: 5,
             args: args,
-            guildOnly: true
+            guildOnly: true,
+            required_role: Discord_Command.roles.board
         });
+    }
+
+    async authorize(interaction) {
+        let name = interaction.options.getString('name');
+        if(interaction.member.displayName === name) return true;
+        else if(! (await super.authorize(interaction))){
+            await interaction.editReply('You need board for the this command (or you need to use your own name).');
+            return false;
+        }
+        return true;
     }
 
     async execute(interaction) {
         await interaction.deferReply();
 
+        //Get the player name.
         let name = interaction.options.getString('name');
-        console.log(name);
-        let stats = {
-            'MapsPlayed': 24,
-            'JoinCount': 51,
-            'Playtime': 1715,
-            'CommandsUsed': 325,
-            'DistanceTravelled': 373267,
-            'ItemsCrafted': 7043,
-            'RocketsLaunched': 844,
-            'ItemsPickedUp': 31452,
-            'ChatMessages': 1183,
-            'MachinesBuilt': 14622,
-            'MachinesRemoved': 8716,
-            'AfkTime': 38,
-            'ResearchCompleted': 87,
-            'OreMined': 3,
-            'TilesBuilt': 299,
-            'DeconstructionPlannerUsed': 178,
-            'TreesDestroyed': 6414,
-            'EntityRepaired': 2074,
-            'CapsulesUsed': 380,
-            'DamageDealt': 95055,
-            'Kills': 749,
-            'Deaths': 2
-        };
+        //Get the player data.
+        let {error, stats } = player_data(name);
+        //If there is an error return it.
+        if(error) return await interaction.editReply(error);
 
-
-
-        
-
-        //The grid is a 2d array of strings.
         //The number of columns in the grid.
         let colums = 4;
 
-
+        //The grid is a 2d array of strings.
         let grid = [];
 
         //The index so that the data can be split into rows.
         let i = 0;
-        //Loop over all the required item for the grid.
-        for (const [json_key, grid_name] of Object.entries(grid_layout)) {
+        //Loop over all the required item for the grid (value_callback is either string or function).
+        for (const [grid_name, value_callback] of Object.entries(layout)) {
+            let value;
 
-            let value = stats[json_key];
+            if (typeof value_callback === 'string') {
+                //If the value is a string, then it is a key in the stats object.
+                value = stats[value_callback];
+                //if the value is not present it means that it is 0 (the lua event has never been triggerd). 
+                if (!value) value = 0;
+                //Format the value to be displayed in the grid.
+                value = nf.format(value);
+            }
 
-            //if the value is not present it means that it is 0 (the lua event has never been triggerd).
-            if(!value) value = 0;
+            else value = value_callback(stats);
 
             //if we have more then the required columns, we need to split the data into a new row.
-            if(i % colums === 0  || i === 0) grid[grid.length] = [];
+            if (i % colums === 0 || i === 0) grid[grid.length] = [];
 
             //Add the data to the grid.
             grid[grid.length - 1].push(grid_name);
@@ -126,30 +169,99 @@ class Playerdata extends Discord_Command {
         }
         //render the site with the grid.eta file (we read the file here so that it can be changed on the fly).
         let template = fs.readFileSync('./commands/playerdata/grid.eta', 'utf8');
-        let html = Eta.render(template, {grid});
+        let html = Eta.render(template, { grid, name });
 
         //No sandbox but we have disabled javascript so its not required.
         const browser = await puppeteer.launch({
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         });
-        
+
         //Create the page from the created browser.
         const page = await browser.newPage();
         //Disable js immediately for security reason. 
         page.setJavaScriptEnabled(false);
         //set the photo to 680 and 600.
         await page.setViewport({
-            width: 680,
-            height: 600,
+            width: 1600,
+            height: 1000,
             deviceScaleFactor: 1,
         });
         //Set the page content.
         await page.setContent(html);
         //Render the page
         await page.screenshot({ path: './.cache/profile.png' });
+        //Close the browser and cleanup the proccess.
         await browser.close();
+        //Send the photo to the user.
         await interaction.editReply({ files: ['./.cache/profile.png'] });
     }
 }
+let picture = new Picture();
+
+class Json extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                name: 'name',
+                description: 'The name of the player to lookup',
+                required: true,
+                type: 'String',
+            }
+        ];
+        super({
+            name: 'json',
+            aka: [''],
+            description: 'Returns the json of the player\'s data',
+            cooldown: 5,
+            args: args,
+            guildOnly: true,
+            required_role: Discord_Command.roles.board
+        });
+    }
+
+    async authorize(interaction) {
+        let name = interaction.options.getString('name');
+        if(interaction.member.displayName === name) return true;
+        else if(! (await super.authorize(interaction))){
+            await interaction.editReply('You need board for the this command (or you need to use your own name).');
+            return false;
+        }
+        return true;
+    }
+    async execute(interaction) {
+        await interaction.deferReply();
+        //Get the player name.
+        let name = interaction.options.getString('name');
+        //Get the player data.
+        let {error, stats } = player_data(name);
+        //If there is an error return it.
+        if(error) return await interaction.editReply(error);
+        //Send the json to the user.
+        return await interaction.editReply(`\`\`\`json\n${JSON.stringify(stats, null, 4)}\`\`\``);
+    }
+}
+let json = new Json();
+
+class Playerdata extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                type: 'Subcommand',
+                command: picture,
+            },
+            {
+                type: 'Subcommand',
+                command: json,
+            }
+        ];
+        super({
+            name: 'playerdata',
+            description: 'Will give you the playerdata of the player',
+            args: args,
+        });
+
+    }
+}
+
 let command = new Playerdata();
 module.exports = command;

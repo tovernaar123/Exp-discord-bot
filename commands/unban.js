@@ -1,62 +1,131 @@
 
 const Discord = require('discord.js');
-async function runCommand(server, rcon, msg, toUnBan, reason) {
-    if(!rcon.connected){
-        await msg.channel.send(`S${server} is not connected the bot.`)
-        return;
-    }
-    await rcon.send(`/unban ${toUnBan} ${reason}`);
-    await msg.channel.send(`User **${toUnBan}** has been Unbaned for *${reason}*, check with them to see if they can get back on to be sure `);
-    const Embed = Discord.MessageEmbed()
-    Embed.addField('Unban', `A player has been UnBanned`, false);
-    Embed.addField(`Server Details`, `server: S${server}`, false);
-    Embed.addField(`Player`, `${toUnBan}`, true);
-    Embed.addField(`By`, `${msg.author.username}`, true);
-    Embed.addField(`Reason`, `${reason}`, true);
-    Embed.setColor("00ff00");
-    let reportChan = msg.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    await reportChan.send({embeds: [Embed]});
+const net = require('net');
+let client = new net.Socket();
+function GetReport(server, Admin, toUnBan, reason) {
+    const Embed = Discord.MessageEmbed();
+    Embed.addField('Unban', 'A player has been UnBanned', false);
+    Embed.addField('Server Details', `server: S${server}`, false);
+    Embed.addField('Player', `${toUnBan}`, true);
+    Embed.addField('By', `${Admin}`, true);
+    Embed.addField('Reason', `${reason}`, true);
+    Embed.setColor('00ff00');
+    return Embed;
 }
 
+async function normal_unban(player, reason, interaction) {
+    let server;
+    //Get the first connected rcon
+    let rcon = Discord_Command.Rcons.find((rcon, index) => {
+        server = index;
+        return rcon?.connected;
+    });
+    if (!rcon) throw new Error('No Rcon Connected'); 
 
-module.exports = {
-    name: 'unban',
-    aka: ['unbannd','unbanned','nopermaban','dont-gtfo'],
-    description: 'Ban any user (Admin/Mod only command)',
-    guildOnly: true,
-    args: true,
-    helpLevel: 'role.staff', //helplevel must be in quotes to work
-    required_role: role.staff,
-    usage: ` <username> <reason>`,
-    async execute(msg, args, rcons, internal_error) {
-        const author = msg.author.username; //find author
-        const server = Math.floor(Number(args[0]));
+    //unban the player
+    await rcon.send(`/sc unban ${player}`);
 
-        let reason = args.slice(2).join(" ");
-        let toUnBan = args[1];
+    //Send the message to the discord.
+    await interaction.editReply(`${player} has been unbanned (without out ban sync) on S${server}.`);
+    //Send the report to the reports channel.
+    let report = GetReport(server, interaction.member.displayName, player, reason);
+    let channel = await interaction.guild.channels.cache.get('764881627893334047');
+    await channel.send({ embeds: [report] });
 
-        if (!server) { // Checks to see if the person specified a server number
-            msg.channel.send('Please pick a server first just a number (1-8). \`<#> <username> <reason>\`');
-            console.log(`Ban-Did not have server number`);
-            return;
-        }
-        if (!toUnBan) { // if no 2nd argument returns without running with error
-            msg.channel.send(`You need to tell us who you would like to Ban for us to be able to Ban them. \`<#> <username> <reason>\``);
-            console.log(`Ban-Did not have name`);
-            return;
-        }
-        if (!reason) { // if no other arguments (after 2nd ) than returns without running with notice to provide a reason
-            reason = `*reason not provided*`;
-        }
-        if (server < 9 && server > 0) {
-            console.log(`Server is ${server}`);
-            runCommand(server, rcons[server], msg, toUnBan, reason)
-                .catch((err) => { internal_error(err); return })
-        } else {
-            // If a person DID give a server number but did NOT give the correct one it will return without running - is the server number is part of the array of the servers it could be (1-8 currently)
-            msg.reply(`Please pick a server first just a number (1-8) or *all*.  Correct usage is \`.exp ban <server#>\``)
-                .catch((err) => { internal_error(err); return })
-            console.log(`players online by ${author} incorrect server number`);
-        }
-    },
-};
+}
+
+let Discord_Command = require('./../command.js');
+class Unban extends Discord_Command {
+    constructor() {
+        let args = [
+            {
+                name: 'player',
+                description: 'The player to unban',
+                required: true,
+                type: 'String'
+            },
+            {
+                name: 'reason',
+                description: 'The reason for the unban',
+                required: false,
+                type: 'String'
+            }
+        ];
+        super({
+            name: 'unban',
+            aka: [''],
+            description: 'Unbans the players on all servers.',
+            cooldown: 5,
+            args: args,
+            guildOnly: true
+        });
+    }
+
+    async execute(interaction) {
+        await interaction.deferReply();
+        //Get the player to unban.
+        let player = interaction.options.getString('player');
+        //get the reason for the unban (or set it to No reason provided).
+        let reason = interaction.options.getString('reason') ?? 'No reason provided';
+
+        //try conneting to the bansync socket.
+        client.connect('/tmp/banlist_sync.sock', function () {
+            let message = JSON.stringify({ request: 'unban-player', player, reason });
+            console.log(`[BAN SYNC] <= ${message}`);
+            //Send the message (request for unban).
+            client.write(message);
+            //listen for the response (just once).
+            client.once('data', async function (data) {
+                //convert the data to a string.
+                data = String(data);
+                let json_data;
+                //try to parse the data as json.
+                try {
+                    json_data = JSON.parse(data);
+                    if (!json_data) throw new Error('No data recieved');
+                } catch (error) {
+                    //if the data is not json, then throw error. (and end the connection).
+                    client.end();
+                    throw new Error(`received malformed json from bansync ${data}`);
+                }
+                //Show the raw data in the console.
+                console.log(`[BAN SYNC] => ${data}`);
+
+                //if success the player has been unbanned. (else try to unban the player on the normal way).
+                if (json_data.success === true) {
+                    //Send the message to the discord.
+                    await interaction.editReply(`${player} was unbanned on all servers for "${reason}".`);
+                    //Get the report channel to send the report to.
+                    let ReportChannel = await interaction.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+                    //Create the embed to send.
+                    let report = GetReport('<internal>', interaction.member.displayName, player, reason);
+                    //Send the report to the report channel.
+                    await ReportChannel.send({ embeds: [report] });
+                } else {
+                    //try to unban the player on the normal way.
+                    await interaction.editReply(`Their was an error tyring to unban ${player} with Ban sync trying rcon... (check logs)`);
+                    await normal_unban(player, reason, interaction);
+                    //Show the error in the console.
+                    console.error(`[BAN SYNC] => ${json_data.error}`);
+                }
+                client.end();
+            });
+        });
+        client.on('error', function (error) {
+            console.error(`[BAN SYNC] => ${error}`);
+            client.destroy();
+            //try to unban the player on the normal way.
+            //requires a catch to prevent the error from being thrown (if something goes wrong) since normal ban is async.
+            normal_unban(player, reason, interaction).catch((normal_error) => {
+                console.error(`[NORMAl UNBAN] => ${normal_error}`);
+                interaction.editReply(`Their was a problem trying to unban ${player}. They player has (most probibly) **NOT** been unbanned.`).catch(
+                    //If even this fails, the bot is broken and to prevent further damage, the bot will kill itself.
+                    process.exit
+                );
+            });
+        });
+
+    }
+}
+let command = new Unban();
+module.exports = command;

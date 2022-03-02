@@ -3,56 +3,62 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <style>
-    body {
-        font-family: 'Roboto', sans-serif;
-        background-color: #222831
-    }
-    
-    .grid {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    
-    td {
-        padding: 5px !important;
-        border: 1px solid #00ADB5 !important;
-        font-size: 1em;
-        text-align: left;
-        color: #F0F0F0;
-        width: 140px;
-    }
-    
-    td.first {
-        width: 30%;
-        font-weight: 700;
-    }
-    
-    td.second {
-        width: 20%;
-        font-weight: 400;
-    }
-    
-    .title {
-        width: 100%;
-        text-align: center;
-        margin: 5px 0 5px;
-        color: #F0F0F0;
-    }
-    
-    p {
-        font-size: 1em;
-        color: #F0F0F0;
-    }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #222831
+        }
+        
+        .grid {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        td {
+            padding: 5px !important;
+            border: 1px solid #00ADB5 !important;
+            font-size: 2em;
+            text-align: left;
+            color: #ffa200;
+            width: 140px;
+        }
+        
+        td.first {
+            width: 30%;
+            font-weight: 400;
+        }
+        
+        td.second {
+            width: 20%;
+            font-weight: 400;
+            color: #F0F0F0;
+        }
+        
+        .title {
+            margin: 5% 0px 5% 0px;
+            text-align: center;
+            border-bottom: 2px solid #F1D00A;
+            line-height: 0em;
+            color: #FF9F1C;
+        }
+        .title span {
+            background-color:#222831; 
+            padding:0 0.5em; 
+            font-size:2em;
+        }
+        
+        p {
+            font-size: 2em;
+            color: #F0F0F0;
+        }
 </style>
 
 <body>
     <h2 class="title">
-        Data
+        <span><%= it.name %> </span>
     </h2>
-    <p><strong>Player data requested by:</strong> 420204969027698688 </p>
-    <p><strong>Username:</strong> tovernaar123 </p>
     <table class="grid">
-        <% let i = 0 %>
+        <% let i = 0 
+        %>
         <% for (let row of it.grid) { %>
             <tr>
             <% for (let entry of row) { %>
@@ -62,13 +68,12 @@
                     <td class="second"><%= entry %></td>
                 <%}%>
                 <% i = i + 1%>
-                <% console.log(i) %>
             <%}%>
 
             </tr>
         <% } %>
 
-        </table>
+    </table>
 </body>
 
 </html>
