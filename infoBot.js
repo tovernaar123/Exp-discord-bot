@@ -21,14 +21,13 @@ let rcons = {};
 
 //global for all commands to use this object
 // eslint-disable-next-line no-global-assign
-role = {
-    staff: '762264452611440653',
-    admin: '764526097768644618',
-    mod: '762260114186305546',
-    board: '765920803006054431'
-};
 
 
+let config = require('./config/utils.js');
+config.addKey('ServerNotConnected', 'S%s is not connected to the bot.');
+config.addKey('ReportChannel', '368812365594230788');
+config.addKey('NoResponse', 'There was no response from the server, this is not normal for this command please ask an admin to check the logs.');
+config.addKey('SpamChannel', '359442310628376577'); 
 /*
 role = {
     staff: '482924291084779532',
@@ -39,7 +38,7 @@ role = {
 };
 */
 //array for all ofline servers
-let offline_servers = [8];
+let offline_servers = [2,6,7,8];
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed;
@@ -88,9 +87,7 @@ client.on('ready', async () => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, '');     // delete the dot and everything after
     console.log(`${date_string}: I am ready!`);
-    //client.channels.cache.get('368727884451545089').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    client.channels.cache.get('764881627893334047').send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    //console.log(year + "-" + month + date + " " + hours + ":" + minutes + ":" + seconds + ": I am ready!");
+    client.channels.cache.get(config.getKey('SpamChannel')).send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
     
     //void all slash commands
     //await client.guilds.cache.get('762249085268656178').commands.set([]);
@@ -98,15 +95,17 @@ client.on('ready', async () => {
     //instantiate the list of commands
     client.commands = new Discord.Collection();
 
+    let waitfor = [];
     for (const file of commandFiles) {
         //require to file so its loaded
         const command = require(`./commands/${file}`);
         //add it to the list 
         client.commands.set(command.name, command);
         if(command.slash){
-            command.add_command(client);
+            waitfor.push(command.add_command(client));
         }
     }
+    await Promise.all(waitfor);
     console.log('command done');
 
 });

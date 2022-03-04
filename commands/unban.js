@@ -2,6 +2,9 @@
 const Discord = require('discord.js');
 const net = require('net');
 let client = new net.Socket();
+let config = require.main.require('./config/utils.js');
+
+
 function GetReport(server, Admin, toUnBan, reason) {
     const Embed = Discord.MessageEmbed();
     Embed.addField('Unban', 'A player has been UnBanned', false);
@@ -29,7 +32,7 @@ async function normal_unban(player, reason, interaction) {
     await interaction.editReply(`${player} has been unbanned (Without out ban sync) on S${server}.`);
     //Send the report to the reports channel.
     let report = GetReport(server, interaction.member.displayName, player, reason);
-    let channel = await interaction.guild.channels.cache.get('764881627893334047');
+    let channel = await interaction.guild.channels.cache.get(config.getKey('ReportChannel'));	
     await channel.send({ embeds: [report] });
 
 }
@@ -57,7 +60,8 @@ class Unban extends Discord_Command {
             description: 'Unbans the players on all servers.',
             cooldown: 5,
             args: args,
-            guildOnly: true
+            guildOnly: true,
+            required_role: Discord_Command.roles.staff
         });
     }
 
@@ -69,7 +73,7 @@ class Unban extends Discord_Command {
         let reason = interaction.options.getString('reason') ?? 'No reason provided';
 
         //try conneting to the bansync socket.
-        client.connect('/tmp/banlist_sync.sock', function () {
+        client.connect(config.getKey('BanSync/Sokect'), function () {
             let message = JSON.stringify({ request: 'unban-player', player, reason });
             console.log(`[BAN SYNC] <= ${message}`);
             //Send the message (request for unban).

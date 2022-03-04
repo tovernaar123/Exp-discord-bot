@@ -2,6 +2,12 @@ const Discord = require('discord.js');
 let Discord_Command = require('./../command.js');
 let rconToSend = '/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))'; //send afk chat bot
 
+let config = require.main.require('./config/utils.js');
+config.addKey('Afk/BadJson', 'Malformed json in afk command');
+config.addKey('Afk/NoPlayers', 'No players online');
+
+const {format} = require('util');
+
 function TimeObject(time) {
     let hours = Math.floor(time / 3600);
     let minutes = Math.floor(time / 60) - (hours * 60);
@@ -14,7 +20,7 @@ async function runCommand(server, rcon) {
     let json_data;
     let embedfields = [];
     if (!rcon.connected) {
-        embedfields.push({ name: `S${server} is not connected to the bot`, value: `S${server} offline`, inline: true });
+        embedfields.push({ name: `S${server}`, value: format(config.getKey('ServerNotConnected'), server), inline: true });
         return embedfields;
     }
 
@@ -24,12 +30,12 @@ async function runCommand(server, rcon) {
         try {
             json_data = JSON.parse(responses);
         } catch {
-            throw new Error('Malformed json in afk command');
+            throw new Error(config.getKey('Afk/BadJson'));
         }
     }
 
     if (!responses || Object.keys(json_data)?.length === 0) {
-        embedfields.push({ name: `S${server}:`, value: 'No players online', inline: true });
+        embedfields.push({ name: `S${server}:`, value: config.getKey('Afk/NoPlayers'), inline: true });
         return embedfields;
     }
 
@@ -78,7 +84,8 @@ class Afk extends Discord_Command {
             description: 'Get the afk players on the server.',
             cooldown: 5,
             args: args,
-            guildOnly: true
+            guildOnly: true,
+            required_role: Discord_Command.roles.board,
         });
     }
 

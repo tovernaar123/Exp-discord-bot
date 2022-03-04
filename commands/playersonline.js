@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 let Discord_Command = require('./../command.js');
-
+let {format} = require('util');
+let config = require.main.require('./config/utils.js');
 
 /**
  * 
@@ -14,7 +15,7 @@ async function oneCommand(servernum, rcon) {
 
     let res;
     if (rcon.connected) res = await rcon.send('/p o');
-    else res = `S${servernum} is not connected to the bot`;
+    else res = format(config.getkey('ServerNotConnected'), servernum);
     return res;
 }
 /**
@@ -53,24 +54,7 @@ class Playersonline extends Discord_Command {
     constructor() {
         
         let args = [
-            {
-                name: 'server',
-                description: 'The server to check for online players.',
-                usage: '<#number||"all">',
-                required: true,
-                type: 'String',
-                choices: [
-                    ['Sever 1', '1'],
-                    ['Sever 2', '2'],
-                    ['Sever 3', '3'],
-                    ['Sever 4', '4'],
-                    ['Sever 5', '5'],
-                    ['Sever 6', '6'],
-                    ['Sever 7', '7'],
-                    ['Sever 8', '8'],
-                    ['All servers', 'all'],
-                ]
-            },
+            Discord_Command.common_args.server
         ];
 
         super({

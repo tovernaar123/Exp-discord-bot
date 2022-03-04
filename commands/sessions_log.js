@@ -124,12 +124,14 @@ function parse_log(log) {
 }
 const readline = require('readline');
 const fs = require('fs');
+let {format} = require('util');
+let config = require.main.require('./config/utils.js');
 function getLines(server) {
     return new Promise((resolve) => {
         let lines = [];
 
         const rl = readline.createInterface({
-            input: fs.createReadStream(`/home/factorio/servers/eu-0${server}/console.log`),
+            input: fs.createReadStream(format(config.geKey('Logs/Directory'), server)),
         });
 
         rl.on('line', line => {

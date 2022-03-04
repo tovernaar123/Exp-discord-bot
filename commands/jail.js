@@ -22,7 +22,8 @@ class Jail extends Discord_Command {
             description: 'This command jails the player on the server specified',
             cooldown: 5,
             args: args,
-            guildOnly: true
+            guildOnly: true,
+            required_role: Discord_Command.roles.staff
         });
     }
 

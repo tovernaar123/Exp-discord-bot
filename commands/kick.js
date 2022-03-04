@@ -1,5 +1,6 @@
 
 const Discord = require('discord.js');
+let config = require.main.require('./config/utils.js');
 
 let Discord_Command = require('./../command.js');
 class Kick extends Discord_Command {
@@ -51,7 +52,7 @@ class Kick extends Discord_Command {
         Embed.addField('By', `${interaction.member.displayName}`, true);
         Embed.addField('Reason', `${reason}`, true);
         Embed.setColor('0xffa500');
-        let reportChan = interaction.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+        let reportChan = interaction.guild.channels.cache.get(config.getKey('ReportChannel')); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
         await reportChan.send({embeds: [Embed]});
     }
 }

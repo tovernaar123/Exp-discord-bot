@@ -2,7 +2,16 @@ let Eta = require('eta');
 let Discord_Command = require('./../../command.js');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
+let config = require.main.require('./config/utils.js');
 
+
+config.addKey('Playerdata/Dir');
+
+config.addKey('Playerdata/NameNotFound', 'Error: Name not found. Check the name or try again later.');
+
+config.addKey('Playerdata/Privacy', 'Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.');
+
+config.addKey('Playerdata/NotAuthorized', 'You need board for the this command (or you need to use your own name).');
 
 //Formats the numbers to be displayed in the grid (So that they have comma's every 3 digits).
 const nf = new Intl.NumberFormat('en-US');
@@ -71,7 +80,7 @@ let layout = {
 };
 function player_data(name) {
     //Read the player data file.
-    let rawdata = fs.readFileSync('/mnt/c/programming/tools/factorio_servers/playerdata.json');
+    let rawdata = fs.readFileSync(config.getKey('Playerdata/Dir')); ///mnt/c/programming/tools/factorio_servers/playerdata.json'
     //Take raw data and change it into Json format, to make it simpler to format/lookup
     let DataStore = JSON.parse(rawdata);
 
@@ -80,13 +89,13 @@ function player_data(name) {
     //Checks to see if any data was retured at all, if the name is not in the database, or the database is not accessable than it will return an error and stop running the command
 
     if (!PlayerData) {
-        return {error: 'Error: Name not found. Check the name or try again later.'};
+        return {error: config.getKey('Playerdata/NameNotFound')};
     }
 
     //Get the boolean to check if the player has agreed to the privacy policy.
     let privacyData = PlayerData['DataSavingPreference'];
     if (privacyData) {
-        return  {error: 'Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.'};
+        return  {error: config.getKey('Playerdata/Privacy')};
     }
     //if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc).
     return {error: false, stats: PlayerData['Statistics']};
@@ -223,7 +232,7 @@ class Json extends Discord_Command {
         let name = interaction.options.getString('name');
         if(interaction.member.displayName === name) return true;
         else if(! (await super.authorize(interaction))){
-            await interaction.editReply('You need board for the this command (or you need to use your own name).');
+            await interaction.editReply(config.getKey('Playerdata/NotAuthorized'));
             return false;
         }
         return true;

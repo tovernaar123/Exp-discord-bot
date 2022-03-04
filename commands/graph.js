@@ -1,6 +1,9 @@
 const fs = require('fs');
 const request = require('request');
 let Discord_Command = require('./../command.js');
+let config = require.main.require('./config/utils.js');
+//https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics
+config.addKey('Graph/GrafanaUrl');
 
 const download = (url, path, callback) => {
     request.head(url, () => {
@@ -46,7 +49,7 @@ class Graph extends Discord_Command {
         await interaction.deferReply();
 
         let type = interaction.options.getInteger('type');
-        let url = `https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics?orgId=1&from=now-30m&to=now&panelId=${type}&width=1000&height=300&tz=UTC`;
+        let url = `${config.getKey('Graph/GrafanaUrl')}?orgId=1&from=now-30m&to=now&panelId=${type}&width=1000&height=300&tz=UTC`;
         const path = `.cache/graph${type}.png`;
 
         await interaction.editReply('Downloading graph please wait...');

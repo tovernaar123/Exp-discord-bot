@@ -1,5 +1,6 @@
 let Discord_Command = require('../command.js');
 
+
 async function runCommand(server, rcon, interaction, toClear, reason) {
     if(!rcon.connected){
         await interaction.editReply(`S${server} is not connected the bot.`);
@@ -8,10 +9,10 @@ async function runCommand(server, rcon, interaction, toClear, reason) {
     if(toClear.match(/\\|"|'/)){
         return await interaction.editReply('You cannot use " , \\ or \' in the name of the player.');
     }
-    if(interaction.user.username.match(/\\|"|'/)){
+    if(interaction.member.displayName.match(/\\|"|'/)){
         return await interaction.editReply('You cannot use " , \\ or \' in your username.');
     }
-    let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${toClear}", "${interaction.user.username}")`);
+    let res = await rcon.send(`/interface require("modules.control.reports").remove_all("${toClear}", "${interaction.member.displayName}")`);
     
 
     await interaction.editReply(`*Please make sure you have the correct username and a report was issued in #reports.* Server replies complete even if user does not exist. Server replied: ${res} By: ${interaction.user.username} becasue: *${reason}*`);

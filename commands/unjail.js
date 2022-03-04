@@ -1,4 +1,6 @@
 let Discord_Command = require('./../command.js');
+let {format} = require('util');
+let config = require.main.require('./config/utils.js');
 class Unjail extends Discord_Command {
     constructor() {
         let args = [
@@ -16,7 +18,8 @@ class Unjail extends Discord_Command {
             description: 'Unjails the player on the server.',
             cooldown: 5,
             args: args,
-            guildOnly: true
+            guildOnly: true,
+            required_role: Discord_Command.roles.staff
         });
     }
 
@@ -27,7 +30,7 @@ class Unjail extends Discord_Command {
         let rcon = Discord_Command.Rcons[server];
 
         if (!rcon.connected) {
-            await interaction.editReply(`S${server} is not connected the bot.`);
+            await interaction.editReply(format(config.getkey('ServerNotConnected'), server));
             return;
         }
         let res = await rcon.send(`/unjail ${player}`);

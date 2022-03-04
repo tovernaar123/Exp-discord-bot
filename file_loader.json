@@ -11,9 +11,11 @@
     "unjail.js",
     "kick.js",
     "logs.js",
+    "nextreset.js",
     "pause.js",
     "pauseun.js",
     "ping.js",
+    "playersonline.js",
     "playerdata/playerdata.js",
     "polclear.js",
     "poloff.js",
@@ -21,5 +23,6 @@
     "speed.js",
     "unban.js",
     "update.js",
+    "../config/command.js",
     "help.js"
 ]

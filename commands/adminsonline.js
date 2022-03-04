@@ -2,6 +2,11 @@
 const Discord = require('discord.js');
 const rconToSend = '/sc local admins, ctn = {}, 0 for _, p in ipairs(game.connected_players) do if p.admin then ctn = ctn + 1 admins[ctn] = p.name end end rcon.print(\'Online(\'..ctn..\') : \\n\'..table.concat(admins, \'\\n\'))'; //get Admins, then add count, then display.
 let Discord_Command = require('./../command.js');
+
+const {format} = require('util');
+let config = require.main.require('./config/utils.js');
+config.addKey('AdminsOnline/WaitingForReply', 'Awaiting reply from servers...');
+
 /**
  * 
  * @param {number} server 
@@ -14,7 +19,7 @@ async function runCommand(server, rcon, interaction) {
     if (rcon.connected) {
         response = await rcon.send(rconToSend);
     } else {
-        response = `Connection to S${server} is down.`;
+        response = format(config.getKey('ServerNotConnected'), server);
     }
 
     if (!interaction) {
@@ -23,8 +28,7 @@ async function runCommand(server, rcon, interaction) {
 
     // If Responses is blank (not normal ao).
     if (!response) {
-        await interaction.editReply('AO - There was no response from the server, this is not normal for this command please ask an admin to check the logs.');
-        console.log('Rcon: There was no response (Admins Online), this is not normal for this command please ask an admin to check the logs.');
+        await interaction.editReply(config.getKey('NoResponse'));
     }
 
     // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message 
@@ -32,7 +36,6 @@ async function runCommand(server, rcon, interaction) {
         const Embed = Discord.MessageEmbed();
         Embed.addField(`S${server}`, response, true);
         await interaction.editReply({ embeds: [Embed] });
-        console.log(`S${server} checked admins online: ${response}`);
     }
 }
 /**
@@ -42,7 +45,7 @@ async function runCommand(server, rcon, interaction) {
  * @returns {void}
 */
 async function all_servers(rcons, interaction) {
-    await interaction.editReply('Asked for all online admins: Awaiting reply from servers...');
+    await interaction.editReply(config.getKey('AdminsOnline/WaitingForReply'));
     const Embed = Discord.MessageEmbed();
     //adds fields for every server
     let amount_of_fields = 0;
@@ -73,7 +76,8 @@ class Adminsonline extends Discord_Command {
             description: 'Get the amount of admins online on the servers.',
             cooldown: 5,
             args: args,
-            guildOnly: true
+            guildOnly: true,
+            required_role: Discord_Command.roles.staff
         });
     }
 

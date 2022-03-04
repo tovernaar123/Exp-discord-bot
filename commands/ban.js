@@ -4,6 +4,9 @@ let Discord_Command = require('./../command.js');
 const net = require('net');
 let client = new net.Socket();
 
+let config = require.main.require('./config/utils.js');
+config.addKey('BanSync/Sokect', '/tmp/banlist_sync.sock');
+
 
 function GetReport(server, by_player, banned, reason) {
     let ban_report = new Discord.MessageEmbed();
@@ -25,7 +28,7 @@ async function normal_ban(player, reason, interaction) {
 
     if (rcon) {
         await rcon.send(`/ban ${player} ${reason}`);
-        let ReportChannel = interaction.guild.channels.cache.get('368812365594230788'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+        let ReportChannel = interaction.guild.channels.cache.get(config.getKey('ReportChannel')); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
         let report = GetReport(server, interaction.user.username, player, reason);
         await interaction.editReply(`Player was banned for "${reason}" (but Ban sync failed) check S${server} to make sure it worked.`);
         await ReportChannel.send({ embeds: [report] });
@@ -65,7 +68,7 @@ class Ban extends Discord_Command {
         await interaction.deferReply();
         let player = interaction.options.getString('player_name');
         let reason = interaction.options.getString('reason') || 'No reason given.';
-        client.connect('/tmp/banlist_sync.sock', function () {
+        client.connect(config.getKey('BanSync/Sokect'), function () {
             let message = JSON.stringify({ request: 'ban-player', player, reason });
             console.log(`[BAN SYNC] <= ${message}`);
             //Send the message (request for unban).
@@ -92,7 +95,7 @@ class Ban extends Discord_Command {
                     //Send the message to the discord.
                     await interaction.editReply(`${player} was banned on all servers for "${reason}".`);
                     //Get the report channel to send the report to.
-                    let ReportChannel = await interaction.guild.channels.cache.get('764881627893334047'); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+                    let ReportChannel = await interaction.guild.channels.cache.get(config.getKey('ReportChannel')); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
                     //Create the embed to send.
                     let report = GetReport('<internal>', interaction.member.displayName, player, reason);
                     //Send the report to the report channel.

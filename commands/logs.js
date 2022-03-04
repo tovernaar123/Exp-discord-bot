@@ -1,7 +1,11 @@
 let Discord_Command = require('../command.js');
 const readline = require('readline');
 const fs = require('fs');
+const {format} = require('util');
 
+
+let config = require.main.require('./config/utils.js');
+config.addKey('Logs/Directory');
 
 function chat_log(log) {
     /*
@@ -37,10 +41,11 @@ function event_log(log) {
 function getLines(server) {
     return new Promise((resolve, ) => {
         let lines = [];
-        //mnt/c/programming/tools/factorio_servers/servers/S__server__/data/console.log
-        //home/factorio/servers/eu-0${server}/console.log
+        //mnt/c/programming/tools/factorio_servers/servers/s%s/data/console.log
+        //home/factorio/servers/eu-0%s/console.log
+        let dir = format(config.getKey('Logs/Directory'), server);
         const rl = readline.createInterface({
-            input:fs.createReadStream(`/mnt/c/programming/tools/factorio_servers/servers/s${server}/data/console.log`),
+            input:fs.createReadStream(dir),
         });
 
         rl.on('line', line => {

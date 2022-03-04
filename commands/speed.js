@@ -1,4 +1,6 @@
 let Discord_Command = require('./../command.js');
+let {format} = require('util');
+let config = require.main.require('./config/utils.js');
 class Speed extends Discord_Command {
     constructor() {
         let args = [
@@ -30,7 +32,7 @@ class Speed extends Discord_Command {
         let rcon = Discord_Command.Rcons[server];
 
         if (!rcon.connected) {
-            await interaction.editReply(`S${server} is not connected the bot.`);
+            await interaction.editReply(format(config.getkey('ServerNotConnected'), server));
             return;
         }
         //Set the game speed

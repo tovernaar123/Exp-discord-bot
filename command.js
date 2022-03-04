@@ -1,5 +1,11 @@
 const Builders = require('@discordjs/builders');
+let config = require('./config/utils.js');
 
+config.addKey('roles/staff', '482924291084779532');
+config.addKey('roles/admin', '290940523844468738');
+config.addKey('roles/mod', '260893080968888321');
+config.addKey('roles/board', '693500936491892826');
+config.addKey('roles/contributor', '678245941639381010');
 class Discord_Command {
 
 
@@ -54,11 +60,11 @@ class Discord_Command {
     };
     
     static roles = {
-        staff: '762264452611440653',
-        admin: '764526097768644618',
-        mod: '762260114186305546',
-        board: '765920803006054431',
-        contributor: '948637731842572319',
+        staff: config.getKey('roles/staff'),
+        admin: config.getKey('roles/admin'),
+        mod: config.getKey('roles/mod'),
+        board: config.getKey('roles/board'),
+        contributor: config.getKey('roles/contributor'),
     };
 
     static Rcons = [];
@@ -127,7 +133,7 @@ class Discord_Command {
         command[Discord_Command.addoptions[arg.type]](builder);
     }
 
-    async create_command() {
+    create_command() {
         this.slashbuilder.setName(this.name);
         this.slashbuilder.setDescription(this.description);
         for (let i = 0; i < this.args.length; i++) {
@@ -138,7 +144,8 @@ class Discord_Command {
 
     async add_command(client) {
         this.create_command();
-        client.guilds.cache.get(process.env.guild).commands.create(this.slashbuilder);
+        await client.guilds.cache.get(process.env.guild).commands.create(this.slashbuilder);
+        console.log(`[COMMAND] added ${this.name}`);
     }
 
     get usage() {

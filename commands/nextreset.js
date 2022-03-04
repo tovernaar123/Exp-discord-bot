@@ -1,10 +1,13 @@
 //Reset Times reader
 const fs = require('fs');
+let config = require.main.require('./config/utils.js');
+config.addKey('NextReset/Directory');
 
 function resetData(interaction) {
     // Find "EU-0#" from reset_times.json 
     // get raw data
-    let rawdata = fs.readFileSync('/home/exp_admin/api_v2/reset_times.json');
+    //'/home/exp_admin/api_v2/reset_times.json'
+    let rawdata = fs.readFileSync(config.getKey('NextReset/Directory'));
     // Take raw data and change it into Json format, to make it simpler to format/lookup
     let mydata = JSON.parse(rawdata);
    
