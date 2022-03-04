@@ -105,3 +105,4 @@ dist
 *.pem
 
 servers.json
+config/main.json
