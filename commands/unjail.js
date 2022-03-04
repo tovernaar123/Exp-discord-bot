@@ -30,7 +30,7 @@ class Unjail extends Discord_Command {
         let rcon = Discord_Command.Rcons[server];
 
         if (!rcon.connected) {
-            await interaction.editReply(format(config.getkey('ServerNotConnected'), server));
+            await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
             return;
         }
         let res = await rcon.send(`/unjail ${player}`);

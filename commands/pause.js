@@ -24,7 +24,7 @@ class Pause extends Discord_Command {
         let server = interaction.options.getString('server');
         let rcon = Discord_Command.Rcons[server];
         if (!rcon.connected) {
-            await interaction.editReply(format(config.getkey('ServerNotConnected'), server));
+            await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
             return;
         }
         let res = await rcon.send('/sc game.tick_paused = true'); // Send command to pause the server

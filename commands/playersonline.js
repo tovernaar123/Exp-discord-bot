@@ -15,7 +15,7 @@ async function oneCommand(servernum, rcon) {
 
     let res;
     if (rcon.connected) res = await rcon.send('/p o');
-    else res = format(config.getkey('ServerNotConnected'), servernum);
+    else res = format(config.getKey('ServerNotConnected'), servernum);
     return res;
 }
 /**

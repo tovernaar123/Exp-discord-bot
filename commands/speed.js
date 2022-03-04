@@ -32,7 +32,7 @@ class Speed extends Discord_Command {
         let rcon = Discord_Command.Rcons[server];
 
         if (!rcon.connected) {
-            await interaction.editReply(format(config.getkey('ServerNotConnected'), server));
+            await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
             return;
         }
         //Set the game speed
