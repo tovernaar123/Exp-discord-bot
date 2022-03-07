@@ -18,7 +18,8 @@ class Create extends Discord_Command {
             description: 'Create the config file for the bot.',
             cooldown: 5,
             args: args,
-            guildOnly: true
+            guildOnly: true,
+            required_role: Discord_Command.roles.staff,
         });
     }
 
