@@ -19,7 +19,7 @@ function GetReport(server, Admin, toUnBan, reason) {
 async function normal_unban(player, reason, interaction) {
     let server;
     //Get the first connected rcon
-    let rcon = Discord_Command.Rcons.find((rcon, index) => {
+    let rcon = DiscordCommand.Rcons.find((rcon, index) => {
         server = index;
         return rcon?.connected;
     });
@@ -37,8 +37,8 @@ async function normal_unban(player, reason, interaction) {
 
 }
 
-let Discord_Command = require('./../command.js');
-class Unban extends Discord_Command {
+let DiscordCommand = require('./../command.js');
+class Unban extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -61,7 +61,7 @@ class Unban extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff
+            requiredRole: DiscordCommand.roles.staff
         });
     }
 

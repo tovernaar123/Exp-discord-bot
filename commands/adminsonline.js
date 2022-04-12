@@ -1,7 +1,7 @@
 /*eslint require-await: "error"*/
 const Discord = require('discord.js');
 const rconToSend = '/sc local admins, ctn = {}, 0 for _, p in ipairs(game.connected_players) do if p.admin then ctn = ctn + 1 admins[ctn] = p.name end end rcon.print(\'Online(\'..ctn..\') : \\n\'..table.concat(admins, \'\\n\'))'; //get Admins, then add count, then display.
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 
 const {format} = require('util');
 let config = require.main.require('./config/utils.js');
@@ -65,10 +65,10 @@ async function all_servers(rcons, interaction) {
     await interaction.editReply({ embeds: [Embed] });
 }
 
-class Adminsonline extends Discord_Command {
+class Adminsonline extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server
+            DiscordCommand.common_args.server
         ];
         super({
             name: 'admins',
@@ -77,7 +77,7 @@ class Adminsonline extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff
+            requiredRole: DiscordCommand.roles.staff
         });
     }
 
@@ -86,10 +86,10 @@ class Adminsonline extends Discord_Command {
 
         let server = interaction.options.getString('server');
         if (server === 'all') {
-            await all_servers(Discord_Command.Rcons, interaction);
+            await all_servers(DiscordCommand.Rcons, interaction);
         } else {
             server = parseInt(server);
-            await runCommand(server, Discord_Command.Rcons[server], interaction);
+            await runCommand(server, DiscordCommand.Rcons[server], interaction);
         }
     }
 }

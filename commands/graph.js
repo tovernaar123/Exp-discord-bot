@@ -1,6 +1,6 @@
 const fs = require('fs');
 const request = require('request');
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 let config = require.main.require('./config/utils.js');
 //https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics
 config.addKey('Graph/GrafanaUrl');
@@ -11,7 +11,7 @@ const download = (url, path, callback) => {
     });
 };
 
-class Graph extends Discord_Command {
+class Graph extends DiscordCommand {
     constructor() {
         let args = [
             {

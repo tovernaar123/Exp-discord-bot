@@ -1,64 +1,54 @@
 
 
 require('dotenv').config();
-let Discord_Command = require('./command.js');
+let DiscordCommand = require('./command.js');
 
 //Discord.js imports + init
 const Discord = require('discord.js');
 const { Client, Intents } = require('discord.js');
 
-const client = new Client({ partials: ['CHANNEL'], intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
-Discord_Command.client = client;
+const client = new Client({ partials: ['CHANNEL'], intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+DiscordCommand.client = client;
 
 //Rcon script
-const { rcon_connect } = require('./rcon_auto_connect.js');
-const baseport = 34228;
+const RconManager  = require('./rcon');
+const Baseport = 34228;
 
 //Get commands
 const commandFiles = require('./file_loader.json');
 const prefix = '.exp';
 let rcons = {};
 
-//global for all commands to use this object
-// eslint-disable-next-line no-global-assign
-
-
 let config = require('./config/utils.js');
 config.addKey('ServerNotConnected', 'S%s is not connected to the bot.');
 config.addKey('ReportChannel', '368812365594230788');
 config.addKey('NoResponse', 'There was no response from the server, this is not normal for this command please ask an admin to check the logs.');
-config.addKey('SpamChannel', '359442310628376577'); 
-/*
-role = {
-    staff: '482924291084779532',
-    admin: '290940523844468738',
-    mod: '260893080968888321',
-    board: '693500936491892826',
-    sadmin: '446066482007244821'
-};
-*/
+config.addKey('SpamChannel', '359442310628376577');
+
 //array for all ofline servers
-let offline_servers = [2,6,7];
+let OfflineServers = [2, 3, 4, 5, 6, 7, 8];
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed;
 Discord.MessageEmbed = function () {
     let discord_embed = new real_discord_embed();
     discord_embed.setTimestamp();
-    discord_embed.setFooter({text: client.user.username, iconURL: client.user.avatarURL()});
+    discord_embed.setFooter({ text: client.user.username, iconURL: client.user.avatarURL() });
     discord_embed.setColor('53380');
     return discord_embed;
 };
 
 
 async function start() {
-
+    let Rcons = new RconManager(OfflineServers, 8, Baseport);
+    await Rcons.Connect();
     //9 cause 8 < 9 and we want to inculde 8 and we start at 1 cuase theirs no s0
+    /*
     for (let i = 1; i < 9; i++) {
         //if servers is offline dont try and connect to it
         if (offline_servers.includes(i)) {
             rcons[i] = { 'connected': false };
-            Discord_Command.Rcons[i] = rcons[i];
+            DiscordCommand.Rcons[i] = rcons[i];
             continue;
         }
 
@@ -69,10 +59,10 @@ async function start() {
         rcons[i] = await rcon_connect(port_to_use, i);
 
         //add to the list
-        Discord_Command.Rcons[i] = rcons[i];
+        DiscordCommand.Rcons[i] = rcons[i];
     }
     //start listing for commands
-
+    */
 
     client.login(process.env.DISCORD_TOKEN);
 }
@@ -87,8 +77,8 @@ client.on('ready', async () => {
         replace(/T/, ' ').      // replace T with a space
         replace(/\..+/, '');     // delete the dot and everything after
     console.log(`${date_string}: I am ready!`);
-    client.channels.cache.get(config.getKey('SpamChannel')).send(`Bot logged in - Notice some Servers are set to be offline (#${offline_servers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
-    
+    client.channels.cache.get(config.getKey('SpamChannel')).send(`Bot logged in - Notice some Servers are set to be offline (#${OfflineServers}). To enable the bot for them please edit infoBot.js`); // Bot Spam Channel for ready message. Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
+
     //void all slash commands
     //await client.guilds.cache.get('762249085268656178').commands.set([]);
 
@@ -101,7 +91,7 @@ client.on('ready', async () => {
         const command = require(`./commands/${file}`);
         //add it to the list 
         client.commands.set(command.name, command);
-        if(command.slash){
+        if (command.slash) {
             waitfor.push(command.add_command(client));
         }
     }
@@ -116,13 +106,13 @@ client.on('interactionCreate', async interaction => {
     const { commandName } = interaction;
 
     let command = client.commands.get(commandName);
-    if(!command){ await interaction.reply('Command not found'); return; }
+    if (!command) { await interaction.reply('Command not found'); return; }
 
-    if(command.Subcommands.length > 0) {
+    if (command.Subcommands.length > 0) {
         let name = interaction.options.getSubcommand();
         command = command.Subcommands.find((c) => c.name === name);
         await command._execute(interaction);
-    }else{
+    } else {
         await command._execute(interaction);
     }
 
@@ -131,7 +121,6 @@ client.on('interactionCreate', async interaction => {
 
 
 client.on('messageCreate', async msg => {
-
     function internal_error(err) {
         console.log(err);
         msg.channel.send('Internal error in the command. Please contact an admin.');
@@ -143,7 +132,6 @@ client.on('messageCreate', async msg => {
 
     //Ends msg  code early if the command does not start with a prefix
     if (!msg.content.toLowerCase().startsWith(prefix)) return;
-
     // remove the .exp then removes the spaces in the beging and end then splits it up into args
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
 
@@ -168,7 +156,7 @@ client.on('messageCreate', async msg => {
     }
 
     // Check to see if you have the role you need or a higher one
-    let req_role = command.required_role;
+    let req_role = command.requiredRole;
 
     if (req_role) {
         let role = await msg.guild.roles.fetch(req_role);

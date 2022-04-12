@@ -6,7 +6,8 @@ config.addKey('roles/admin', '290940523844468738');
 config.addKey('roles/mod', '260893080968888321');
 config.addKey('roles/board', '693500936491892826');
 config.addKey('roles/contributor', '678245941639381010');
-class Discord_Command {
+
+class DiscordCommand {
 
 
     /**
@@ -26,7 +27,7 @@ class Discord_Command {
 
         this.description = flags.description || 'No description given.';
         this.guildOnly = flags.guildOnly;
-        this.required_role = flags.required_role;
+        this.requiredRole = flags.requiredRole;
 
         this.args = flags.args;
         this.slash = true;
@@ -77,14 +78,14 @@ class Discord_Command {
             required: true,
             type: 'String',
             choices: [
-                ['Sever 1', '1'],
-                ['Sever 2', '2'],
-                ['Sever 3', '3'],
-                ['Sever 4', '4'],
-                ['Sever 5', '5'],
-                ['Sever 6', '6'],
-                ['Sever 7', '7'],
-                ['Sever 8', '8'],
+                ['Server 1', '1'],
+                ['Server 2', '2'],
+                ['Server 3', '3'],
+                ['Server 4', '4'],
+                ['Server 5', '5'],
+                ['Server 6', '6'],
+                ['Server 7', '7'],
+                ['Server 8', '8'],
                 ['All servers', 'all'],
             ]
         },
@@ -95,22 +96,23 @@ class Discord_Command {
             required: true,
             type: 'String',
             choices: [
-                ['Sever 1', '1'],
-                ['Sever 2', '2'],
-                ['Sever 3', '3'],
-                ['Sever 4', '4'],
-                ['Sever 5', '5'],
-                ['Sever 6', '6'],
-                ['Sever 7', '7'],
-                ['Sever 8', '8'],
+                ['Server 1', '1'],
+                ['Server 2', '2'],
+                ['Server 3', '3'],
+                ['Server 4', '4'],
+                ['Server 5', '5'],
+                ['Server 6', '6'],
+                ['Server 7', '7'],
+                ['Server 8', '8'],
             ]
         }
     };
+    
     static client;
 
 
     AddOption(command, arg) {
-        if(!Discord_Command.builders[arg.type]) throw new Error('Invalid option type.');
+        if(!DiscordCommand.builders[arg.type]) throw new Error('Invalid option type.');
 
         //add and create the subcommand
         if(arg.type === 'Subcommand') {
@@ -120,17 +122,17 @@ class Discord_Command {
             builder.type = 1;
             this.Subcommands.push(arg.command);
 
-            return command[Discord_Command.addoptions[arg.type]](builder);
+            return command[DiscordCommand.addoptions[arg.type]](builder);
         }
 
-        let builder = new Discord_Command.builders[arg.type]();
+        let builder = new DiscordCommand.builders[arg.type]();
         if(arg.choices) builder.addChoices(arg.choices);
         if(arg.min) builder.setMinValue(arg.min);
         if(arg.max) builder.setMaxValue(arg.max);
         builder.setName(arg.name);
         builder.setRequired(arg.required);
         builder.setDescription(arg.description);
-        command[Discord_Command.addoptions[arg.type]](builder);
+        command[DiscordCommand.addoptions[arg.type]](builder);
     }
 
     create_command() {
@@ -157,8 +159,8 @@ class Discord_Command {
     }
 
     async authorize(interaction) {
-        if(this.required_role){
-            let role = await interaction.guild.roles.fetch(this.required_role);
+        if(this.requiredRole){
+            let role = await interaction.guild.roles.fetch(this.requiredRole);
             let allowed = interaction.member.roles.highest.comparePositionTo(role) >= 0;
             if (!allowed) {
                 await interaction.reply(`You do not have ${role.name} permission.`);
@@ -185,4 +187,4 @@ class Discord_Command {
     }
 }
 
-module.exports = Discord_Command;
+module.exports = DiscordCommand;

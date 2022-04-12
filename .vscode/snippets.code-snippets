@@ -18,8 +18,8 @@
 	"command": {
 		"prefix": "cmd",
 		"body": [
-			"let Discord_Command = require('./../command.js');",
-			"class $1 extends Discord_Command {",
+			"let DiscordCommand = require('./../command.js');",
+			"class $1 extends DiscordCommand {",
 			"    constructor() {",
 			"        let args = [",
 			"            $2",

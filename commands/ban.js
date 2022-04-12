@@ -1,6 +1,6 @@
 
 const Discord = require('discord.js');
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 const net = require('net');
 let client = new net.Socket();
 
@@ -21,7 +21,7 @@ function GetReport(server, by_player, banned, reason) {
 
 async function normal_ban(player, reason, interaction) {
     let server;
-    let rcon = Discord_Command.Rcons.find((rcon, index) => {
+    let rcon = DiscordCommand.Rcons.find((rcon, index) => {
         server = index;
         return rcon?.connected;
     });
@@ -36,7 +36,7 @@ async function normal_ban(player, reason, interaction) {
 }
 
 
-class Ban extends Discord_Command {
+class Ban extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -60,7 +60,7 @@ class Ban extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
     }
 

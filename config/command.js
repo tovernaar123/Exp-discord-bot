@@ -1,8 +1,8 @@
-const Discord_Command = require('./../command.js');
+const DiscordCommand = require('./../command.js');
 
 const config = require('./utils.js');
 
-class Create extends Discord_Command {
+class Create extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -19,7 +19,7 @@ class Create extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
     }
 
@@ -52,7 +52,7 @@ class Create extends Discord_Command {
 }
 let create = new Create();
 
-class Modify extends Discord_Command {
+class Modify extends DiscordCommand {
     constructor() {
         let keys = config.keys.map(
             (key) => {
@@ -81,7 +81,7 @@ class Modify extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
     }
 
@@ -96,7 +96,7 @@ class Modify extends Discord_Command {
 let modify = new Modify();
 
 
-class Config_command extends Discord_Command {
+class Config_command extends DiscordCommand {
     constructor() {
         let args = [
             {

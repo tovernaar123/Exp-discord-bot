@@ -1,4 +1,4 @@
-let Discord_Command = require('../command.js');
+let DiscordCommand = require('../command.js');
 const readline = require('readline');
 const fs = require('fs');
 const {format} = require('util');
@@ -99,10 +99,10 @@ async function get_logs(server, size, msg, parse) {
 }
 
 
-class chatlog extends Discord_Command {
+class chatlog extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server,
+            DiscordCommand.common_args.server,
             {
                 name: 'size',
                 description: 'The amount of chat log you want.',
@@ -117,7 +117,7 @@ class chatlog extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.board,
+            requiredRole: DiscordCommand.roles.board,
         });
 
     }
@@ -133,10 +133,10 @@ class chatlog extends Discord_Command {
 
 }
 
-class eventlog extends Discord_Command {
+class eventlog extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server,
+            DiscordCommand.common_args.server,
             {
                 name: 'size',
                 description: 'The amount of event log you want.',
@@ -151,7 +151,7 @@ class eventlog extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.board,
+            requiredRole: DiscordCommand.roles.board,
         });
 
     }
@@ -167,10 +167,10 @@ class eventlog extends Discord_Command {
 
 }
 
-class normallog extends Discord_Command {
+class normallog extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server,
+            DiscordCommand.common_args.server,
             {
                 name: 'size',
                 description: 'The amount of chat log you want.',
@@ -185,7 +185,7 @@ class normallog extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.board,
+            requiredRole: DiscordCommand.roles.board,
         });
 
     }
@@ -204,7 +204,7 @@ class normallog extends Discord_Command {
 let chat = new chatlog();
 let normal = new normallog();
 let event = new eventlog();
-class log extends Discord_Command{
+class log extends DiscordCommand{
     constructor() {
         let args = [
             {

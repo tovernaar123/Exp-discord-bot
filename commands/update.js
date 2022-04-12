@@ -2,8 +2,8 @@ let { spawnSync } = require('child_process');
 
 
 
-let Discord_Command = require('./../command.js');
-class Update extends Discord_Command {
+let DiscordCommand = require('./../command.js');
+class Update extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -20,14 +20,14 @@ class Update extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff
+            requiredRole: DiscordCommand.roles.staff
         });
     }
     async authorize(interaction) {
-        let admin = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.admin)) >= 0;
+        let admin = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(DiscordCommand.roles.admin)) >= 0;
         
-        let staff = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.staff)) >= 0;
-        let contributing = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(Discord_Command.roles.contributor)) >= 0;
+        let staff = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(DiscordCommand.roles.staff)) >= 0;
+        let contributing = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(DiscordCommand.roles.contributor)) >= 0;
         let authorize = admin || (staff && contributing);
         if (!authorize) {
             await interaction.reply('You need either the Admin or Staff and contributing dev role to use this command.');

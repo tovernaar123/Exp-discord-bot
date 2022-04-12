@@ -131,7 +131,7 @@ function getLines(server) {
         let lines = [];
 
         const rl = readline.createInterface({
-            input: fs.createReadStream(format(config.geKey('Logs/Directory'), server)),
+            input: fs.createReadStream(format(config.getKey('Logs/Directory'), server)),
         });
 
         rl.on('line', line => {
@@ -162,11 +162,11 @@ async function get_logs(server, interaction) {
     }
 }
 
-let Discord_Command = require('./../command.js');
-class Sessions extends Discord_Command {
+let DiscordCommand = require('./../command.js');
+class Sessions extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server_NoAll,
+            DiscordCommand.common_args.server_NoAll,
         ];
         super({
             name: 'sessions',
@@ -175,7 +175,7 @@ class Sessions extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.board,
+            requiredRole: DiscordCommand.roles.board,
         });
     }
 

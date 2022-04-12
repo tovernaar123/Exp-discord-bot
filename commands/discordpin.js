@@ -1,6 +1,6 @@
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 
-class discord_pin extends Discord_Command {
+class discord_pin extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -16,7 +16,7 @@ class discord_pin extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
     }
 

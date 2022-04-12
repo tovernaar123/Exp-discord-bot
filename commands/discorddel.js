@@ -1,5 +1,5 @@
-let Discord_Command = require('./../command.js');
-class discord_delete extends Discord_Command {
+let DiscordCommand = require('./../command.js');
+class discord_delete extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -15,7 +15,7 @@ class discord_delete extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.admin,
+            requiredRole: DiscordCommand.roles.admin,
         });
     }
 

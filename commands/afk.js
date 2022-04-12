@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 let rconToSend = '/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))'; //send afk chat bot
 
 let config = require.main.require('./config/utils.js');
@@ -73,10 +73,10 @@ async function all_servers(rcons, interaction) {
     await interaction.editReply({ embeds: [Embed] });
 }
 
-class Afk extends Discord_Command {
+class Afk extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server
+            DiscordCommand.common_args.server
         ];
         super({
             name: 'afk',
@@ -85,7 +85,7 @@ class Afk extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.board,
+            requiredRole: DiscordCommand.roles.board,
         });
     }
 
@@ -94,10 +94,10 @@ class Afk extends Discord_Command {
 
         let server = interaction.options.getString('server');
         if (server === 'all') {
-            await all_servers(Discord_Command.Rcons, interaction).catch(console.error);
+            await all_servers(DiscordCommand.Rcons, interaction).catch(console.error);
         } else {
             server = parseInt(server);
-            let res = await runCommand(server, Discord_Command.Rcons[server], interaction).catch(console.error);
+            let res = await runCommand(server, DiscordCommand.Rcons[server], interaction).catch(console.error);
             const Embed = Discord.MessageEmbed();
             Embed.addFields(...res);
             await interaction.editReply({ embeds: [Embed] });

@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 let {format} = require('util');
 let config = require.main.require('./config/utils.js');
 
@@ -49,12 +49,12 @@ async function allCommand(interaction, rcons) {
 }
 
 
-class Playersonline extends Discord_Command {
+class Playersonline extends DiscordCommand {
 
     constructor() {
         
         let args = [
-            Discord_Command.common_args.server
+            DiscordCommand.common_args.server
         ];
 
         super({
@@ -73,10 +73,10 @@ class Playersonline extends Discord_Command {
         let server = interaction.options.getString('server');
 
         if (server === 'all') {
-            await interaction.editReply({ embeds: [await allCommand(interaction, Discord_Command.Rcons)] });
+            await interaction.editReply({ embeds: [await allCommand(interaction, DiscordCommand.Rcons)] });
         } else {
             server = parseInt(server);
-            let res = await oneCommand(server, Discord_Command.Rcons[server], interaction.msg, interaction.client);
+            let res = await oneCommand(server, DiscordCommand.Rcons[server], interaction.msg, interaction.client);
             let embed = new Discord.MessageEmbed();
             embed.addField(`S${server}`, res, true);
             await interaction.editReply({ embeds: [embed] });

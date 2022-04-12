@@ -1,8 +1,8 @@
-let Discord_Command = require('./../command.js');
-class Jail extends Discord_Command {
+let DiscordCommand = require('./../command.js');
+class Jail extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server_NoAll,
+            DiscordCommand.common_args.server_NoAll,
             {
                 name: 'tojail',
                 type: 'String',
@@ -23,7 +23,7 @@ class Jail extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff
+            requiredRole: DiscordCommand.roles.staff
         });
     }
 
@@ -39,7 +39,7 @@ class Jail extends Discord_Command {
             return await interaction.editReply('You cannot use " , \\ or \' in the reason.');
         }
 
-        let rcon = Discord_Command.Rcons[parseInt(server)];
+        let rcon = DiscordCommand.Rcons[parseInt(server)];
 
         if (!rcon.connected) {
             await interaction.editReply(`S${server} is not connected the bot.`);

@@ -1,6 +1,6 @@
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 
-class Ping extends Discord_Command {
+class Ping extends DiscordCommand {
     constructor() {
         let config = {
             name: 'ping',

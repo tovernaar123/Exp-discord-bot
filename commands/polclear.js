@@ -1,11 +1,11 @@
 
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 let {format} = require('util');
 let config = require.main.require('./config/utils.js');
-class Polclear extends Discord_Command {
+class Polclear extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server_NoAll,
+            DiscordCommand.common_args.server_NoAll,
         ];
         super({
             name: 'polclear',
@@ -14,14 +14,14 @@ class Polclear extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
     }
 
     async execute(interaction) {
         await interaction.deferReply();
         let server = interaction.options.getString('server');
-        let rcon = Discord_Command.Rcons[server];
+        let rcon = DiscordCommand.Rcons[server];
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
             return;

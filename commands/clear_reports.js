@@ -1,4 +1,4 @@
-let Discord_Command = require('../command.js');
+let DiscordCommand = require('../command.js');
 
 
 async function runCommand(server, rcon, interaction, toClear, reason) {
@@ -26,7 +26,7 @@ module.exports = {
     guildOnly: true,
     args: true,
     helpLevel: 'role.staff',
-    required_role: role.staff,
+    requiredRole: role.staff,
     usage: ' <username> <reason>',
     async execute(msg, args, rcons, internal_error) {
         const author = msg.author.displayName; //find author
@@ -67,10 +67,10 @@ module.exports = {
 };
 */
 
-class clear_reports extends Discord_Command {
+class clear_reports extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server,
+            DiscordCommand.common_args.server,
             {
                 name: 'player',
                 description: 'The name of the player you would like to clear reports for.',
@@ -84,7 +84,7 @@ class clear_reports extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
 
     }
@@ -92,7 +92,7 @@ class clear_reports extends Discord_Command {
     {
         await interaction.deferReply();
         let server = interaction.options.getString('server');
-        await runCommand(server, Discord_Command.Rcons[server], interaction, interaction.options.getString('player'), interaction.options.getString('reason'));
+        await runCommand(server, DiscordCommand.Rcons[server], interaction, interaction.options.getString('player'), interaction.options.getString('reason'));
     }
 
 }

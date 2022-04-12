@@ -1,10 +1,10 @@
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 let {format} = require('util');
 let config = require.main.require('./config/utils.js');
-class Speed extends Discord_Command {
+class Speed extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server_NoAll,
+            DiscordCommand.common_args.server_NoAll,
             {
                 name: 'speed',
                 description: 'The new speed to set the server to',
@@ -21,7 +21,7 @@ class Speed extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
     }
 
@@ -29,7 +29,7 @@ class Speed extends Discord_Command {
         await interaction.deferReply();
         let server = interaction.options.getString('server');
         let speed = interaction.options.getNumber('speed');
-        let rcon = Discord_Command.Rcons[server];
+        let rcon = DiscordCommand.Rcons[server];
 
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));

@@ -2,8 +2,8 @@
 const Discord = require('discord.js');
 let config = require.main.require('./config/utils.js');
 
-let Discord_Command = require('./../command.js');
-class Kick extends Discord_Command {
+let DiscordCommand = require('./../command.js');
+class Kick extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -12,7 +12,7 @@ class Kick extends Discord_Command {
                 required: true,
                 type: 'String',
             },
-            Discord_Command.common_args.server_NoAll,
+            DiscordCommand.common_args.server_NoAll,
             {
                 name: 'reason',
                 description: 'The reason for kicking the player',
@@ -27,7 +27,7 @@ class Kick extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
     }
 
@@ -37,7 +37,7 @@ class Kick extends Discord_Command {
         let server = parseInt(interaction.options.getString('server'));
         let reason = interaction.options.getString('reason') || 'No reason given';
 
-        let rcon = Discord_Command.Rcons[server];
+        let rcon = DiscordCommand.Rcons[server];
         if (!rcon) {
             await interaction.editReply('The server you specified is not connected');
             return;

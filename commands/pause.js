@@ -1,12 +1,12 @@
 
-let Discord_Command = require('./../command.js');
+let DiscordCommand = require('./../command.js');
 let config = require.main.require('./config/utils.js');
 const {format} = require('util');
 
-class Pause extends Discord_Command {
+class Pause extends DiscordCommand {
     constructor() {
         let args = [
-            Discord_Command.common_args.server_NoAll,
+            DiscordCommand.common_args.server_NoAll,
         ];
         super({
             name: 'pause',
@@ -15,14 +15,14 @@ class Pause extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.staff,
+            requiredRole: DiscordCommand.roles.staff,
         });
     }
 
     async execute(interaction) {
         await interaction.deferReply();
         let server = interaction.options.getString('server');
-        let rcon = Discord_Command.Rcons[server];
+        let rcon = DiscordCommand.Rcons[server];
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
             return;

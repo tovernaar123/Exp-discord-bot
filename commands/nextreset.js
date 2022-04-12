@@ -29,8 +29,8 @@ function resetData(interaction) {
         
     interaction.editReply(sendFirst + sendFull);
 }
-let Discord_Command = require('./../command.js');
-class Nextreset extends Discord_Command {
+let DiscordCommand = require('./../command.js');
+class Nextreset extends DiscordCommand {
     constructor() {
         let args = [
             

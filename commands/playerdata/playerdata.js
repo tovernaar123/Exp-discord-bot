@@ -1,5 +1,5 @@
 let Eta = require('eta');
-let Discord_Command = require('./../../command.js');
+let DiscordCommand = require('./../../command.js');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 let config = require.main.require('./config/utils.js');
@@ -102,7 +102,7 @@ function player_data(name) {
 }
 
 
-class Picture extends Discord_Command {
+class Picture extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -119,7 +119,7 @@ class Picture extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.board
+            requiredRole: DiscordCommand.roles.board
         });
     }
 
@@ -207,7 +207,7 @@ class Picture extends Discord_Command {
 }
 let picture = new Picture();
 
-class Json extends Discord_Command {
+class Json extends DiscordCommand {
     constructor() {
         let args = [
             {
@@ -224,7 +224,7 @@ class Json extends Discord_Command {
             cooldown: 5,
             args: args,
             guildOnly: true,
-            required_role: Discord_Command.roles.board
+            requiredRole: DiscordCommand.roles.board
         });
     }
 
@@ -251,7 +251,7 @@ class Json extends Discord_Command {
 }
 let json = new Json();
 
-class Playerdata extends Discord_Command {
+class Playerdata extends DiscordCommand {
     constructor() {
         let args = [
             {
