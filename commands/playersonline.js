@@ -1,33 +1,33 @@
+// @ts-check
 const Discord = require('discord.js');
 let DiscordCommand = require('./../command.js');
 let {format} = require('util');
-let config = require.main.require('./config/utils.js');
+let config = require('./../config');
 
 /**
  * 
  * @param {Number} servernum the number name of the server not used for anything but printing
- * @param {Rcon} rcon the rcon to send the command 
- * @param {Discord.Message} send_message if given will send the result in an embed to the channel
- * @returns {string} the players that are online on the server
+ * @param {import('./../rcon/RconClass')} rcon the rcon to send the command 
+ * @returns {Promise<String>} the players that are online on the server
 */
 
 async function oneCommand(servernum, rcon) {
 
     let res;
-    if (rcon.connected) res = await rcon.send('/p o');
+    if (rcon.connected) res = await rcon.Send('/p o');
     else res = format(config.getKey('ServerNotConnected'), servernum);
     return res;
 }
 /**
  * 
- * @param {Discord.Message} msg the message that excute this command
- * @param {Rcon} rcons the open rcon connection to the server
- * @returns {void}
+ * @param {import("discord.js").CommandInteraction<'cached'>} interaction the message that excute this command
+ * @param {readonly import('./../rcon/RconClass')[]} rcons the open rcon connection to the server
+ * @returns {Promise<Discord.MessageEmbed>}
 */
 async function allCommand(interaction, rcons) {
     await interaction.editReply('Asked for all online players: Awaiting reply from servers...');
 
-    const Embed = Discord.MessageEmbed();
+    const Embed = new Discord.MessageEmbed();
 
     //adds field for every server
     let amount_of_fields = 0;
@@ -54,29 +54,34 @@ class Playersonline extends DiscordCommand {
     constructor() {
         
         let args = [
-            DiscordCommand.common_args.server
+            DiscordCommand.CommonArgs.Server
         ];
 
         super({
             name: 'playersonline',
-            aka: ['playersonline'],
             cooldown: 0.5,
             description: 'how many players are online?',
             cooldown_msg: 'Please wait a moment before using this command again.',
             guildOnly: true,
+            requiredRole: false,
             args: args,
         });
     }
-
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
+        /**
+         * @type {string | number}
+        */
         let server = interaction.options.getString('server');
 
         if (server === 'all') {
-            await interaction.editReply({ embeds: [await allCommand(interaction, DiscordCommand.Rcons)] });
+            await interaction.editReply({ embeds: [await allCommand(interaction, DiscordCommand.client.Rcons.GetAllRcons())] });
         } else {
             server = parseInt(server);
-            let res = await oneCommand(server, DiscordCommand.Rcons[server], interaction.msg, interaction.client);
+            let res = await oneCommand(server, DiscordCommand.client.Rcons.GetRcon(server));
             let embed = new Discord.MessageEmbed();
             embed.addField(`S${server}`, res, true);
             await interaction.editReply({ embeds: [embed] });

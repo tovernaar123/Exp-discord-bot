@@ -1,6 +1,6 @@
 const DiscordCommand = require('./../command.js');
 
-const config = require('./utils.js');
+const config = require('./index.js');
 
 class Create extends DiscordCommand {
     constructor() {

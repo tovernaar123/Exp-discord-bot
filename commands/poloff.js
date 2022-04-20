@@ -1,15 +1,14 @@
-
+// @ts-check
 let DiscordCommand = require('./../command.js');
 let {format} = require('util');
-let config = require.main.require('./config/utils.js');
+let config = require('./../config');
 class PollOff extends DiscordCommand {
     constructor() {
         let args = [
-            DiscordCommand.common_args.server_NoAll,
+            DiscordCommand.CommonArgs.ServerNoAll,
         ];
         super({
             name: 'poloff',
-            aka: [''],
             description: 'Completely turns off pollution. So no new pollution will be generated.',
             cooldown: 5,
             args: args,
@@ -17,21 +16,23 @@ class PollOff extends DiscordCommand {
             requiredRole: DiscordCommand.roles.staff,
         });
     }
-
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = interaction.options.getString('server');
-        let rcon = DiscordCommand.Rcons[server];
+        let server = parseInt(interaction.options.getString('server'));
+        let rcon = DiscordCommand.client.Rcons.GetRcon(server);
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
             return;
         }
         //Disable pollution completely.
-        let res = await rcon.send('/sc game.map_settings.pollution.enabled = false'); 
+        let res = await rcon.Send('/sc game.map_settings.pollution.enabled = false'); 
         // this command should not get a reply from the server. The command should print on the ingame server though.
         if (!res) { 
             //Send message to server.
-            await rcon.send(`The server had pollution **DISABLED** by ${interaction.member.displayName}. Please @staff on the discord if this was done by mistake.`);
+            await rcon.Send(`The server had pollution **DISABLED** by ${interaction.member.displayName}. Please @staff on the discord if this was done by mistake.`);
             //Send message to discord.
             await interaction.editReply(`No Error - Thus pollution should have been **disabled** on S${server}. Command Requested by *${interaction.member.displayName}*.`);
         } else {

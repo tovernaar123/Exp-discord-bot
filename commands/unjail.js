@@ -1,8 +1,12 @@
+// @ts-check
 let DiscordCommand = require('./../command.js');
 let {format} = require('util');
-let config = require.main.require('./config/utils.js');
+let config = require('./../config');
 class Unjail extends DiscordCommand {
     constructor() {
+        /**
+         * @type {import("./../command.js").Argument[]}
+         */
         let args = [
             {
                 name: 'player',	
@@ -10,11 +14,10 @@ class Unjail extends DiscordCommand {
                 required: true,
                 type: 'String'
             },
-            DiscordCommand.common_args.server_NoAll,
+            DiscordCommand.CommonArgs.ServerNoAll,
         ];
         super({
             name: 'unjail',
-            aka: [''],
             description: 'Unjails the player on the server.',
             cooldown: 5,
             args: args,
@@ -23,17 +26,20 @@ class Unjail extends DiscordCommand {
         });
     }
 
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = interaction.options.getString('server');
+        let server = parseInt(interaction.options.getString('server'));
         let player = interaction.options.getString('player');
-        let rcon = DiscordCommand.Rcons[server];
+        let rcon = DiscordCommand.client.Rcons.GetRcon(server);
 
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
             return;
         }
-        let res = await rcon.send(`/unjail ${player}`);
+        let res = await rcon.Send(`/unjail ${player}`);
         if (res === 'Command Complete\n') {
             await interaction.editReply(`**${player}** has been unjailed on S${server}`);
         } else {

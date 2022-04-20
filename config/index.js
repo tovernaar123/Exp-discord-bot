@@ -1,9 +1,13 @@
+// @ts-nocheck
 const fs = require('fs');
 const events = require('events');
 
 
 
 class config extends events {
+    /**
+     * @type {config}
+     */
     static main;
     constructor() {
         super();
@@ -18,30 +22,45 @@ class config extends events {
             //if main.json exists read it
             let rawdata = fs.readFileSync('./config/main.json');
             //and load the object
-            this.data = JSON.parse(rawdata);
+            this.data = JSON.parse(rawdata.toString());
             this.ready = true;
         }
     }
 
+    /**
+     * @param {string} key
+     * @param {string} [defaultValue]
+     */
     addKey(key, defaultValue) {
-        if(defaultValue){
+        if (defaultValue) {
             this.defaults[key] = defaultValue;
         }
         this.keys.push(key);
-        if(!(key in this.data)){
+        if (!(key in this.data)) {
             this.data[key] = defaultValue || '';
             this.save();
         }
     }
 
-    getKey(key){
+    /**
+     * @param {string} key
+     * @returns {string}
+     */
+    getKey(key) {
         return this.data[key];
     }
 
-    setKey(key, value){
+    /**
+     * @param {string} key
+     * @param {string} value
+     */
+    setKey(key, value) {
         this.data[key] = value;
         this.save();
     }
+    /**
+     * @param {any} config_data
+     */
     createConfig(config_data) {
         //create a new config
         this.data = config_data;
@@ -50,7 +69,7 @@ class config extends events {
         this.emit('ready');
     }
 
-    reload(){
+    reload() {
         //reload the config
         let rawdata = fs.readFileSync('./config/main.json');
         this.data = JSON.parse(rawdata);
@@ -63,5 +82,7 @@ class config extends events {
     }
 
 }
-if(!config.main) new config();
+if (!config.main) {
+    new config();
+}
 module.exports = config.main;

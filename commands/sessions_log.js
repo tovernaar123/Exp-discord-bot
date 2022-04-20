@@ -1,4 +1,11 @@
-
+// @ts-check
+const readline = require('readline');
+const fs = require('fs');
+let {format} = require('util');
+let config = require('./../config');
+/**
+ * @param {number} mill
+ */
 function Millisec_Converter(mill) {
     let hrs = Math.floor(mill / 3600000); // hours
     let mins = Math.round((mill % 3600000) / 60000); // minutes
@@ -6,6 +13,11 @@ function Millisec_Converter(mill) {
     return {hrs, mins, seconds};
 }
 
+/**
+ * @param {[string, string]} join
+ * @param {[string, string]} leave
+ * @returns {string}
+ */
 function create_session(join, leave) {
     if (join && leave) {
         //get the data.
@@ -19,7 +31,7 @@ function create_session(join, leave) {
         let leave_time = new Date(`${leave_time_date} ${leave_date_time}`);
         
         //get the diff.
-        let diff = leave_time - join_time;
+        let diff = leave_time.getTime() - join_time.getTime();
         let time_obj = Millisec_Converter(diff);
         
         //return the msg
@@ -34,7 +46,7 @@ function create_session(join, leave) {
         let now = Date.now();
 
         //get the diff.
-        let diff = now - join_time;
+        let diff = now - join_time.getTime();
         let time_obj = Millisec_Converter(diff);
         
         //return the msg
@@ -48,9 +60,18 @@ function create_session(join, leave) {
     }
 }
 
+/**
+ * 
+ * @param {String} log 
+ * @returns {String}
+*/
+
 function parse_log(log) {
     //just the same as /.*?\[CHAT\].*?\n/ but does it for JOIN and LEAVE.
     let join_and_leave = log.match(/.*?(\[JOIN\]|\[LEAVE\]).*?\n/g);
+    /**
+     * @type {{[key: string]: {joins:[string, string][], leaves:[string, string][] }}}
+     */
     let sessions = {};
 
     /*
@@ -86,9 +107,10 @@ function parse_log(log) {
         //Final_data for this loop as format it will be tovernaar123 Joined at 17:41:34 on 2020-12-07 
         //If this is the first appearance of this name in this loop, create an array for it.
         if (!sessions[name]) {
-            sessions[name] = {};
-            sessions[name].joins = [];
-            sessions[name].leaves = [];
+            sessions[name] = {
+                joins: [],
+                leaves: []
+            };
         }
         
         //If its a join make the string joined at else make left at.
@@ -122,10 +144,12 @@ function parse_log(log) {
     }
     return final_message;
 }
-const readline = require('readline');
-const fs = require('fs');
-let {format} = require('util');
-let config = require.main.require('./config/utils.js');
+
+/**
+ * 
+ * @param {String} server 
+ * @returns {Promise<String[]>}
+*/
 function getLines(server) {
     return new Promise((resolve) => {
         let lines = [];
@@ -147,16 +171,29 @@ function getLines(server) {
 
     });
 }
-const max_size = 50;
+
+
+/**
+ * 
+ * @param {String} server 
+ * @param {import("discord.js").CommandInteraction<'cached'>} interaction 
+ */
 async function get_logs(server, interaction) {
+
+    /**
+     * @type {string | string[]}
+    */
     let lines = await getLines(server);
+    //Join the lines
     lines = lines.join('\n');
-    lines = lines.replace(/\[special-item=.*?\]/g, '<blueprint>');
-    lines = parse_log(lines.replace(/```/g, ',,,'));
-    lines = lines.split('\n');
-    lines = lines.slice(-1 * max_size);
-    lines = lines.join('\n');
+
+    //Turn into session block
+    lines = parse_log(lines);
+    
+    //Split if more then 1500 chars
     lines = lines.match(/[\s\S]{1,1500}/g);
+
+    //send all lines
     for (let i = 0; i < lines.length; i++) {
         await interaction.channel.send(`\`\`\`log\n${lines[i]}\`\`\``);
     }
@@ -166,11 +203,10 @@ let DiscordCommand = require('./../command.js');
 class Sessions extends DiscordCommand {
     constructor() {
         let args = [
-            DiscordCommand.common_args.server_NoAll,
+            DiscordCommand.CommonArgs.ServerNoAll,
         ];
         super({
             name: 'sessions',
-            aka: [''],
             description: 'Gets the session from the log.',
             cooldown: 5,
             args: args,
@@ -179,6 +215,9 @@ class Sessions extends DiscordCommand {
         });
     }
 
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
         let server = interaction.options.getString('server');

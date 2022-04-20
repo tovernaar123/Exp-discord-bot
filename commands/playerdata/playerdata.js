@@ -1,8 +1,9 @@
+// @ts-check
 let Eta = require('eta');
 let DiscordCommand = require('./../../command.js');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-let config = require.main.require('./config/utils.js');
+let config = require('./../../config');
 
 
 config.addKey('Playerdata/Dir');
@@ -15,15 +16,50 @@ config.addKey('Playerdata/NotAuthorized', 'You need board for the this command (
 
 //Formats the numbers to be displayed in the grid (So that they have comma's every 3 digits).
 const nf = new Intl.NumberFormat('en-US');
+
+/**
+ * @typedef {object} Stats
+ * @property {Number} JoinCount
+ * @property {Number} MapsPlayed
+ * @property {Number} DistanceTravelled
+ * @property {Number} Playtime
+ * @property {Number} ItemsPickedUp
+ * @property {Number} ItemsCrafted
+ * @property {Number} MachinesBuilt
+ * @property {Number} MachinesRemoved
+ * @property {Number} ResearchCompleted
+ * @property {Number} ChatMessages
+ * @property {Number} TreesDestroyed
+ * @property {Number} CapsulesUsed
+ * @property {Number} DeconstructionPlannerUsed
+ * @property {Number} DamageDealt
+ * @property {Number} Kills
+ * @property {Number} Deaths
+ * @property {Number} EntityRepaired
+ * @property {Number} CommandsUsed
+ * @property {Number} AfkTime
+ * @property {Number} TilesRemoved
+ * @property {Number} TilesBuilt
+ * @property {Number} MapTagsMade
+ * @property {Number} RocketsLaunched
+ * @property {Number} OreMined
+*/
+
+
+/**
+ * @type {{[key: string]: string | function(Partial<Stats>): string}}
+*/
 let layout = {
     'Play time': (stats) => {
-        let hours = Math.floor(stats.Playtime / 60);
-        let minutes = stats.Playtime % 60;
+        let time = stats.Playtime || 0;
+        let hours = Math.floor(time/ 60) || 0;
+        let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
     'AFK time': (stats) => {
-        let hours = Math.floor(stats.AfkTime / 60);
-        let minutes = stats.AfkTime % 60;
+        let time = stats.AfkTime || 0;
+        let hours = Math.floor(time/ 60);
+        let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
 
@@ -51,10 +87,16 @@ let layout = {
     'Map tags made': 'MapTagsMade',
 
     'Damage Death ratio': (stats) => {
-        return nf.format((stats.DamageDealt / stats.Deaths).toFixed(2));
+        let damage = stats.DamageDealt || 0;
+        let deaths = stats.Deaths || 0;
+        let rounded = (damage / deaths).toFixed(2);
+        return nf.format(Number(rounded));
     },
     'Kill Death Ratio': (stats) => {
-        return nf.format((stats.Kills / stats.Deaths).toFixed(2));
+        let kills = stats.Kills || 0;
+        let deaths = stats.Deaths || 0;
+        let rounded = (kills / deaths).toFixed(2);
+        return nf.format(Number(rounded));
     },
     'Average Session time': (stats) => {
         return (stats.Playtime / stats.MapsPlayed).toFixed(2);
@@ -78,32 +120,44 @@ let layout = {
     },
 
 };
+/**
+ * 
+ * @param {String} name 
+ * @returns {{error: string | false, stats?: Stats}}
+ */
 function player_data(name) {
     //Read the player data file.
     let rawdata = fs.readFileSync(config.getKey('Playerdata/Dir')); ///mnt/c/programming/tools/factorio_servers/playerdata.json'
     //Take raw data and change it into Json format, to make it simpler to format/lookup
-    let DataStore = JSON.parse(rawdata);
+    let DataStore = JSON.parse(rawdata.toString());
 
     //Get the Data of the Player.
     let PlayerData = DataStore['PlayerData'][name];
     //Checks to see if any data was retured at all, if the name is not in the database, or the database is not accessable than it will return an error and stop running the command
 
     if (!PlayerData) {
-        return {error: config.getKey('Playerdata/NameNotFound')};
+        return { error: config.getKey('Playerdata/NameNotFound') };
     }
 
     //Get the boolean to check if the player has agreed to the privacy policy.
     let privacyData = PlayerData['DataSavingPreference'];
     if (privacyData) {
-        return  {error: config.getKey('Playerdata/Privacy')};
+        return { error: config.getKey('Playerdata/Privacy') };
     }
     //if it didnt stop based on the name not returining it will then filter out only the Statistics (removing prefrences like alt mode, join msg etc).
-    return {error: false, stats: PlayerData['Statistics']};
+    return { error: false, stats: PlayerData['Statistics'] };
 }
 
-
+/**
+* @class
+* @augments DiscordCommand
+*/
 class Picture extends DiscordCommand {
+
     constructor() {
+        /**
+         * @type {import("./../../command.js").Argument[]}
+        */
         let args = [
             {
                 name: 'name',
@@ -114,7 +168,6 @@ class Picture extends DiscordCommand {
         ];
         super({
             name: 'picture',
-            aka: [''],
             description: 'Returns a foto of the player\'s data',
             cooldown: 5,
             args: args,
@@ -122,27 +175,39 @@ class Picture extends DiscordCommand {
             requiredRole: DiscordCommand.roles.board
         });
     }
-
+    
+    /**
+     * @type {import("./../../command.js").Authorize}
+    */
     async authorize(interaction) {
         let name = interaction.options.getString('name');
-        if(interaction.member.displayName === name) return true;
-        else if(! (await super.authorize(interaction))){
+        if(!('displayName' in interaction.member)) return false;
+        if (interaction.member.displayName === name) return true;
+        else if (!(await super.authorize(interaction))) {
             await interaction.editReply('You need board for the this command (or you need to use your own name).');
             return false;
         }
         return true;
     }
 
+    /**
+     * @type {import("./../../command.js").Execute}
+     */
     async execute(interaction) {
         await interaction.deferReply();
 
         //Get the player name.
         let name = interaction.options.getString('name');
         //Get the player data.
-        let {error, stats } = player_data(name);
-        //If there is an error return it.
-        if(error) return await interaction.editReply(error);
 
+        let data = player_data(name);
+        let error = data.error;
+        //If there is an error return it.
+        if (error) return void await interaction.editReply(error);
+        /**
+         * @type {Partial<Stats>}
+        */
+        let stats = data.stats;
         //The number of columns in the grid.
         let colums = 4;
 
@@ -162,9 +227,9 @@ class Picture extends DiscordCommand {
                 if (!value) value = 0;
                 //Format the value to be displayed in the grid.
                 value = nf.format(value);
-            }
-
-            else value = value_callback(stats);
+            }else {
+                value = value_callback(stats);
+            } 
 
             //if we have more then the required columns, we need to split the data into a new row.
             if (i % colums === 0 || i === 0) grid[grid.length] = [];
@@ -178,7 +243,12 @@ class Picture extends DiscordCommand {
         }
         //render the site with the grid.eta file (we read the file here so that it can be changed on the fly).
         let template = fs.readFileSync('./commands/playerdata/grid.eta', 'utf8');
-        let html = Eta.render(template, { grid, name });
+        let html = await Eta.render(template, { grid, name });
+        if (typeof html !== 'string') {
+            console.error('[PLAYERDATA]: Error in rendering image.');
+            await interaction.editReply('Error in rendering page.');
+            return;
+        }
 
         //No sandbox but we have disabled javascript so its not required.
         const browser = await puppeteer.launch({
@@ -209,6 +279,9 @@ let picture = new Picture();
 
 class Json extends DiscordCommand {
     constructor() {
+        /**
+         * @type {import("./../../command.js").Argument[]}
+        */
         let args = [
             {
                 name: 'name',
@@ -219,7 +292,6 @@ class Json extends DiscordCommand {
         ];
         super({
             name: 'json',
-            aka: [''],
             description: 'Returns the json of the player\'s data',
             cooldown: 5,
             args: args,
@@ -228,31 +300,45 @@ class Json extends DiscordCommand {
         });
     }
 
+
+    /**
+     * @type {import("./../../command.js").Authorize}
+    */
     async authorize(interaction) {
         let name = interaction.options.getString('name');
-        if(interaction.member.displayName === name) return true;
-        else if(! (await super.authorize(interaction))){
+        if(!('displayName' in interaction.member)) return false;
+        if (interaction.member.displayName === name) return true;
+        else if (!(await super.authorize(interaction))) {
             await interaction.editReply(config.getKey('Playerdata/NotAuthorized'));
             return false;
         }
         return true;
     }
+    /**
+     * @type {import("./../../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
         //Get the player name.
         let name = interaction.options.getString('name');
         //Get the player data.
-        let {error, stats } = player_data(name);
+        let { error, stats } = player_data(name);
         //If there is an error return it.
-        if(error) return await interaction.editReply(error);
+        if (error) {
+            await interaction.editReply(error);
+            return;
+        }
         //Send the json to the user.
-        return await interaction.editReply(`\`\`\`json\n${JSON.stringify(stats, null, 4)}\`\`\``);
+        await interaction.editReply(`\`\`\`json\n${JSON.stringify(stats, null, 4)}\`\`\``);
     }
 }
 let json = new Json();
 
 class Playerdata extends DiscordCommand {
     constructor() {
+        /**
+         * @type {import("./../../command.js").Argument[]}
+        */
         let args = [
             {
                 type: 'Subcommand',
@@ -267,6 +353,8 @@ class Playerdata extends DiscordCommand {
             name: 'playerdata',
             description: 'Will give you the playerdata of the player',
             args: args,
+            guildOnly: true,
+            requiredRole: DiscordCommand.roles.board
         });
 
     }

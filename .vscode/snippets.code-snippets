@@ -55,5 +55,35 @@
             "}"
         ],
         "description": "adds and option to a slash command"
+    },
+	"Execute type": {
+        "prefix": "exect",
+        "body": [
+            "/**",
+            " * @type {import(\"./../command.js\").Execute}",
+            "*/"
+        ],
+        "description": ""
+    },
+	"Command interaction type": {
+        "prefix": "cmdit",
+        "body": [
+            "import(\"discord.js\").CommandInteraction<'cached'>"
+        ],
+        "description": ""
+    },
+	"Arguments type": {
+        "prefix": "argt",
+        "body": [
+            "import(\"./../command.js\").Argument[]"
+        ],
+        "description": ""
+    },
+	"rcon type": {
+        "prefix": "rcont",
+        "body": [
+            "import('./../rcon/RconClass')"
+        ],
+        "description": ""
     }
 }

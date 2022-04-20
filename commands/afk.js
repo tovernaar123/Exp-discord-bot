@@ -1,12 +1,13 @@
+// @ts-check
 const Discord = require('discord.js');
 let DiscordCommand = require('./../command.js');
 let rconToSend = '/sc local afk_times, ctn = {}, 0 for _, p in ipairs(game.connected_players) do  afk_times[p.name] = p.afk_time end  rcon.print(game.table_to_json(afk_times))'; //send afk chat bot
 
-let config = require.main.require('./config/utils.js');
+let config = require('./../config');
 config.addKey('Afk/BadJson', 'Malformed json in afk command');
 config.addKey('Afk/NoPlayers', 'No players online');
 
-const {format} = require('util');
+const { format } = require('util');
 
 function TimeObject(time) {
     let hours = Math.floor(time / 3600);
@@ -15,7 +16,12 @@ function TimeObject(time) {
     return { hours, minutes, seconds };
 
 }
-
+/**
+ * 
+ * @param {Number} server 
+ * @param {import('./../rcon/RconClass')} rcon 
+ * @returns 
+ */
 async function runCommand(server, rcon) {
     let json_data;
     let embedfields = [];
@@ -24,7 +30,7 @@ async function runCommand(server, rcon) {
         return embedfields;
     }
 
-    const responses = await rcon.send(rconToSend);
+    const responses = await rcon.Send(rconToSend);
 
     if (responses) {
         try {
@@ -56,11 +62,11 @@ async function runCommand(server, rcon) {
 
 
 async function all_servers(rcons, interaction) {
-    const Embed = Discord.MessageEmbed();
+    const Embed = new Discord.MessageEmbed();
 
     let amount_of_fields = 0;
     for (let i = 1; i < rcons.length; i++) {
-        let res = await runCommand(i, rcons[i], interaction);
+        let res = await runCommand(i, rcons[i]);
         Embed.addFields(...res);
         amount_of_fields += 1;
     }
@@ -73,14 +79,15 @@ async function all_servers(rcons, interaction) {
     await interaction.editReply({ embeds: [Embed] });
 }
 
+
 class Afk extends DiscordCommand {
+
     constructor() {
         let args = [
-            DiscordCommand.common_args.server
+            DiscordCommand.CommonArgs.Server
         ];
         super({
             name: 'afk',
-            aka: ['whoisafk', 'afkstreak', 'alwaysafk'],
             description: 'Get the afk players on the server.',
             cooldown: 5,
             args: args,
@@ -89,16 +96,21 @@ class Afk extends DiscordCommand {
         });
     }
 
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
-
+        /**
+         * @type {String | Number}
+        */
         let server = interaction.options.getString('server');
         if (server === 'all') {
-            await all_servers(DiscordCommand.Rcons, interaction).catch(console.error);
+            await all_servers(DiscordCommand.client.Rcons.GetAllRcons(), interaction);
         } else {
             server = parseInt(server);
-            let res = await runCommand(server, DiscordCommand.Rcons[server], interaction).catch(console.error);
-            const Embed = Discord.MessageEmbed();
+            let res = await runCommand(server, DiscordCommand.client.Rcons.GetRcon(server));
+            const Embed = new Discord.MessageEmbed();
             Embed.addFields(...res);
             await interaction.editReply({ embeds: [Embed] });
         }

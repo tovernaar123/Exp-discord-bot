@@ -1,3 +1,4 @@
+// @ts-check
 let { spawnSync } = require('child_process');
 
 
@@ -5,6 +6,9 @@ let { spawnSync } = require('child_process');
 let DiscordCommand = require('./../command.js');
 class Update extends DiscordCommand {
     constructor() {
+        /**
+         * @type {import("./../command.js").Argument[]}
+         */
         let args = [
             {
                 name: 'branch',
@@ -15,7 +19,6 @@ class Update extends DiscordCommand {
         ];
         super({
             name: 'update-bot',
-            aka: [''],
             description: 'This will update the bot to the specified branch.',
             cooldown: 5,
             args: args,
@@ -23,6 +26,9 @@ class Update extends DiscordCommand {
             requiredRole: DiscordCommand.roles.staff
         });
     }
+    /**
+     * @type {import("./../command.js").Authorize}
+    */
     async authorize(interaction) {
         let admin = interaction.member.roles.highest.comparePositionTo(await interaction.guild.roles.fetch(DiscordCommand.roles.admin)) >= 0;
         
@@ -37,6 +43,9 @@ class Update extends DiscordCommand {
         return authorize;
     }
 
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
         let branch = interaction.options.getString('branch');
@@ -44,7 +53,7 @@ class Update extends DiscordCommand {
         res = spawnSync('git', ['checkout', `origin/${branch}`]);
         if (res.stdout) console.log(res.stdout.toString());
         if (res.stderr) console.log(res.stderr.toString());
-        // shell.stdin.write(`git fetch; git checkout origin/${branch}\n`);
+
         await interaction.editReply('Updating bot will restart now');
         res = spawnSync('npm', ['install']);
         if (res.stdout) console.log(res.stdout.toString());
@@ -52,7 +61,6 @@ class Update extends DiscordCommand {
         res = spawnSync('pm2', ['restart', 'infoBot']);
         if (res.stdout) console.log(res.stdout.toString());
         if (res.stderr) console.log(res.stderr.toString());
-        // shell.stdin.write('npm i; pm2 restart infoBot\n');
     }
 }
 let command = new Update();

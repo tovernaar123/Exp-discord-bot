@@ -1,18 +1,27 @@
+// @ts-check
 const fs = require('fs');
 const request = require('request');
 let DiscordCommand = require('./../command.js');
-let config = require.main.require('./config/utils.js');
+let config = require('./../config');
 //https://info.explosivegaming.nl/grafana/render/d-solo/wRgzuFqiz/system-metrics
 config.addKey('Graph/GrafanaUrl');
 
-const download = (url, path, callback) => {
+/**
+ * @param {string} url
+ * @param {fs.PathLike} path
+ * @param {{(): Promise<void>}} callback
+ */
+function download(url, path, callback) {
     request.head(url, () => {
         request(url).pipe(fs.createWriteStream(path)).on('close', callback);
     });
-};
+}
 
 class Graph extends DiscordCommand {
     constructor() {
+        /**
+         * @type {import("./../command.js").Argument[]} 
+        */
         let args = [
             {
                 name: 'type',
@@ -36,15 +45,20 @@ class Graph extends DiscordCommand {
         ];
         super({
             name: 'graph',
-            aka: ['adminsonline'],
             description: 'Get the amount of admins online on the servers.',
             cooldown: 5,
             args: args,
-            guildOnly: true
+            guildOnly: true,
+            requiredRole: DiscordCommand.roles.board
         });
+        /**
+         * @type { {[key: number]: number}}
+         */
         this.cache_time = {};
     }
-
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
 
@@ -56,7 +70,6 @@ class Graph extends DiscordCommand {
         if(this.cache_time[type] && (this.cache_time[type] > Date.now() - 3*60*1000) && fs.existsSync(path)) {
             await interaction.editReply({ content: 'from cache (clear every 3 min): ', files: [path] });
         } else {
-
             try {
                 download(url, path, async () => {
                     console.log('Download Complete.');

@@ -1,12 +1,18 @@
+// @ts-check
 let DiscordCommand = require('./../command.js');
 class discord_delete extends DiscordCommand {
     constructor() {
+        /**
+         * @type {import("./../command.js").Argument[]}
+         */
         let args = [
             {
                 name: 'amount',
                 description: 'The amount of posts you want to delete.',
+                max: 20,
+                min: 1,
                 required: true,
-                type: 'Integer'	
+                type: 'Integer',
             }
         ];
         super({
@@ -19,19 +25,13 @@ class discord_delete extends DiscordCommand {
         });
     }
 
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
         
         let amount = interaction.options.getInteger('amount');
-        if (amount > 20) {
-            await interaction.editReply('You can`t delete more than 20 messages at once!'); // makes sure less than 20 posts
-            return;
-        }
-        if (amount < 1) {
-            await interaction.editReply('You have to delete at least 1 message!'); // makes sure 1 or more posts  
-            return;
-        }
-
         let messages = await interaction.channel.messages.fetch({ limit: amount });
         await interaction.channel.bulkDelete(messages);
     }

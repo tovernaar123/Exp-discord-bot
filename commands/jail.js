@@ -1,8 +1,12 @@
+// @ts-check
 let DiscordCommand = require('./../command.js');
 class Jail extends DiscordCommand {
     constructor() {
+        /**
+         * @type {import("./../command.js").Argument[]}
+        */
         let args = [
-            DiscordCommand.common_args.server_NoAll,
+            DiscordCommand.CommonArgs.ServerNoAll,
             {
                 name: 'tojail',
                 type: 'String',
@@ -18,7 +22,6 @@ class Jail extends DiscordCommand {
         ];
         super({
             name: 'jail',
-            aka: ['jails'],
             description: 'This command jails the player on the server specified',
             cooldown: 5,
             args: args,
@@ -26,26 +29,28 @@ class Jail extends DiscordCommand {
             requiredRole: DiscordCommand.roles.staff
         });
     }
-
+    /**
+     * @type {import("./../command.js").Execute}
+    */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = interaction.options.getString('server');
+        let server = parseInt(interaction.options.getString('server'));
         let tojail = interaction.options.getString('tojail');
         let reason = interaction.options.getString('reason');
         if(tojail.match(/\\|"|'/)){
-            return await interaction.editReply('You cannot use " , \\ or \' in the name of the player.');
+            return void await interaction.editReply('You cannot use " , \\ or \' in the name of the player.');
         }
         if(reason.match(/\\|"|'/)){
-            return await interaction.editReply('You cannot use " , \\ or \' in the reason.');
+            return void await interaction.editReply('You cannot use " , \\ or \' in the reason.');
         }
 
-        let rcon = DiscordCommand.Rcons[parseInt(server)];
+        let rcon = DiscordCommand.client.Rcons.GetRcon(server);
 
         if (!rcon.connected) {
             await interaction.editReply(`S${server} is not connected the bot.`);
             return;
         }
-        let res = await rcon.send(`/interface require("modules.control.jail").jail_player("${tojail}", "${interaction.member.displayName}", "${reason}")`);
+        let res = await rcon.Send(`/interface require("modules.control.jail").jail_player("${tojail}", "${interaction.member.displayName}", "${reason}")`);
         if (res === 'Command Complete\n') {
             await interaction.editReply(`**${tojail}** has been jailed on S${server} for *${reason}*.`);
         } else {
