@@ -36,7 +36,7 @@ config.addKey('NoResponse', 'There was no response from the server, this is not 
 config.addKey('SpamChannel', '359442310628376577');
 
 //array for all ofline servers
-let OfflineServers = [];
+let OfflineServers = [2, 6, 7, 8];
 
 //standard embed settings like color and footer
 let real_discord_embed = Discord.MessageEmbed;
