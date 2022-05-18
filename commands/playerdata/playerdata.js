@@ -99,7 +99,7 @@ let layout = {
         return nf.format(Number(rounded));
     },
     'Average Session time': (stats) => {
-        return (stats.Playtime / stats.MapsPlayed).toFixed(2);
+        return (stats.Playtime / stats.JoinCount).toFixed(2);
     },
     'Build to remove ratio': (stats) => {
         return (stats.MachinesBuilt / stats.MachinesRemoved).toFixed(2);

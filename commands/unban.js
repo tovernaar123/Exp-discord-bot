@@ -39,7 +39,7 @@ async function normal_unban(player, reason, interaction) {
     await interaction.editReply(`${player} has been unbanned (Without out ban sync) on S${server}.`);
     //Send the report to the reports channel.
     let report = GetReport(server, interaction.member.displayName, player, reason);
-    let ReportChannel = await interaction.guild.channels.cache.get(config.getKey('ReportChannel'));	
+    let ReportChannel = await interaction.guild.channels.cache.get(config.getKey('ReportChannel'));
     if(!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return void console.error('Wrong report channel.');
     await ReportChannel.send({ embeds: [report] });
 
@@ -113,7 +113,7 @@ class Unban extends DiscordCommand {
                     //Send the message to the discord.
                     await interaction.editReply(`${player} was unbanned on all servers for "${reason}".`);
                     //Get the report channel to send the report to.
-                    let ReportChannel = await interaction.guild.channels.cache.get('764881627893334047'); 
+                    let ReportChannel = await interaction.guild.channels.cache.get(config.getKey('ReportChannel'));
                     //Create the embed to send.
                     let report = GetReport('<internal>', interaction.member.displayName, player, reason);
                     //Send the report to the report channel.

@@ -1,9 +1,9 @@
 [
     "adminsonline.js",
+    "ConstructionQueue.js",
     "afk.js",
     "ban.js",
     "clear_reports.js",
-    "discorddel.js",
     "discordpin.js",
     "discordpinun.js",
     "graph.js",
@@ -19,7 +19,6 @@
     "playerdata/playerdata.js",
     "polclear.js",
     "poloff.js",
-    "sessions_log.js",
     "speed.js",
     "unban.js",
     "update.js",
