@@ -35,7 +35,7 @@ class Set extends DiscordCommand {
         await interaction.deferReply();
         let server = parseInt(interaction.options.getString('server'));
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
-        let QueueParms = interaction.options.getNumber('queue_parms ');
+        let QueueParms = interaction.options.getNumber('queue_parms');
 
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
