@@ -10,39 +10,57 @@ config.addKey('Playerdata/NameNotFound', 'Error: Name not found. Check the name 
 config.addKey('Playerdata/Privacy', 'Error: Privacy Settings Prevent Lookup. Check the name or try again later after turning on Data sync.');
 config.addKey('Playerdata/NotAuthorized', 'You need board for the this command (or you need to use your own name).');
 
-function ts(x, nd) {
-    // x as value
+function ts(n, nd) {
+    // n as value
     // nd as nth decimal places
+    const nf = new Intl.NumberFormat('ja-JP');
     nd = nd || 0;
 
-    if (x === undefined || isNaN(x)) {
-        x = 0;
+    if (n === undefined || isNaN(n)) {
+        n = 0;
     }
     
-    let i = Math.round(Number(x) * Math.pow(10, nd)) / Math.pow(10, nd);
-    var d = i.toFixed(nd).split(".");
-    return d[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (d[1] ? "." + d[1] : "");
+    return nf.format(Number(n.toFixed(nd)));
 }
 
 function hhmm(n) {
-    return [((Math.floor(n) / 60) > 0 ? 1 : 0), Math.floor(n / 60), Math.floor(n % 60)]
+    if (Math.floor(n / 60) > 0) {
+        return Math.floor(n / 60) + ' h ' + Math.floor(n % 60) + ' m'
+    } else {
+        return Math.floor(n % 60) + ' m'
+    }
 }
 
 function pc_chg(a, b) {
-    chg = (b - a) / a
-    
+    if (a == undefined || b == undefined) {
+        return '-';
+    }
+
+    let chg = (b - a) / a;
+    let sym = '';
+
     if (chg >= 0) {
-        if (chg >= 10) {
-            return '+ ' + ts(chg, 2) + ' x'
-        } else {
-            return '+ ' + ts(chg * 100, 2) + ' %'
-        }
+        sym = '+ ';
     } else {
-        if (chg <= -10) {
-            return '- ' + Math.abs(ts(chg, 2)) + ' x'
-        } else {
-            return '- ' + Math.abs(ts(chg * 100, 2)) + ' %'
-        }
+        sym = '- ';
+    }
+    
+    const clen = Math.ceil(Math.log10(Math.abs(chg) + 1));
+
+    if (clen < 2) {
+        return sym + ts(Math.abs(chg * 100), 2) + ' %';
+    } else if (clen < 5) {
+        return sym + ts(Math.abs(chg), 2) + ' X';
+    } else if (clen < 8) {
+        return sym + ts(Math.abs(chg / Math.pow(10, 3)), 2) + ' K';
+    } else if (clen < 11) {
+        return sym + ts(Math.abs(chg / Math.pow(10, 6)), 2) + ' M';
+    } else if (clen < 14) {
+        return sym + ts(Math.abs(chg / Math.pow(10, 9)), 2) + ' G';
+    } else if (clen < 17) {
+        return sym + ts(Math.abs(chg / Math.pow(10, 12)), 2) + ' T';
+    } else if (clen < 20) {
+        return sym + ts(Math.abs(chg / Math.pow(10, 15)), 2) + ' P';
     }
 }
 
@@ -94,23 +112,16 @@ function profile_data_comp(data) {
             let t1 = [data[0][layout[i]], data[1][layout[i]]];
             
             for (let k = 0; k < 2; k++) {
-                let hm = hhmm(t1[k]);
-
-                if (hm[0] > 0) {
-                    msg_4.push(ts(hm[1], 0) + ' h ' + ts(hm[2], 0) + ' m');
-                } else {
-                    msg_4.push(ts(hm[2], 0) + ' m ');
-                }
-
+                msg_4.push(hhmm(t1[k]));
             }
 
             msg_4.push(pc_chg(t1[0], t1[1]));
         } else {
-            n1 = data[0][layout[i]]
-            n2 = data[1][layout[i]]
-            msg_4.push(ts(n1, 0))
-            msg_4.push(ts(n2, 0))
-            msg_4.push(pc_chg(n1, n2))
+            let n1 = data[0][layout[i]];
+            let n2 = data[1][layout[i]];
+            msg_4.push(ts(n1, 0));
+            msg_4.push(ts(n2, 0));
+            msg_4.push(pc_chg(n1, n2));
         }
 
         msg_5.push([msg_4[0], msg_4[1], msg_4[2], msg_4[3]]);
@@ -139,13 +150,7 @@ function profile_data_comp(data) {
             let t1 = [Math.floor(data[0][layout_e[i][2]] / data[0][layout_e[i][3]]), Math.floor(data[1][layout_e[i][2]] / data[1][layout_e[i][3]])];
 
             for (let k = 0; k < 2; k++) {
-                let hm = hhmm(t1[k]);
-
-                if (hm[0] > 0) {
-                    msg_4.push(ts(hm[1], 0) + ' h ' + ts(hm[2], 0) + ' m');
-                } else {
-                    msg_4.push(ts(hm[2], 0) + ' m ');
-                }
+                msg_4.push(hhmm(t1[k]));
             }
 
             msg_4.push(pc_chg(t1[0], t1[1]));
@@ -193,6 +198,7 @@ const nf = new Intl.NumberFormat('en-US');
  * @type {{[key: string]: string | function(Partial<Stats>): string}}
 */
 let layout = {
+    // 0
     'Play time': (stats) => {
         let time = stats.Playtime || 0;
         let hours = Math.floor(time/ 60) || 0;
@@ -209,21 +215,25 @@ let layout = {
     'Maps played': 'MapsPlayed',
     'Join count': 'JoinCount',
     'Chat messages': 'ChatMessages',
+    // 5
     'Commands used': 'CommandsUsed',
     'Rockets launched': 'RocketsLaunched',
     'Research completed': 'ResearchCompleted',
     'Machines built': 'MachinesBuilt',
     'Machines removed': 'MachinesRemoved',
+    // 10
     'Tiles placed': 'TilesBuilt',
     'Tiles removed': 'TilesRemoved',
     'Trees destroyed': 'TreesDestroyed',
     'Ore mined': 'OreMined',
     'Items crafted': 'ItemsCrafted',
+    // 15
     'Items picked up': 'ItemsPickedUp',
     'Kills': 'Kills',
     'Deaths': 'Deaths',
     'Damage dealt': 'DamageDealt',
     'Distance travelled': 'DistanceTravelled',
+    // 20
     'Capsules used': 'CapsulesUsed',
     'Machines repaired': 'EntityRepaired',
     'Decon planner used': 'DeconstructionPlannerUsed',
@@ -595,7 +605,7 @@ class Compare extends DiscordCommand {
             html_table.push(result[i+1][3]);
             html_table.push('</td>\n</tr>');
                 
-            html_code.push(j.join(''));
+            html_code.push(html_table.join(''));
         }
 
         html_code.push('</table>\n</body>\n</html>');
@@ -614,7 +624,7 @@ class Compare extends DiscordCommand {
                 await browser.close();
                 })()
         } catch (e) {
-            channel.send({content: 'Error when creating image.'});
+            await interaction.editReply({ content: 'Error when creating image.' });
         }
 
         //Send the photo to the user.
@@ -638,10 +648,12 @@ class Playerdata extends DiscordCommand {
                 type: 'Subcommand',
                 command: json,
             },
+            /*
             {
                 type: 'Subcommand',
                 command: compare,
             }
+            */
         ];
         super({
             name: 'playerdata',
@@ -656,4 +668,3 @@ class Playerdata extends DiscordCommand {
 
 let command = new Playerdata();
 module.exports = command;
-
