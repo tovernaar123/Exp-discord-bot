@@ -14,7 +14,7 @@ async function run_command(msg, args, internal_error) {
     if (branch) {
         shell.stdin.write(`git fetch; git checkout origin/${branch}\n`);
         await msg.reply('Updating bot will restart now')
-        shell.stdin.write(`pm2 restart infoBot\n`);
+        shell.stdin.write(`npm i; pm2 restart infoBot\n`);
     } else {
         await msg.reply('need a branch.')
     }
