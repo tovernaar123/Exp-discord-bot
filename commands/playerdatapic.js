@@ -221,7 +221,7 @@ module.exports = {
     description: 'Get stats (datastore info) for youself (all users) or any users (Board+)',
     guildOnly: true,
     args: false,
-    helpLevel: "all",
+    helpLevel: "staff",
     usage: ` <name>`,
     async execute(msg, args, _, internal_error) {
         async function runCommand() {
