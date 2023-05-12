@@ -68,7 +68,7 @@ client.on('ready', async () => {
     if (SpamChannel.type === 'GUILD_TEXT') {
         SpamChannel.send(`Bot logged in - Notice some Servers are set to be offline (#${OfflineServers}). To enable the bot for them please edit infoBot.js`);
     }
-
+    await client.guilds.cache.get(process.env.guild).commands.set([]);
     //instantiate the list of commands
     client.Commands = new Discord.Collection();
 
@@ -82,6 +82,8 @@ client.on('ready', async () => {
             waitfor.push(command.add_command(client));
         }
     }
+
+
     await Promise.all(waitfor);
 
     let date_string = new Date().toISOString().

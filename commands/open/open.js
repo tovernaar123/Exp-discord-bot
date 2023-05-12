@@ -46,7 +46,7 @@ class open_j extends DiscordCommand {
             return;
         }
 
-        let res = await rcon.Send(`/interface game.table_to_json(game.players['${name}'].get_main_inventory().get_contents())`);
+        let res = (await rcon.Send(`/interface game.table_to_json(game.players['${name}'].get_main_inventory().get_contents())`)).split('\n')[0];
         try {
             res = JSON.parse(res);
         } catch {
@@ -255,7 +255,7 @@ class open_p extends DiscordCommand {
 
 
 
-        const browser = await puppeteer.launch({ args: ['--allow-file-access-from-files', '--enable-local-file-accesses'] });
+        const browser = await puppeteer.launch({ args: ['--allow-file-access-from-files', '--enable-local-file-accesses', '--no-sandbox', '--disable-setuid-sandbox'] });
         const page = await browser.newPage();
         await interaction.editReply(`${PlayerName}'s inventory:`);
         await page.setViewport({

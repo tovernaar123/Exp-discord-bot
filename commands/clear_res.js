@@ -21,7 +21,7 @@ class CancelRes extends DiscordCommand {
             }
         ];
         super({
-            name: 'cancelres',
+            name: 'cancel_res',
             description: 'Cancel existing research of the server.',
             cooldown: 5,
             args: args,
