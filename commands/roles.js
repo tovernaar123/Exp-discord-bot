@@ -25,11 +25,9 @@ class assign_role extends DiscordCommand {
                     ['regular', 'regular'],
                     ['member', 'member'],
                     ['veteran', 'veteran'],
-                    /*
                     ['sponsor', 'sponsor'],
                     ['supporter', 'supporter'],
                     ['board', 'board']
-                    */
                 ]
             }
         ];
@@ -57,15 +55,15 @@ class assign_role extends DiscordCommand {
             return;
         }
 
-        var res = null
+        var res = null;
 
         if (role) {
             res = await rcon.Send(`/interface Roles.assign_player(${name}, '${role}')`);
         }
         
-        if (!res) {
+        if (res === 'Command Complete\n') {
             //send the message to the discord.
-            await interaction.editReply(`No Error`);
+            await interaction.editReply(`Assigned ${role} to ${name}`);
         } else {
             //send error to the discord.
             await interaction.editReply(`Command might have failed result: \`\`\` ${res} \`\`\``);
@@ -128,15 +126,15 @@ class unassign_role extends DiscordCommand {
             return;
         }
 
-        var res = null
+        var res = null;
 
         if (role) {
             res = await rcon.Send(`/interface Roles.unassign_player(${name}, '${role}')`);
         }
         
-        if (!res) {
+        if (res === 'Command Complete\n') {
             //send the message to the discord.
-            await interaction.editReply(`No Error`);
+            await interaction.editReply(`Removed ${role} from ${name}.`);
         } else {
             //send error to the discord.
             await interaction.editReply(`Command might have failed result: \`\`\` ${res} \`\`\``);

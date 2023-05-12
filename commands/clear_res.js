@@ -43,12 +43,12 @@ class CancelRes extends DiscordCommand {
             return;
         }
 
-        var res = null
+        var res = null;
 
         if (ctype == 1) {
-            res = await rcon.Send(`/interface game.forces.player.cancel_current_research()`);
+            res = await rcon.Send('/interface game.forces.player.cancel_current_research()');
         } else if (ctype == 2) {
-            res = await rcon.Send(`/interface game.forces.player.research_queue = nil`);
+            res = await rcon.Send('/interface game.forces.player.research_queue = nil');
         }
         
         if (!res) {
