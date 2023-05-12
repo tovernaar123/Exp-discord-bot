@@ -1,0 +1,62 @@
+body,
+html {
+    height: 100%;
+    background-color: #403f40;
+}
+
+* {
+    color: white;
+    font-family: Helvetica;
+}
+
+.grid {
+    display: grid;
+    width: min-content;
+    margin-left: auto;
+    margin-right: auto;
+    grid-template-columns: repeat(var(--ColumnAmount), min-content);
+    grid-template-rows: repeat(var(--RowAmount), min-content);
+    background-color: #313031;
+    padding: var(--GridContainerPadding);
+    box-shadow: inset 0px 0px 7px 2px rgba(0, 0, 0, 0.55);
+}
+
+div {
+    position: relative;
+}
+
+.grid>div>img {
+    width:var(--IconSize);
+    height:var(--IconSize);
+    object-fit: cover;
+    object-position: 0% 0%;
+    border: var(--CellBorderSize) solid #403f40;
+    padding: var(--IconPadding);
+    display: block;
+    box-shadow: inset 0px 0px 7px 2px rgba(0, 0, 0, 0.55);
+}
+
+.grid>div:empty {
+    border: var(--CellBorderSize) solid #403f40;
+    padding: var(--IconPadding);
+    display: block;
+    width: var(--IconSize);
+    height: var(--IconSize);
+    box-shadow: inset 0px 0px 7px 2px rgba(0, 0, 0, 0.55);
+}
+
+.number {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    font-weight: bold;
+    font-size: 20px;
+    text-shadow: -2px 0px #000000, 0px 2px #000000, 2px 0px #000000, 0px -2px #000000;
+}
+
+.title {
+    margin-top: var(--TitleMargin);
+    margin-bottom: var(--TitleMargin);
+    text-align: center;
+    margin-right: auto;
+}
