@@ -99,24 +99,24 @@ let layout = {
         return nf.format(Number(rounded));
     },
     'Average Session time': (stats) => {
-        return nf.format(Number((stats.Playtime / stats.JoinCount).toFixed(2)));
+        return nf.format(Number((stats.Playtime / stats.JoinCount).toFixed(2) || 0));
     },
     'Build to remove ratio': (stats) => {
-        return nf.format(Number((stats.MachinesBuilt / stats.MachinesRemoved).toFixed(2)));
+        return nf.format(Number((stats.MachinesBuilt / stats.MachinesRemoved).toFixed(2) || 0));
     },
     'Rockets per hour': (stats) => {
-        return nf.format(Number((stats.RocketsLaunched / (stats.Playtime / 60)).toFixed(2)));
+        return nf.format(Number((stats.RocketsLaunched / (stats.Playtime / 60)).toFixed(2) || 0));
     },
     'TKPM (Tree kills per min)': (stats) => {
-        return nf.format(Number((stats.TreesDestroyed / (stats.Playtime)).toFixed(2)));
+        return nf.format(Number((stats.TreesDestroyed / (stats.Playtime)).toFixed(2) || 0));
     },
     'Net Play Time': (stats) => {
-        let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60);
-        let minutes = stats.Playtime % 60;
+        let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60) || 0;
+        let minutes = (stats.Playtime % 60) || 0;
         return `${hours} h ${minutes} m`;
     },
     'AFK Time ratio (%)': (stats) => {
-        return `${nf.format(Number((stats.AfkTime / stats.Playtime * 100).toFixed(2)))}%`;
+        return `${nf.format(Number((stats.AfkTime / stats.Playtime * 100).toFixed(2))) || 0}%`;
     },
 
 };
