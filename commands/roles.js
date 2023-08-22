@@ -58,7 +58,7 @@ class assign_role extends DiscordCommand {
         var res = null;
 
         if (role) {
-            res = await rcon.Send(`/interface Roles.assign_player(${name}, '${role}')`);
+            res = await rcon.Send(`/interface Roles.assign_player('${name}', '${role}')`);
         }
         
         if (res === 'Command Complete\n') {
@@ -129,7 +129,7 @@ class unassign_role extends DiscordCommand {
         var res = null;
 
         if (role) {
-            res = await rcon.Send(`/interface Roles.unassign_player(${name}, '${role}')`);
+            res = await rcon.Send(`/interface Roles.unassign_player('${name}', '${role}')`);
         }
         
         if (res === 'Command Complete\n') {
