@@ -89,26 +89,24 @@ let layout = {
     'Damage Death ratio': (stats) => {
         let damage = stats.DamageDealt || 0;
         let deaths = stats.Deaths || 0;
-        let rounded = (damage / deaths).toFixed(2);
-        return nf.format(Number(rounded));
+        return nf.format(Number((damage / deaths).toFixed(2))) || 0;
     },
     'Kill Death Ratio': (stats) => {
         let kills = stats.Kills || 0;
         let deaths = stats.Deaths || 0;
-        let rounded = (kills / deaths).toFixed(2);
-        return nf.format(Number(rounded));
+        return nf.format(Number((kills / deaths).toFixed(2))) || 0;
     },
     'Average Session time': (stats) => {
-        return nf.format(Number((stats.Playtime / stats.JoinCount).toFixed(2) || 0));
+        return nf.format(Number((stats.Playtime / stats.JoinCount).toFixed(2))) || 0;
     },
     'Build to remove ratio': (stats) => {
-        return nf.format(Number((stats.MachinesBuilt / stats.MachinesRemoved).toFixed(2) || 0));
+        return nf.format(Number((stats.MachinesBuilt / stats.MachinesRemoved).toFixed(2))) || 0;
     },
     'Rockets per hour': (stats) => {
-        return nf.format(Number((stats.RocketsLaunched / (stats.Playtime / 60)).toFixed(2) || 0));
+        return nf.format(Number((stats.RocketsLaunched / (stats.Playtime / 60)).toFixed(2))) || 0;
     },
     'TKPM (Tree kills per min)': (stats) => {
-        return nf.format(Number((stats.TreesDestroyed / (stats.Playtime)).toFixed(2) || 0));
+        return nf.format(Number((stats.TreesDestroyed / (stats.Playtime)).toFixed(2))) || 0;
     },
     'Net Play Time': (stats) => {
         let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60) || 0;
