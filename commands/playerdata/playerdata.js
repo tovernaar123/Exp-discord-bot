@@ -59,7 +59,7 @@ let layout = {
     },
     'AFK time': (stats) => {
         let time = stats.AfkTime || 0;
-        let hours = nf.format(Number(Math.floor(time / 60)) || 0);
+        let hours = Math.floor(time / 60) || 0;
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
