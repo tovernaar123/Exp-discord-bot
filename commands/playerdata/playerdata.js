@@ -15,7 +15,8 @@ config.addKey('Playerdata/Privacy', 'Error: Privacy Settings Prevent Lookup. Che
 config.addKey('Playerdata/NotAuthorized', 'You need board for the this command (or you need to use your own name).');
 
 //Formats the numbers to be displayed in the grid (So that they have comma's every 3 digits).
-const nf = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const nf = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+const nf2 = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
 /**
  * @typedef {object} Stats
@@ -52,13 +53,13 @@ const nf = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFrac
 let layout = {
     'Play time': (stats) => {
         let time = stats.Playtime || 0;
-        let hours = Math.floor(time / 60) || 0;
+        let hours = nf.format(Number(Math.floor(time / 60)) || 0);
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
     'AFK time': (stats) => {
         let time = stats.AfkTime || 0;
-        let hours = Math.floor(time / 60);
+        let hours = nf.format(Number(Math.floor(time / 60)) || 0);
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
@@ -89,24 +90,24 @@ let layout = {
     'Damage Death ratio': (stats) => {
         let damage = stats.DamageDealt || 0;
         let deaths = stats.Deaths || 0;
-        return nf.format(Number(damage / deaths) || 0);
+        return nf2.format(Number(damage / deaths) || 0);
     },
     'Kill Death Ratio': (stats) => {
         let kills = stats.Kills || 0;
         let deaths = stats.Deaths || 0;
-        return nf.format(Number(kills / deaths) || 0);
+        return nf2.format(Number(kills / deaths) || 0);
     },
     'Average Session time': (stats) => {
-        return nf.format(Number(stats.Playtime / stats.JoinCount) || 0);
+        return nf2.format(Number(stats.Playtime / stats.JoinCount) || 0);
     },
     'Build to remove ratio': (stats) => {
-        return nf.format(Number(stats.MachinesBuilt / stats.MachinesRemoved) || 0);
+        return nf2.format(Number(stats.MachinesBuilt / stats.MachinesRemoved) || 0);
     },
     'Rockets per hour': (stats) => {
-        return nf.format(Number(stats.RocketsLaunched / (stats.Playtime / 60)) || 0);
+        return nf2.format(Number(stats.RocketsLaunched / (stats.Playtime / 60)) || 0);
     },
     'TKPM (Tree kills per min)': (stats) => {
-        return nf.format(Number(stats.TreesDestroyed / (stats.Playtime)) || 0);
+        return nf2.format(Number(stats.TreesDestroyed / (stats.Playtime)) || 0);
     },
     'Net Play Time': (stats) => {
         let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60) || 0;
@@ -114,7 +115,7 @@ let layout = {
         return `${hours} h ${minutes} m`;
     },
     'AFK Time ratio (%)': (stats) => {
-        return `${nf.format(Number(stats.AfkTime / stats.Playtime * 100) || 0)}%`;
+        return `${nf2.format(Number(stats.AfkTime / stats.Playtime * 100) || 0)}%`;
     },
 
 };
