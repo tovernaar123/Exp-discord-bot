@@ -100,13 +100,13 @@ let layout = {
     'Average Session time': (stats) => {
         return nf2.format(Number(stats.Playtime / stats.JoinCount) || 0);
     },
-    'Build to remove ratio': (stats) => {
+    'Build to Remove Ratio': (stats) => {
         return nf2.format(Number(stats.MachinesBuilt / stats.MachinesRemoved) || 0);
     },
-    'Rockets per hour': (stats) => {
+    'Rockets Per Hour': (stats) => {
         return nf2.format(Number(stats.RocketsLaunched / (stats.Playtime / 60)) || 0);
     },
-    'TKPM (Tree kills per min)': (stats) => {
+    'TKPM (Tree Kills Per Min)': (stats) => {
         return nf2.format(Number(stats.TreesDestroyed / (stats.Playtime)) || 0);
     },
     'Net Play Time': (stats) => {
@@ -114,7 +114,7 @@ let layout = {
         let minutes = (stats.Playtime % 60) || 0;
         return `${hours} h ${minutes} m`;
     },
-    'AFK Time ratio (%)': (stats) => {
+    'AFK Time Ratio (%)': (stats) => {
         return `${nf2.format(Number(stats.AfkTime / stats.Playtime * 100) || 0)}%`;
     },
 
