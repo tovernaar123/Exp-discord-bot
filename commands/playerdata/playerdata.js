@@ -53,13 +53,13 @@ const nf2 = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFra
 let layout = {
     'Play time': (stats) => {
         let time = stats.Playtime || 0;
-        let hours = Math.floor(time / 60) || 0;
+        let hours = Math.floor(time / 60);
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
     'AFK time': (stats) => {
         let time = stats.AfkTime || 0;
-        let hours = Math.floor(time / 60) || 0;
+        let hours = Math.floor(time / 60);
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
@@ -111,7 +111,7 @@ let layout = {
     },
     'Net Play Time': (stats) => {
         let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60);
-        let minutes = (stats.Playtime % 60) || 0;
+        let minutes = stats.Playtime % 60;
         return `${hours} h ${minutes} m`;
     },
     'AFK Time Ratio (%)': (stats) => {
