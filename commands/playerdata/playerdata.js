@@ -106,7 +106,7 @@ let layout = {
     'Rockets Per Hour': (stats) => {
         return nf2.format(Number(stats.RocketsLaunched / (stats.Playtime / 60)) || 0);
     },
-    'TKPM (Tree Kills Per Min)': (stats) => {
+    'Tree Kill Per Min': (stats) => {
         return nf2.format(Number(stats.TreesDestroyed / (stats.Playtime)) || 0);
     },
     'Net Play Time': (stats) => {
