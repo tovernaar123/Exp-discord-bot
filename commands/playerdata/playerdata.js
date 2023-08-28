@@ -15,7 +15,8 @@ config.addKey('Playerdata/Privacy', 'Error: Privacy Settings Prevent Lookup. Che
 config.addKey('Playerdata/NotAuthorized', 'You need board for the this command (or you need to use your own name).');
 
 //Formats the numbers to be displayed in the grid (So that they have comma's every 3 digits).
-const nf = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const nf = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+const nf2 = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2});
 
 /**
  * @typedef {object} Stats
@@ -50,71 +51,71 @@ const nf = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFrac
  * @type {{[key: string]: string | function(Partial<Stats>): string}}
 */
 let layout = {
-    'Play time': (stats) => {
+    'Play Time': (stats) => {
         let time = stats.Playtime || 0;
-        let hours = Math.floor(time / 60) || 0;
+        let hours = Math.floor(time / 60);
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
-    'AFK time': (stats) => {
+    'AFK Time': (stats) => {
         let time = stats.AfkTime || 0;
         let hours = Math.floor(time / 60);
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
 
-    'Maps played': 'MapsPlayed',
-    'Join count': 'JoinCount',
-    'Chat messages': 'ChatMessages',
-    'Commands used': 'CommandsUsed',
-    'Rockets launched': 'RocketsLaunched',
-    'Research completed': 'ResearchCompleted',
-    'Machines built': 'MachinesBuilt',
-    'Machines removed': 'MachinesRemoved',
-    'Tiles placed': 'TilesBuilt',
-    'Tiles removed': 'TilesRemoved',
-    'Trees destroyed': 'TreesDestroyed',
-    'Ore mined': 'OreMined',
-    'Items crafted': 'ItemsCrafted',
-    'Items picked up': 'ItemsPickedUp',
+    'Maps Played': 'MapsPlayed',
+    'Join Count': 'JoinCount',
+    'Chat Messages': 'ChatMessages',
+    'Commands Used': 'CommandsUsed',
+    'Rockets Launched': 'RocketsLaunched',
+    'Research Completed': 'ResearchCompleted',
+    'Machines Built': 'MachinesBuilt',
+    'Machines Removed': 'MachinesRemoved',
+    'Tiles Placed': 'TilesBuilt',
+    'Tiles Removed': 'TilesRemoved',
+    'Trees Destroyed': 'TreesDestroyed',
+    'Ore Mined': 'OreMined',
+    'Items Crafted': 'ItemsCrafted',
+    'Items Picked Up': 'ItemsPickedUp',
     'Kills': 'Kills',
     'Deaths': 'Deaths',
-    'Damage dealt': 'DamageDealt',
-    'Distance travelled': 'DistanceTravelled',
-    'Capsules used': 'CapsulesUsed',
-    'Machines repaired': 'EntityRepaired',
-    'Decon planner used': 'DeconstructionPlannerUsed',
-    'Map tags made': 'MapTagsMade',
+    'Damage Dealt': 'DamageDealt',
+    'Distance Travelled': 'DistanceTravelled',
+    'Capsules Used': 'CapsulesUsed',
+    'Machines Repaired': 'EntityRepaired',
+    'Decon Planner Used': 'DeconstructionPlannerUsed',
+    'Map Tags Made': 'MapTagsMade',
 
-    'Damage Death ratio': (stats) => {
+    'Damage Death Ratio': (stats) => {
         let damage = stats.DamageDealt || 0;
         let deaths = stats.Deaths || 0;
-        return nf.format(Number(damage / deaths) || 0);
+        return nf2.format(Number(damage / deaths) || 0);
     },
     'Kill Death Ratio': (stats) => {
         let kills = stats.Kills || 0;
         let deaths = stats.Deaths || 0;
-        return nf.format(Number(kills / deaths) || 0);
+        return nf2.format(Number(kills / deaths) || 0);
     },
-    'Average Session time': (stats) => {
-        return nf.format(Number(stats.Playtime / stats.JoinCount) || 0);
+    'Average Session Time': (stats) => {
+        return nf2.format(Number(stats.Playtime / stats.JoinCount) || 0);
     },
-    'Build to remove ratio': (stats) => {
-        return nf.format(Number(stats.MachinesBuilt / stats.MachinesRemoved) || 0);
+    'Build to Remove Ratio': (stats) => {
+        return nf2.format(Number(stats.MachinesBuilt / stats.MachinesRemoved) || 0);
     },
-    'Rockets per hour': (stats) => {
-        return nf.format(Number(stats.RocketsLaunched / (stats.Playtime / 60)) || 0);
+    'Rockets Per Hour': (stats) => {
+        return nf2.format(Number(stats.RocketsLaunched / (stats.Playtime / 60)) || 0);
     },
-    'TKPM (Tree kills per min)': (stats) => {
-        return nf.format(Number(stats.TreesDestroyed / (stats.Playtime)) || 0);
+    'Tree Kill Per Min': (stats) => {
+        return nf2.format(Number(stats.TreesDestroyed / (stats.Playtime)) || 0);
     },
     'Net Play Time': (stats) => {
-        let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60) || 0;
-        let minutes = (stats.Playtime % 60) || 0;
+        let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60);
+        let minutes = stats.Playtime % 60;
         return `${hours} h ${minutes} m`;
     },
-    'AFK Time ratio (%)': (stats) => {
-        return `${nf.format(Number(stats.AfkTime / stats.Playtime * 100) || 0)}%`;
+    'AFK Time Ratio (%)': (stats) => {
+        return `${nf2.format(Number(stats.AfkTime / stats.Playtime * 100) || 0)}%`;
     },
 
 };
