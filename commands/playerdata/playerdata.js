@@ -110,12 +110,12 @@ let layout = {
         return nf2.format(Number(stats.TreesDestroyed / (stats.Playtime)) || 0);
     },
     'Net Play Time': (stats) => {
-        let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60);
+        let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60) || 0;
         let minutes = stats.Playtime % 60;
         return `${hours} h ${minutes} m`;
     },
     'AFK Time Ratio (%)': (stats) => {
-        return `${nf2.format(Number(stats.AfkTime / stats.Playtime * 100) || 0)}%`;
+        return `${nf2.format(Number(stats.AfkTime / stats.Playtime * 100) || 0)} %`;
     },
 
 };
