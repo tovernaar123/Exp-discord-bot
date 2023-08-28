@@ -16,7 +16,7 @@ config.addKey('Playerdata/NotAuthorized', 'You need board for the this command (
 
 //Formats the numbers to be displayed in the grid (So that they have comma's every 3 digits).
 const nf = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-const nf2 = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const nf2 = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2});
 
 /**
  * @typedef {object} Stats
