@@ -51,43 +51,43 @@ const nf2 = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFra
  * @type {{[key: string]: string | function(Partial<Stats>): string}}
 */
 let layout = {
-    'Play time': (stats) => {
+    'Play Time': (stats) => {
         let time = stats.Playtime || 0;
         let hours = Math.floor(time / 60);
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
-    'AFK time': (stats) => {
+    'AFK Time': (stats) => {
         let time = stats.AfkTime || 0;
         let hours = Math.floor(time / 60);
         let minutes = time % 60;
         return `${hours} h ${minutes} m`;
     },
 
-    'Maps played': 'MapsPlayed',
-    'Join count': 'JoinCount',
-    'Chat messages': 'ChatMessages',
-    'Commands used': 'CommandsUsed',
-    'Rockets launched': 'RocketsLaunched',
-    'Research completed': 'ResearchCompleted',
-    'Machines built': 'MachinesBuilt',
-    'Machines removed': 'MachinesRemoved',
-    'Tiles placed': 'TilesBuilt',
-    'Tiles removed': 'TilesRemoved',
-    'Trees destroyed': 'TreesDestroyed',
-    'Ore mined': 'OreMined',
-    'Items crafted': 'ItemsCrafted',
-    'Items picked up': 'ItemsPickedUp',
+    'Maps Played': 'MapsPlayed',
+    'Join Count': 'JoinCount',
+    'Chat Messages': 'ChatMessages',
+    'Commands Used': 'CommandsUsed',
+    'Rockets Launched': 'RocketsLaunched',
+    'Research Completed': 'ResearchCompleted',
+    'Machines Built': 'MachinesBuilt',
+    'Machines Removed': 'MachinesRemoved',
+    'Tiles Placed': 'TilesBuilt',
+    'Tiles Removed': 'TilesRemoved',
+    'Trees Destroyed': 'TreesDestroyed',
+    'Ore Mined': 'OreMined',
+    'Items Crafted': 'ItemsCrafted',
+    'Items Picked Up': 'ItemsPickedUp',
     'Kills': 'Kills',
     'Deaths': 'Deaths',
-    'Damage dealt': 'DamageDealt',
-    'Distance travelled': 'DistanceTravelled',
-    'Capsules used': 'CapsulesUsed',
-    'Machines repaired': 'EntityRepaired',
-    'Decon planner used': 'DeconstructionPlannerUsed',
-    'Map tags made': 'MapTagsMade',
+    'Damage Dealt': 'DamageDealt',
+    'Distance Travelled': 'DistanceTravelled',
+    'Capsules Used': 'CapsulesUsed',
+    'Machines Repaired': 'EntityRepaired',
+    'Decon Planner Used': 'DeconstructionPlannerUsed',
+    'Map Tags Made': 'MapTagsMade',
 
-    'Damage Death ratio': (stats) => {
+    'Damage Death Ratio': (stats) => {
         let damage = stats.DamageDealt || 0;
         let deaths = stats.Deaths || 0;
         return nf2.format(Number(damage / deaths) || 0);
@@ -97,7 +97,7 @@ let layout = {
         let deaths = stats.Deaths || 0;
         return nf2.format(Number(kills / deaths) || 0);
     },
-    'Average Session time': (stats) => {
+    'Average Session Time': (stats) => {
         return nf2.format(Number(stats.Playtime / stats.JoinCount) || 0);
     },
     'Build to Remove Ratio': (stats) => {
