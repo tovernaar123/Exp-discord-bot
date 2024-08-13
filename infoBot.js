@@ -5,7 +5,7 @@ let DiscordCommand = require('./command.js');
 const fs = require('fs');
 //Discord.js imports + init
 const Discord = require('discord.js');
-const { Client, Intents } = require('discord.js');
+const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 /**
  * @typedef {Object} ChildType
@@ -19,7 +19,7 @@ const { Client, Intents } = require('discord.js');
  * @type {Bot} client
  */
 // @ts-ignore
-const client = new Client({ partials: ['CHANNEL'], intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({ partials: [Partials.Channel], intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 DiscordCommand.client = client;
 
 //Rcon script
@@ -40,10 +40,10 @@ config.addKey('SpamChannel', '359442310628376577');
 let OfflineServers = [2, 6, 7, 8];
 
 //standard embed settings like color and footer
-let real_discord_embed = Discord.MessageEmbed;
+let real_discord_embed = Discord.EmbedBuilder;
 
 // @ts-ignore
-Discord.MessageEmbed = function (data) {
+Discord.EmbedBuilder = function (data) {
     let discord_embed = new real_discord_embed(data);
     discord_embed.setTimestamp();
     // @ts-ignore
@@ -55,7 +55,7 @@ Discord.MessageEmbed = function (data) {
 
 async function start() {
     //Setting up /tmp/ directory
-    let dir = '/tmp/exp-discord-bot/'
+    let dir = '/tmp/exp-discord-bot/';
     if (!fs.existsSync(dir)){
         fs.mkdirSync(dir);
     }
@@ -73,7 +73,7 @@ start().catch((err) => {
 
 client.on('ready', async () => {
     let SpamChannel = client.channels.cache.get(config.getKey('SpamChannel'));
-    if (SpamChannel?.type === 'GUILD_TEXT') {
+    if (SpamChannel?.type === Discord.ChannelType.GuildText) {
         SpamChannel.send(`Bot logged in - Notice some Servers are set to be offline (#${OfflineServers}). To enable the bot for them please edit infoBot.js`);
     }
     //instantiate the list of commands
@@ -86,7 +86,7 @@ client.on('ready', async () => {
         //add it to the list 
         client.Commands.set(command.name, command);
         if (command.slash) {
-            waitfor.push(command.add_command(client));
+            // waitfor.push(command.add_command(client));
         }
     }
 

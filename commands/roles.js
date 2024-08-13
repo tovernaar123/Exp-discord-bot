@@ -22,12 +22,12 @@ class assign_role extends DiscordCommand {
                 required: true,
                 type: 'String',
                 choices: [
-                    ['regular', 'regular'],
-                    ['member', 'member'],
-                    ['veteran', 'veteran'],
-                    ['sponsor', 'sponsor'],
-                    ['supporter', 'supporter'],
-                    ['board', 'board']
+                    ['regular', 'Regular'],
+                    ['member', 'Member'],
+                    ['veteran', 'Veteran'],
+                    ['sponsor', 'Sponsor'],
+                    ['supporter', 'Supporter'],
+                    ['board', 'Board']
                 ]
             }
         ];

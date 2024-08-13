@@ -2,7 +2,7 @@
 
 const Builders = require('@discordjs/builders');
 let config = require('./config/index.js');
-/** @import * as DiscordAPI from "discord-api-types/payloads/v10/" */
+/** @import * as DiscordAPI from "discord.js" */
 // const {APIApplicationCommandOptionChoice} = require("discord-api-types/v10/")
 config.addKey('roles/staff', '482924291084779532');
 config.addKey('roles/admin', '290940523844468738');
@@ -42,8 +42,10 @@ config.addKey('roles/contributor', '678245941639381010');
  * @property {String} description
  * @property {Boolean} required
  *
+*/
+/**  
  * @typedef {((NumberArgument | StringArgument | OtherArgument) & Standard) | SubcommandArgument} Argument
- */
+*/
 
 
 /**
@@ -270,7 +272,7 @@ class DiscordCommand {
         if (this.requiredRole) {
             let role = await interaction.guild.roles.fetch(this.requiredRole);
             if (!role) {
-                await interaction.reply(`Permission error in fetching role data.`);
+                await interaction.reply('Permission error in fetching role data.');
                 return false;
             }
             let allowed;

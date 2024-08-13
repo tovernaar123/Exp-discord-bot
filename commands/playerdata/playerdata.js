@@ -15,8 +15,8 @@ config.addKey('Playerdata/Privacy', 'Error: Privacy Settings Prevent Lookup. Che
 config.addKey('Playerdata/NotAuthorized', 'You need board for the this command (or you need to use your own name).');
 
 //Formats the numbers to be displayed in the grid (So that they have comma's every 3 digits).
-const nf = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-const nf2 = new Intl.NumberFormat('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+const nf = new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+const nf2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
 /**
  * @typedef {object} Stats
@@ -98,31 +98,32 @@ let layout = {
         return nf2.format(Number(kills / deaths) || 0);
     },
     'Average Session Time': (stats) => {
-        return nf2.format(Number(stats.Playtime / stats.JoinCount) || 0);
+        
+        return nf2.format(Number((stats.Playtime || 0) / (stats.JoinCount || 0)) || 0);
     },
     'Build to Remove Ratio': (stats) => {
-        return nf2.format(Number(stats.MachinesBuilt / stats.MachinesRemoved) || 0);
+        return nf2.format(Number((stats.MachinesBuilt || 0) / (stats.MachinesRemoved || 0)) || 0);
     },
     'Rockets Per Hour': (stats) => {
-        return nf2.format(Number(stats.RocketsLaunched / (stats.Playtime / 60)) || 0);
+        return nf2.format(Number((stats.RocketsLaunched || 0) / ((stats.Playtime || 0) / 60)) || 0);
     },
     'Tree Kill Per Min': (stats) => {
-        return nf2.format(Number(stats.TreesDestroyed / (stats.Playtime)) || 0);
+        return nf2.format(Number((stats.TreesDestroyed ||0) / (stats.Playtime || 0)) || 0);
     },
     'Net Play Time': (stats) => {
-        let hours = Math.floor((stats.Playtime - stats.AfkTime) / 60) || 0;
-        let minutes = stats.Playtime % 60;
+        let hours = Math.floor(((stats.Playtime || 0) - (stats.AfkTime || 0)) / 60) || 0;
+        let minutes = ((stats.Playtime || 0) - (stats.AfkTime || 0)) % 60;
         return `${hours} h ${minutes} m`;
     },
     'AFK Time Ratio (%)': (stats) => {
-        return `${nf2.format(Number(stats.AfkTime / stats.Playtime * 100) || 0)} %`;
+        return `${nf2.format(Number((stats.AfkTime || 0) / (stats.Playtime|| 0 ) * 100) || 0)} %`;
     },
 
 };
 /**
  * 
  * @param {String} name 
- * @returns {{error: string | false, stats?: Stats}}
+ * @returns {{error: string} | {error:false, stats: Stats}}
  */
 function player_data(name) {
     //Read the player data file.
@@ -174,13 +175,13 @@ class Picture extends DiscordCommand {
             requiredRole: DiscordCommand.roles.board
         });
     }
-    
+
     /**
      * @type {import("./../../command.js").Authorize}
     */
     async authorize(interaction) {
         let name = interaction.options.getString('name');
-        if(!('displayName' in interaction.member)) return false;
+        if (!('displayName' in interaction.member)) return false;
         if (interaction.member.displayName === name) return true;
         else if (!(await super.authorize(interaction))) {
             await interaction.editReply('You need board for the this command (or you need to use your own name).');
@@ -196,13 +197,12 @@ class Picture extends DiscordCommand {
         await interaction.deferReply();
 
         //Get the player name.
-        let name = interaction.options.getString('name');
+        let name = interaction.options.getString('name', true);
         //Get the player data.
 
         let data = player_data(name);
-        let error = data.error;
         //If there is an error return it.
-        if (error) return void await interaction.editReply(error);
+        if (!(data.error === false)) return void await interaction.editReply(data.error);
         /**
          * @type {Partial<Stats>}
         */
@@ -211,6 +211,9 @@ class Picture extends DiscordCommand {
         let colums = 4;
 
         //The grid is a 2d array of strings.
+        /**
+         * @type {string[][]}
+         */
         let grid = [];
 
         //The index so that the data can be split into rows.
@@ -226,9 +229,9 @@ class Picture extends DiscordCommand {
                 if (!value) value = 0;
                 //Format the value to be displayed in the grid.
                 value = nf.format(value);
-            }else {
+            } else {
                 value = value_callback(stats);
-            } 
+            }
 
             //if we have more then the required columns, we need to split the data into a new row.
             if (i % colums === 0 || i === 0) grid[grid.length] = [];
@@ -242,6 +245,7 @@ class Picture extends DiscordCommand {
         }
         //render the site with the grid.eta file (we read the file here so that it can be changed on the fly).
         let template = fs.readFileSync('./commands/playerdata/grid.eta', 'utf8');
+        // @ts-ignore
         let html = await Eta.render(template, { grid, name });
         if (typeof html !== 'string') {
             console.error('[PLAYERDATA]: Error in rendering image.');
@@ -305,7 +309,7 @@ class Json extends DiscordCommand {
     */
     async authorize(interaction) {
         let name = interaction.options.getString('name');
-        if(!('displayName' in interaction.member)) return false;
+        if (!('displayName' in interaction.member)) return false;
         if (interaction.member.displayName === name) return true;
         else if (!(await super.authorize(interaction))) {
             await interaction.editReply(config.getKey('Playerdata/NotAuthorized'));
@@ -319,16 +323,16 @@ class Json extends DiscordCommand {
     async execute(interaction) {
         await interaction.deferReply();
         //Get the player name.
-        let name = interaction.options.getString('name');
+        let name = interaction.options.getString('name', true);
         //Get the player data.
-        let { error, stats } = player_data(name);
+        let data = player_data(name);
         //If there is an error return it.
-        if (error) {
-            await interaction.editReply(error);
+        if (!(data.error === false)) {
+            await interaction.editReply(data.error);
             return;
         }
         //Send the json to the user.
-        await interaction.editReply(`\`\`\`json\n${JSON.stringify(stats, null, 4)}\`\`\``);
+        await interaction.editReply(`\`\`\`json\n${JSON.stringify(data.stats, null, 4)}\`\`\``);
     }
 }
 let json = new Json();

@@ -37,7 +37,7 @@ class open_j extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let name = interaction.options.getString('name');
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
 
@@ -120,7 +120,7 @@ class open_p extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let PlayerName = interaction.options.getString('name');
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
 
@@ -176,7 +176,8 @@ class open_p extends DiscordCommand {
                 </h4>
                 <div class=grid>
                     ${CreateGrid(RowAmount, ColumnAmount, Inventory)}
-            </div>`;
+                </div>
+            `;
 
             Pages.push(HtmlCode);
         }
@@ -268,7 +269,7 @@ class open_p extends DiscordCommand {
             await writefile('/tmp/exp-discord-bot/invpage.html', Page);
             await page.goto(`file:///tmp/exp-discord-bot/invpage.html`);
             await page.screenshot({ path: '/tmp/exp-discord-bot/inventory.png' });
-            await interaction.channel.send({ files: ['/tmp/exp-discord-bot/inventory.png'] });
+            await interaction.channel?.send({ files: ['/tmp/exp-discord-bot/inventory.png'] });
 
         }
         await browser.close();
