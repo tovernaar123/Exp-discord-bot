@@ -267,11 +267,11 @@ class Picture extends DiscordCommand {
         //Set the page content.
         await page.setContent(html);
         //Render the page
-        await page.screenshot({ path: '/tmp/profile.png' });
+        await page.screenshot({ path: '/tmp/exp-discord-bot/profile.png' });
         //Close the browser and cleanup the proccess.
         await browser.close();
         //Send the photo to the user.
-        await interaction.editReply({ files: ['/tmp/profile.png'] });
+        await interaction.editReply({ files: ['/tmp/exp-discord-bot/profile.png'] });
     }
 }
 let picture = new Picture();

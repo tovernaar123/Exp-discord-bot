@@ -265,10 +265,10 @@ class open_p extends DiscordCommand {
             deviceScaleFactor: 1,
         });
         for (let Page of Pages) {
-            await writefile('/tmp/invpage.html', Page);
-            await page.goto(`file:///tmp/invpage.html`);
-            await page.screenshot({ path: '/tmp/inventory.png' });
-            await interaction.channel.send({ files: ['/tmp/inventory.png'] });
+            await writefile('/tmp/exp-discord-bot/invpage.html', Page);
+            await page.goto(`file:///tmp/exp-discord-bot/invpage.html`);
+            await page.screenshot({ path: '/tmp/exp-discord-bot/inventory.png' });
+            await interaction.channel.send({ files: ['/tmp/exp-discord-bot/inventory.png'] });
 
         }
         await browser.close();

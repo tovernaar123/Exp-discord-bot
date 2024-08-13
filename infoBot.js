@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 let DiscordCommand = require('./command.js');
-
+const fs = require('fs');
 //Discord.js imports + init
 const Discord = require('discord.js');
 const { Client, Intents } = require('discord.js');
@@ -54,6 +54,12 @@ Discord.MessageEmbed = function (data) {
 
 
 async function start() {
+    //Setting up /tmp/ directory
+    let dir = '/tmp/exp-discord-bot/'
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+
     let Rcons = new RconManager(OfflineServers, 8, Baseport);
     await Rcons.Connect();
     client.Rcons = Rcons;
