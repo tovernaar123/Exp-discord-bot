@@ -64,7 +64,7 @@ class Graph extends DiscordCommand {
 
         let type = interaction.options.getInteger('type',true);
         let url = `${config.getKey('Graph/GrafanaUrl')}?orgId=1&from=now-30m&to=now&panelId=${type}&width=1000&height=300&tz=UTC`;
-        const path = `.cache/graph${type}.png`;
+        const path = `/tmp/graph${type}.png`;
 
         await interaction.editReply('Downloading graph please wait...');
         if(this.cache_time[type] && (this.cache_time[type] > Date.now() - 3*60*1000) && fs.existsSync(path)) {
