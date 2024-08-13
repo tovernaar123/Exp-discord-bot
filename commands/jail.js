@@ -34,9 +34,9 @@ class Jail extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
-        let tojail = interaction.options.getString('tojail');
-        let reason = interaction.options.getString('reason');
+        let server = parseInt(interaction.options.getString('server',true));
+        let tojail = interaction.options.getString('tojail',true);
+        let reason = interaction.options.getString('reason',true);
         if(tojail.match(/\\|"|'/)){
             return void await interaction.editReply('You cannot use " , \\ or \' in the name of the player.');
         }

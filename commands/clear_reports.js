@@ -57,9 +57,9 @@ class clear_reports extends DiscordCommand {
     async execute(interaction) 
     {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         if(!server) return void await interaction.editReply('That is not a number');
-        await runCommand(server, DiscordCommand.client.Rcons.GetRcon(server), interaction, interaction.options.getString('player'));
+        await runCommand(server, DiscordCommand.client.Rcons.GetRcon(server), interaction, interaction.options.getString('player',true));
     }
 
 }

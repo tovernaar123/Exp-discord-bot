@@ -119,7 +119,7 @@ async function get_logs(server, size, msg, parse) {
 
     //send the log in the code blocks
     for (let i = 0; i < final_lines.length; i++) {
-        await msg.channel.send(`\`\`\`log\n${final_lines[i]}\`\`\``);
+        await msg.channel?.send(`\`\`\`log\n${final_lines[i]}\`\`\``);
     }
 }
 
@@ -156,8 +156,8 @@ class chatlog extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.reply('Getting chatlog...');
-        let server = interaction.options.getString('server');
-        let size = interaction.options.getInteger('size');
+        let server = interaction.options.getString('server',true);
+        let size = interaction.options.getInteger('size',true);
         await get_logs(server, size, interaction, chat_log);
     }
 
@@ -193,8 +193,8 @@ class eventlog extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.reply('Getting eventlog...');
-        let server = interaction.options.getString('server');
-        let size = interaction.options.getInteger('size');
+        let server = interaction.options.getString('server',true);
+        let size = interaction.options.getInteger('size',true);
 
         if (size > 50) { size = 50; }
         if (size < 0) { size = 10; }
@@ -232,8 +232,8 @@ class normallog extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.reply('Getting normallog...');
-        let server = interaction.options.getString('server');
-        let size = interaction.options.getInteger('size');
+        let server = interaction.options.getString('server',true);
+        let size = interaction.options.getInteger('size',true);
 
         if (size > 50) { size = 50; }
         if (size < 0) { size = 10; }

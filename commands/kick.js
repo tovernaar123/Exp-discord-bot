@@ -39,7 +39,7 @@ class Kick extends DiscordCommand {
     async execute(interaction) {
         await interaction.deferReply();
         let player = interaction.options.getString('player');
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let reason = interaction.options.getString('reason') || 'No reason given';
 
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);

@@ -2,7 +2,8 @@
 
 const Builders = require('@discordjs/builders');
 let config = require('./config/index.js');
-
+/** @import * as DiscordAPI from "discord-api-types/payloads/v10/" */
+// const {APIApplicationCommandOptionChoice} = require("discord-api-types/v10/")
 config.addKey('roles/staff', '482924291084779532');
 config.addKey('roles/admin', '290940523844468738');
 config.addKey('roles/mod', '260893080968888321');
@@ -203,17 +204,28 @@ class DiscordCommand {
         }
 
         let builder;
-
         if (arg.type === 'String') {
             builder = new DiscordCommand.builders[arg.type]();
-            if (arg.choices) builder.addChoices(arg.choices);
+            if (arg.choices) builder.addChoices(arg.choices.map((val) => {
+                /**
+                 * @type {DiscordAPI.APIApplicationCommandOptionChoice<string>}
+                 */
+                let newval = {name:val[0], value:val[1], name_localizations: null }; 
+                return newval;
+            }));
         } else if ((arg.type === 'Number' || arg.type === 'Integer')) {
             builder = new DiscordCommand.builders[arg.type]();
             if (arg.min) builder.setMinValue(arg.min);
             if (arg.max) builder.setMaxValue(arg.max);
-            if (arg.choices) builder.addChoices(arg.choices);
+            if (arg.choices) builder.addChoices(arg.choices.map((val) => {
+                /**
+                 * @type {DiscordAPI.APIApplicationCommandOptionChoice<number>}
+                 */
+                let newval = {name:val[0], value:val[1], name_localizations: null }; 
+                return newval;
+            }));
         }
-        if(!builder) builder = new DiscordCommand.builders[arg.type]();
+        if (!builder) builder = new DiscordCommand.builders[arg.type]();
         builder.setName(arg.name);
         builder.setRequired(arg.required);
         builder.setDescription(arg.description);
@@ -231,11 +243,11 @@ class DiscordCommand {
 
     /**
      * @param {import("./infoBot.js").Bot} client
-    */ 
+    */
 
     async add_command(client) {
         this.create_command();
-        if(this.slashbuilder instanceof  Builders.SlashCommandSubcommandBuilder) return console.error('[COMMAND]: Subcommand cant be added without main command.');
+        if (this.slashbuilder instanceof Builders.SlashCommandSubcommandBuilder) return console.error('[COMMAND]: Subcommand cant be added without main command.');
         // @ts-ignore
         await client.guilds.cache.get(process.env.guild).commands.create(this.slashbuilder);
         console.log(`[COMMAND] added ${this.name}`);
@@ -257,6 +269,10 @@ class DiscordCommand {
     async authorize(interaction) {
         if (this.requiredRole) {
             let role = await interaction.guild.roles.fetch(this.requiredRole);
+            if (!role) {
+                await interaction.reply(`Permission error in fetching role data.`);
+                return false;
+            }
             let allowed;
             if (!('highest' in interaction.member.roles)) return allowed = false;
             else allowed = interaction.member.roles.highest.comparePositionTo(role) >= 0;

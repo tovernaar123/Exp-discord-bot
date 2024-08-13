@@ -33,9 +33,9 @@ class Set extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
-        let QueueParms = interaction.options.getNumber('queue_parms');
+        let QueueParms = interaction.options.getNumber('queue_parms',true);
 
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
@@ -73,7 +73,7 @@ class Get extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
 
         if (!rcon.connected) {

@@ -8,6 +8,12 @@ let config = require('./../config');
 config.addKey('BanSync/Sokect', '/tmp/banlist_sync.sock');
 
 
+/**
+ * @param {number | string} server
+ * @param {string} by_player
+ * @param {string} banned
+ * @param {string} reason
+ */
 function GetReport(server, by_player, banned, reason) {
     let ban_report = new Discord.MessageEmbed();
     ban_report.addField('Ban', 'A player has been Banned', false);
@@ -25,14 +31,19 @@ function GetReport(server, by_player, banned, reason) {
  * @param {import("discord.js").CommandInteraction} interaction 
  */
 async function normal_ban(player, reason, interaction) {
-    let server;
+    /**
+     * @type {number}
+     */
+    let server = 0;
     let rcon = DiscordCommand.client.Rcons.GetAllRcons().find((rcon, index) => {
         server = index;
         return rcon?.connected;
     });
-
     if (rcon) {
         await rcon.Send(`/ban ${player} ${reason}`);
+        if(!interaction.guild){
+            return;
+        }
         let ReportChannel = interaction.guild.channels.cache.get(config.getKey('ReportChannel'));
         let report = GetReport(server, interaction.user.username, player, reason);
         await interaction.editReply(`Player was banned for "${reason}" (but Ban sync failed) check S${server} to make sure it worked.`);
@@ -76,7 +87,7 @@ class Ban extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let player = interaction.options.getString('player_name');
+        let player = interaction.options.getString('player_name',true);
         let reason = interaction.options.getString('reason') || 'No reason given.';
         client.connect(config.getKey('BanSync/Sokect'), function () {
             let message = JSON.stringify({ request: 'ban-player', player, reason });

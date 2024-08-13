@@ -23,7 +23,7 @@ class Pause extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
@@ -64,7 +64,7 @@ class Unpause extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
@@ -115,7 +115,7 @@ class Speed extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let speed = interaction.options.getNumber('speed');
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
 
@@ -159,7 +159,7 @@ class Polclear extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));
@@ -201,7 +201,7 @@ class PollOff extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
         if (!rcon.connected) {
             await interaction.editReply(format(config.getKey('ServerNotConnected'), server));

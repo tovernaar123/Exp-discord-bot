@@ -20,6 +20,5 @@
     "sessions_log.js",
     "unban.js",
     "unjail.js",
-    "update.js",
     "help.js"
 ]

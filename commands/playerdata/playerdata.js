@@ -167,7 +167,7 @@ class Picture extends DiscordCommand {
         ];
         super({
             name: 'picture',
-            description: 'Returns a foto of the player\'s data',
+            description: 'Returns a photo of the player\'s data',
             cooldown: 5,
             args: args,
             guildOnly: true,
@@ -267,11 +267,11 @@ class Picture extends DiscordCommand {
         //Set the page content.
         await page.setContent(html);
         //Render the page
-        await page.screenshot({ path: './.cache/profile.png' });
+        await page.screenshot({ path: '/tmp/profile.png' });
         //Close the browser and cleanup the proccess.
         await browser.close();
         //Send the photo to the user.
-        await interaction.editReply({ files: ['./.cache/profile.png'] });
+        await interaction.editReply({ files: ['/tmp/profile.png'] });
     }
 }
 let picture = new Picture();

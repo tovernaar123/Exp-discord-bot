@@ -12,9 +12,11 @@ let config = require('./../config');
 */
 
 async function oneCommand(servernum, rcon) {
-
+    /**
+     * @type {string}
+     */
     let res;
-    if (rcon.connected) res = await rcon.Send('/p o');
+    if (rcon.connected) res = await rcon.Send('/p o') || '';
     else res = format(config.getKey('ServerNotConnected'), servernum);
     return res;
 }
@@ -75,7 +77,7 @@ class Playersonline extends DiscordCommand {
         /**
          * @type {string | number}
         */
-        let server = interaction.options.getString('server');
+        let server = interaction.options.getString('server',true);
 
         if (server === 'all') {
             await interaction.editReply({ embeds: [await allCommand(interaction, DiscordCommand.client.Rcons.GetAllRcons())] });

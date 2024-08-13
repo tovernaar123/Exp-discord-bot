@@ -34,8 +34,8 @@ class CancelRes extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
-        let ctype = parseInt(interaction.options.getString('type'));
+        let server = parseInt(interaction.options.getString('server',true));
+        let ctype = parseInt(interaction.options.getString('type',true));
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
 
         if (!rcon.connected) {

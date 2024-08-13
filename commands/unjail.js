@@ -31,7 +31,7 @@ class Unjail extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let player = interaction.options.getString('player');
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
 

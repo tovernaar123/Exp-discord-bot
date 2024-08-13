@@ -62,7 +62,7 @@ class Graph extends DiscordCommand {
     async execute(interaction) {
         await interaction.deferReply();
 
-        let type = interaction.options.getInteger('type');
+        let type = interaction.options.getInteger('type',true);
         let url = `${config.getKey('Graph/GrafanaUrl')}?orgId=1&from=now-30m&to=now&panelId=${type}&width=1000&height=300&tz=UTC`;
         const path = `.cache/graph${type}.png`;
 

@@ -45,7 +45,7 @@ class assign_role extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let name = interaction.options.getString('name');
         let role = interaction.options.getString('role');
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);
@@ -116,7 +116,7 @@ class unassign_role extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let server = parseInt(interaction.options.getString('server'));
+        let server = parseInt(interaction.options.getString('server',true));
         let name = interaction.options.getString('name');
         let role = interaction.options.getString('role');
         let rcon = DiscordCommand.client.Rcons.GetRcon(server);

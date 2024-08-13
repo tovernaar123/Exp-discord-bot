@@ -81,7 +81,7 @@ class Unban extends DiscordCommand {
     async execute(interaction) {
         await interaction.deferReply();
         //Get the player to unban.
-        let player = interaction.options.getString('player');
+        let player = interaction.options.getString('player',true);
         //get the reason for the unban (or set it to No reason provided).
         let reason = interaction.options.getString('reason') ?? 'No reason provided';
 

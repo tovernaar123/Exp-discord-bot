@@ -9,8 +9,8 @@ const { Client, Intents } = require('discord.js');
 
 /**
  * @typedef {Object} ChildType
- * @property {Discord.Collection} [Commands]
- * @property {RconManager} [Rcons]
+ * @property {Discord.Collection} Commands
+ * @property {RconManager} Rcons
  *
  * @typedef {Client & ChildType} Bot
  */
@@ -18,6 +18,7 @@ const { Client, Intents } = require('discord.js');
 /**
  * @type {Bot} client
  */
+// @ts-ignore
 const client = new Client({ partials: ['CHANNEL'], intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 DiscordCommand.client = client;
 
@@ -45,6 +46,7 @@ let real_discord_embed = Discord.MessageEmbed;
 Discord.MessageEmbed = function (data) {
     let discord_embed = new real_discord_embed(data);
     discord_embed.setTimestamp();
+    // @ts-ignore
     discord_embed.setFooter({ text: client.user.username, iconURL: client.user.avatarURL() });
     discord_embed.setColor('#53380');
     return discord_embed;
@@ -65,10 +67,9 @@ start().catch((err) => {
 
 client.on('ready', async () => {
     let SpamChannel = client.channels.cache.get(config.getKey('SpamChannel'));
-    if (SpamChannel.type === 'GUILD_TEXT') {
+    if (SpamChannel?.type === 'GUILD_TEXT') {
         SpamChannel.send(`Bot logged in - Notice some Servers are set to be offline (#${OfflineServers}). To enable the bot for them please edit infoBot.js`);
     }
-    await client.guilds.cache.get(process.env.guild).commands.set([]);
     //instantiate the list of commands
     client.Commands = new Discord.Collection();
 
@@ -100,7 +101,7 @@ client.on('interactionCreate', async interaction => {
     const { commandName } = interaction;
 
     let command = client.Commands.get(commandName);
-    if (!command) { await interaction.reply('Command not found'); return; }
+    if (!command) { return; }
 
     if (command.Subcommands.length > 0) {
         let name = interaction.options.getSubcommand();

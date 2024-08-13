@@ -88,7 +88,7 @@ class Adminsonline extends DiscordCommand {
         /**
          * @type {String | Number}
         */
-        let server = interaction.options.getString('server');
+        let server = interaction.options.getString('server',true);
         if (server === 'all') {
             await all_servers(DiscordCommand.client.Rcons.GetAllRcons(), interaction);
         } else {

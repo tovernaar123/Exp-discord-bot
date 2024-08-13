@@ -29,10 +29,11 @@ class discord_pin extends DiscordCommand {
     async execute(interaction) {
         await interaction.deferReply();
 
-        let message_id = interaction.options.getString('message_id');
+        let message_id = interaction.options.getString('message_id',true);
         try{
-            let msg = await interaction.channel.messages.fetch(message_id);
-            if(!(msg.channel === interaction.channel)) return void await interaction.editReply('Please use this command in the same channel as message.');
+            let msg = await interaction.channel?.messages.fetch(message_id);
+
+            if(!(msg?.channel === interaction.channel) || !msg) return void await interaction.editReply('Please use this command in the same channel as message.');
             await msg.pin();
             await interaction.editReply(`Message ${message_id} has been pinned in ${msg.channel.name}.`);
         }catch{
@@ -72,10 +73,10 @@ class discord_unpin extends DiscordCommand {
     async execute(interaction) {
         await interaction.deferReply();
         
-        let message_id = interaction.options.getString('message_id');
+        let message_id = interaction.options.getString('message_id',true);
         try{
-            let msg = await interaction.channel.messages.fetch(message_id);
-            if(!(msg.channel === interaction.channel)) return void await interaction.editReply('Please use this command in the same channel as message.');
+            let msg = await interaction.channel?.messages.fetch(message_id);
+            if(!(msg?.channel === interaction.channel) || !msg)return void await interaction.editReply('Please use this command in the same channel as message.');
             await msg.unpin();
             await interaction.editReply(`Message ${message_id} has been unpinned in ${msg.channel.name}.`);
         }catch{
@@ -116,9 +117,10 @@ class discord_delete extends DiscordCommand {
     async execute(interaction) {
         await interaction.deferReply();
         
-        let amount = interaction.options.getInteger('amount');
-        let messages = await interaction.channel.messages.fetch({limit: amount});
-        await interaction.channel.bulkDelete(messages);
+        let amount = interaction.options.getInteger('amount',true);
+        let messages = await interaction.channel?.messages.fetch({limit: amount});
+        if(!messages)return void await interaction.editReply('Could not find the messages');
+        await interaction.channel?.bulkDelete(messages);
     }
 }
 

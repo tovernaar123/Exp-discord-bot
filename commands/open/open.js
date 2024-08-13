@@ -6,7 +6,7 @@ let config = require('../../config/index.js');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const { promisify } = require('util');
-
+const {resolve} = require("path");
 
 
 class open_j extends DiscordCommand {
@@ -80,7 +80,8 @@ function CreateGrid(row, column, Inventory) {
 
     for (const [ItemName, ItemAmount] of Inventory) {
         html_grid.push('<div>');
-        html_grid.push(`<img src="./../icons/${ItemName}.png">`);
+        const path = resolve(`icons/${ItemName}.png`)
+        html_grid.push(`<img src="${path}">`);
         html_grid.push(`<div class="number">${ItemAmount}</div>`);
         html_grid.push('</div>');
     }
@@ -169,7 +170,7 @@ class open_p extends DiscordCommand {
                         --TitleMargin: ${TitleMargin}px;
                     }
                 </style>
-                <link rel="stylesheet" href="./../commands/open/main.css">
+                <link rel="stylesheet" href=${resolve("commands/open/main.css")}>
                 <h4 class=title>
                     Main - ${PlayerName}
                 </h4>
@@ -231,7 +232,7 @@ class open_p extends DiscordCommand {
             --TitleMargin: ${TitleMargin}px;
         }
         </style>
-        <link rel="stylesheet" href="./../commands/open/main.css">
+        <link rel="stylesheet" href="${resolve('commands/open/main.css')}">
         <h4 class=title>
             Trash - ${PlayerName}
         </h4>
@@ -264,10 +265,10 @@ class open_p extends DiscordCommand {
             deviceScaleFactor: 1,
         });
         for (let Page of Pages) {
-            await writefile('./.cache/invpage.html', Page);
-            await page.goto(`file://${__dirname}/../../.cache/invpage.html`);
-            await page.screenshot({ path: './.cache/inventory.png' });
-            await interaction.channel.send({ files: ['./.cache/inventory.png'] });
+            await writefile('/tmp/invpage.html', Page);
+            await page.goto(`file:///tmp/invpage.html`);
+            await page.screenshot({ path: '/tmp/inventory.png' });
+            await interaction.channel.send({ files: ['/tmp/inventory.png'] });
 
         }
         await browser.close();
