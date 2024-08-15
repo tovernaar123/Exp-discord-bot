@@ -9,7 +9,7 @@ const { Client, GatewayIntentBits, Partials } = require('discord.js');
 
 /**
  * @typedef {Object} ChildType
- * @property {Discord.Collection} Commands
+ * @property {Discord.Collection<string,DiscordCommand>} Commands
  * @property {RconManager} Rcons
  *
  * @typedef {Client & ChildType} Bot
@@ -86,7 +86,7 @@ client.on('ready', async () => {
         //add it to the list 
         client.Commands.set(command.name, command);
         if (command.slash) {
-            // waitfor.push(command.add_command(client));
+            waitfor.push(command.add_command(client));
         }
     }
 
@@ -102,7 +102,7 @@ client.on('ready', async () => {
 
 client.on('interactionCreate', async interaction => {
 
-    if (!interaction.isCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
     if(!interaction.inCachedGuild()) return;
     const { commandName } = interaction;
 
@@ -112,6 +112,7 @@ client.on('interactionCreate', async interaction => {
     if (command.Subcommands.length > 0) {
         let name = interaction.options.getSubcommand();
         command = command.Subcommands.find((c) => c.name === name);
+        if (!command) { return; }
         await command._execute(interaction);
     } else {
         await command._execute(interaction);
