@@ -62,7 +62,7 @@ async function runCommand(server, rcon) {
 
 
 async function all_servers(rcons, interaction) {
-    const Embed = new Discord.MessageEmbed();
+    const Embed = new Discord.EmbedBuilder();
 
     let amount_of_fields = 0;
     for (let i = 1; i < rcons.length; i++) {
@@ -74,7 +74,7 @@ async function all_servers(rcons, interaction) {
     let amount_of_empty_spaces = 3 - (amount_of_fields % 3);
     for (let i = 0; i < amount_of_empty_spaces; i++) {
         //add and empty to make it look nice 
-        Embed.addField('\u200B', '\u200B', true);
+        Embed.addFields({name:'\u200B', value:'\u200B', inline:true});
     }
     await interaction.editReply({ embeds: [Embed] });
 }
@@ -110,7 +110,7 @@ class Afk extends DiscordCommand {
         } else {
             server = parseInt(server);
             let res = await runCommand(server, DiscordCommand.client.Rcons.GetRcon(server));
-            const Embed = new Discord.MessageEmbed();
+            const Embed = new Discord.EmbedBuilder();
             Embed.addFields(...res);
             await interaction.editReply({ embeds: [Embed] });
         }

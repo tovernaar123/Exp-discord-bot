@@ -48,12 +48,13 @@ Discord.EmbedBuilder = function (data) {
     discord_embed.setTimestamp();
     // @ts-ignore
     discord_embed.setFooter({ text: client.user.username, iconURL: client.user.avatarURL() });
-    discord_embed.setColor('#53380');
+    discord_embed.setColor('#053280');
     return discord_embed;
 };
 
 
 async function start() {
+    console.log('starting bot');
     //Setting up /tmp/ directory
     let dir = '/tmp/exp-discord-bot/';
     if (!fs.existsSync(dir)){
@@ -89,7 +90,6 @@ client.on('ready', async () => {
             waitfor.push(command.add_command(client));
         }
     }
-
 
     await Promise.all(waitfor);
 

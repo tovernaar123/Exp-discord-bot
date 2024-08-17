@@ -6,12 +6,12 @@ let config = require('./../config');
 
 
 function GetReport(server, Admin, toUnBan, reason) {
-    const Embed = new Discord.MessageEmbed();
-    Embed.addField('Unban', 'A player has been UnBanned', false);
-    Embed.addField('Server Details', `server: S${server}`, false);
-    Embed.addField('Player', `${toUnBan}`, true);
-    Embed.addField('By', `${Admin}`, true);
-    Embed.addField('Reason', `${reason}`, true);
+    const Embed = new Discord.EmbedBuilder();
+    Embed.addFields({ name: 'Unban', value: 'A player has been UnBanned', inline: false },
+        { name: 'Server Details', value: `server: S${server}`, inline: false },
+        { name: 'Player', value: `${toUnBan}`, inline: true },
+        { name: 'By', value: `${Admin}`, inline: true },
+        { name: 'Reason', value: `${reason}`, inline: true });
     Embed.setColor('#00ff00');
     return Embed;
 }
@@ -30,7 +30,7 @@ async function normal_unban(player, reason, interaction) {
         server = index;
         return rcon?.connected;
     });
-    if (!rcon) throw new Error('No Rcon Connected'); 
+    if (!rcon) throw new Error('No Rcon Connected');
 
     //unban the player
     await rcon.Send(`/unban ${player}`);
@@ -40,7 +40,7 @@ async function normal_unban(player, reason, interaction) {
     //Send the report to the reports channel.
     let report = GetReport(server, interaction.member.displayName, player, reason);
     let ReportChannel = await interaction.guild.channels.cache.get(config.getKey('ReportChannel'));
-    if(!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return void console.error('Wrong report channel.');
+    if (!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return void console.error('Wrong report channel.');
     await ReportChannel.send({ embeds: [report] });
 
 }
@@ -81,7 +81,7 @@ class Unban extends DiscordCommand {
     async execute(interaction) {
         await interaction.deferReply();
         //Get the player to unban.
-        let player = interaction.options.getString('player',true);
+        let player = interaction.options.getString('player', true);
         //get the reason for the unban (or set it to No reason provided).
         let reason = interaction.options.getString('reason') ?? 'No reason provided';
 
@@ -117,7 +117,7 @@ class Unban extends DiscordCommand {
                     //Create the embed to send.
                     let report = GetReport('<internal>', interaction.member.displayName, player, reason);
                     //Send the report to the report channel.
-                    if(!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return void console.error('Wrong report channel.');
+                    if (!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return void console.error('Wrong report channel.');
                     await ReportChannel.send({ embeds: [report] });
                 } else {
                     //try to unban the player on the normal way.

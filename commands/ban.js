@@ -15,12 +15,12 @@ config.addKey('BanSync/Sokect', '/tmp/banlist_sync.sock');
  * @param {string} reason
  */
 function GetReport(server, by_player, banned, reason) {
-    let ban_report = new Discord.MessageEmbed();
-    ban_report.addField('Ban', 'A player has been Banned', false);
-    ban_report.addField('Server Details', `server: S${server}`, false);
-    ban_report.addField('Player', `${banned}`, true);
-    ban_report.addField('By', `${by_player}`, true);
-    ban_report.addField('Reason', `${reason}`, true);
+    let ban_report = new Discord.EmbedBuilder();
+    ban_report.addFields({ name: 'Ban', value: 'A player has been Banned', inline: false },
+        { name: 'Server Details', value: `server: S${server}`, inline: false },
+        { name: 'Player', value: `${banned}`, inline: true },
+        { name: 'By', value: `${by_player}`, inline: true },
+        { name: 'Reason', value: `${reason}`, inline: true });
     ban_report.setColor('#0xb40e0e');
     return ban_report;
 }
@@ -41,13 +41,13 @@ async function normal_ban(player, reason, interaction) {
     });
     if (rcon) {
         await rcon.Send(`/ban ${player} ${reason}`);
-        if(!interaction.guild){
+        if (!interaction.guild) {
             return;
         }
         let ReportChannel = interaction.guild.channels.cache.get(config.getKey('ReportChannel'));
         let report = GetReport(server, interaction.user.username, player, reason);
         await interaction.editReply(`Player was banned for "${reason}" (but Ban sync failed) check S${server} to make sure it worked.`);
-        if(!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return void console.error('Wrong report channel.');
+        if (!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return void console.error('Wrong report channel.');
         await ReportChannel.send({ embeds: [report] });
     }
 }
@@ -87,7 +87,7 @@ class Ban extends DiscordCommand {
     */
     async execute(interaction) {
         await interaction.deferReply();
-        let player = interaction.options.getString('player_name',true);
+        let player = interaction.options.getString('player_name', true);
         let reason = interaction.options.getString('reason') || 'No reason given.';
         client.connect(config.getKey('BanSync/Sokect'), function () {
             let message = JSON.stringify({ request: 'ban-player', player, reason });
@@ -95,7 +95,7 @@ class Ban extends DiscordCommand {
             //Send the message (request for unban).
             client.write(message);
             //listen for the response (just once).
-            
+
             client.once('data', async function (data) {
                 //convert the data to a string.
 
@@ -122,7 +122,7 @@ class Ban extends DiscordCommand {
                     //Create the embed to send.
                     let report = GetReport('<internal>', interaction.member.displayName, player, reason);
                     //Send the report to the report channel.
-                    if(!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return;
+                    if (!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return;
                     await ReportChannel.send({ embeds: [report] });
                 } else {
                     //try to unban the player on the normal way.

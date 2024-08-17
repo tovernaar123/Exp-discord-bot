@@ -24,18 +24,18 @@ async function oneCommand(servernum, rcon) {
  * 
  * @param {import("discord.js").CommandInteraction<'cached'>} interaction the message that excute this command
  * @param {readonly import('./../rcon/RconClass')[]} rcons the open rcon connection to the server
- * @returns {Promise<Discord.MessageEmbed>}
+ * @returns {Promise<Discord.EmbedBuilder>}
 */
 async function allCommand(interaction, rcons) {
     await interaction.editReply('Asked for all online players: Awaiting reply from servers...');
 
-    const Embed = new Discord.MessageEmbed();
+    const Embed = new Discord.EmbedBuilder();
 
     //adds field for every server
     let amount_of_fields = 0;
     for (let i = 1; i < 9; i++) {
         let res = await oneCommand(i, rcons[i]);
-        Embed.addField(`S${i}`, res, true);
+        Embed.addFields({name:`S${i}`,value: res,inline: true});
         amount_of_fields += 1;
     }
 
@@ -43,7 +43,7 @@ async function allCommand(interaction, rcons) {
     let amount_of_empty_spaces = 3 - (amount_of_fields % 3);
     for (let i = 0; i < amount_of_empty_spaces; i++) {
         //add and empty to make it look nice 
-        Embed.addField('\u200B', '\u200B', true);
+        Embed.addFields({name:'\u200B',value: '\u200B',inline: true});
     }
 
     //Send the embed
@@ -84,9 +84,9 @@ class Playersonline extends DiscordCommand {
         } else {
             server = parseInt(server);
             let res = await oneCommand(server, DiscordCommand.client.Rcons.GetRcon(server));
-            let embed = new Discord.MessageEmbed();
-            embed.addField(`S${server}`, res, true);
-            await interaction.editReply({ embeds: [embed] });
+            let Embed = new Discord.EmbedBuilder();
+            Embed.addFields({name:`S${server}`,value: res,inline: true});
+            await interaction.editReply({ embeds: [Embed] });
 
         }
     }

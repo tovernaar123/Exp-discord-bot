@@ -50,12 +50,12 @@ class Kick extends DiscordCommand {
         await rcon.Send(`/kick ${player} ${reason}`);
         await interaction.editReply(`Kicked ${player} from the S${server} for ${reason}.`);
 
-        const Embed = new Discord.MessageEmbed();
-        Embed.addField('Kick', 'A player has been kicked', false);
-        Embed.addField('Server Details', `server: S${server}`, false);
-        Embed.addField('Player', `${player}`, true);
-        Embed.addField('By', `${interaction.member.displayName}`, true);
-        Embed.addField('Reason', `${reason}`, true);
+        const Embed = new Discord.EmbedBuilder();
+        Embed.addFields({name:'Kick',value: 'A player has been kicked',inline: false});
+        Embed.addFields({name:'Server Details',value: `server: S${server}`,inline: false});
+        Embed.addFields({name:'Player',value: `${player}`,inline: true});
+        Embed.addFields({name:'By',value: `${interaction.member.displayName}`,inline: true});
+        Embed.addFields({name:'Reason',value: `${reason}`,inline: true});
         Embed.setColor('#0xffa500');
         let ReportChannel = interaction.guild.channels.cache.get(config.getKey('ReportChannel')); // Reports channel is "368812365594230788" for exp // Reports Channel is "764881627893334047" for test server
         if(!(ReportChannel instanceof Discord.TextChannel || ReportChannel instanceof Discord.ThreadChannel)) return void console.error('Wrong id for report channel');

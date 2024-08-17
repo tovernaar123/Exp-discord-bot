@@ -31,10 +31,13 @@ async function runCommand(server, rcon, interaction) {
         await interaction.editReply(config.getKey('NoResponse'));
     }
 
+    /**
+     * @type {Discord.APIEmbedField}
+     */
     // If repsonse by rcon/factorio exists than runs function "resp" in this case prints the rcon response instead of sucess/fail message 
     if (response) {
-        const Embed = new Discord.MessageEmbed();
-        Embed.addField(`S${server}`, response, true);
+        const Embed = new Discord.EmbedBuilder();
+        Embed.addFields({name:`S${server}`, value: response, inline: true});
         await interaction.editReply({ embeds: [Embed] });
     }
 }
@@ -46,14 +49,15 @@ async function runCommand(server, rcon, interaction) {
 */
 async function all_servers(rcons, interaction) {
     await interaction.editReply(config.getKey('AdminsOnline/WaitingForReply'));
-    const Embed = new Discord.MessageEmbed();
+    const Embed = new Discord.EmbedBuilder();
     //adds fields for every server
     let amount_of_fields = 0;
     for (let i = 1; i < 9; i++) {
         let rcon = rcons[i];
         let res = await runCommand(i, rcon);
-        if(!res) {Embed.addField(`S${i}`, 'No data', true); continue;}
-        Embed.addField(`S${i}`, res, true);
+        
+        if(!res) {Embed.addFields({name:`S${i}`, value:'No data', inline:true}); continue;}
+        Embed.addFields({name:`S${i}`, value:res, inline:true});
         amount_of_fields += 1;
     }
 
@@ -61,7 +65,7 @@ async function all_servers(rcons, interaction) {
     let amount_of_empty_spaces = 3 - (amount_of_fields % 3);
     for (let i = 0; i < amount_of_empty_spaces; i++) {
         //add and empty to make it look nice 
-        Embed.addField('\u200B', '\u200B', true);
+        Embed.addFields({name:'\u200B', value:'\u200B', inline:true});
     }
     await interaction.editReply({ embeds: [Embed] });
 }

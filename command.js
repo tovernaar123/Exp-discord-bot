@@ -12,9 +12,10 @@ config.addKey('roles/contributor', '678245941639381010');
 
 
 /**
+ * @template {DiscordCommand} T
  * @typedef {Object} SubcommandArgument 
- * @property {'Subcommand'} type
- * @property {DiscordCommand} command
+ * @property {Readonly<'Subcommand'>} type
+ * @property {T} command
 */
 
 /**
@@ -22,13 +23,13 @@ config.addKey('roles/contributor', '678245941639381010');
  * @property {'Number' | 'Integer'} type
  * @property {number} [min]
  * @property {number} [max]
- * @property {[name: string, value: number][]}  [choices]
+ * @property {readonly (readonly [name: string, value: number])[]}  [choices]
 */
 
 /**
  * @typedef {Object} StringArgument 
- * @property {'String'} type
- * @property {[name: string, value: string][]} [choices]
+ * @property {Readonly<'String'>} type
+ * @property {readonly (readonly [name: string, value: string])[]} [choices]
 */
 
 /**
@@ -44,11 +45,12 @@ config.addKey('roles/contributor', '678245941639381010');
  *
 */
 /**  
- * @typedef {((NumberArgument | StringArgument | OtherArgument) & Standard) | SubcommandArgument} Argument
+ * @typedef { Readonly<(( NumberArgument | StringArgument | OtherArgument) & Standard) | SubcommandArgument<any>>} Argument
 */
 
 
 /**
+ * @template {readonly Argument[]} T
  * @typedef {Object} Flags 
  * @property {string} name 
  * @property {Number} [cooldown] 
@@ -56,25 +58,98 @@ config.addKey('roles/contributor', '678245941639381010');
  * @property {String} [description]
  * @property {Boolean} guildOnly
  * @property {String | false} requiredRole
- * @property {Argument[]} args
+ * @property {T} args
+*/
+
+/**
+ * Interface for classes that represent a color.
+ *
+ * @interface Color
+ */
+
+/**
+ * Get the color as an array of red, green, and blue values, represented as
+ * decimal numbers between 0 and 1.
+ *
+ * @function
+ * @name Color
+ * @returns {Array<number>} An array containing the red, green, and blue values,
+ * in that order.
+ */
+/**
+ * @typedef {function(import("discord.js").ChatInputCommandInteraction<'cached'>): Promise<void>} Execute
 */
 
 
 /**
- * @typedef {function(import("discord.js").CommandInteraction<'cached'>): Promise<void>} Execute
+ * @typedef {function(import("discord.js").ChatInputCommandInteraction<'cached'>): Promise<Boolean>} Authorize
 */
 
 /**
- * @typedef {function(import("discord.js").CommandInteraction<'cached'>): Promise<Boolean>} Authorize
+ * @template T
+ * @template V
+ * @typedef {keyof { [P in keyof T as T[P] extends V? P: never]: any}} KeyOfType
+ */
+/**
+ * @template {KeyOfType<DiscordAPI.CommandInteractionOptionResolver,(...args: any) => any> } T
+ * @typedef {Exclude<ReturnType<DiscordAPI.CommandInteractionOptionResolver[T]>,null>} DiscordOptionReturnType
+ */
+/**
+ * @template T
+ * @typedef {(
+* T extends "Boolean" ?  DiscordOptionReturnType<'getBoolean'> :
+* T extends "Channel" ? DiscordOptionReturnType<'getChannel'>:
+* T extends "String" ? DiscordOptionReturnType<'getString'> :
+* T extends "Role" ? DiscordOptionReturnType<'getRole'>  :
+* T extends "Number" ? DiscordOptionReturnType<'getNumber'>  :
+* T extends "Integer" ? DiscordOptionReturnType<'getInteger'>  :
+* T extends "User" ? DiscordOptionReturnType<'getUser'> :
+* T extends "Subcommand" ? DiscordOptionReturnType<'getSubcommand'> :
+* T extends "Mentionable" ? DiscordOptionReturnType<'getMentionable'> : never
+* )} TypeStringToType
 */
 
+/**
+ * @template T
+ * @typedef {T extends { name: infer U } ? U : never} ExtractName
+ */
+
+/**
+ * @template {readonly any[]} T
+ * @typedef {ExtractName<T[number]>} NameTuple
+ */
+
+/**
+ * @template T
+ * @template {string} R
+ * @typedef {T extends { name: R, type: infer U } ? U : never }  ExtracttypeFromName
+ */
+
+
+
+/**
+ * @template T
+ * @template {string} R
+ * @typedef {T extends { name: R, required: infer U } ? U : never }  ExtractRequiredFromName
+ */
+
+
+
+/**
+ * @template {readonly Argument[]} T
+ */
 class DiscordCommand {
-
-
     /**
-    * @param {Flags} flags Sets all the setting of this command.
+     * @type {T}
+     */
+    args;
+
+    argnames;
+    /**
+    * @param {Flags<T>} flags Sets all the setting of this command.
     */
     constructor(flags) {
+
         this.name = flags.name;
         if (!this.name) throw new Error('Command name is not defined.');
 
@@ -85,8 +160,13 @@ class DiscordCommand {
         this.description = flags.description || 'No description given.';
         this.guildOnly = flags.guildOnly;
         this.requiredRole = flags.requiredRole;
-
         this.args = flags.args;
+        this.argnames = (this.args.map(
+            (command) => {
+                if (command.type == 'Subcommand') return /**  @type {NameTuple<T>} */ (command.command.name);
+                return /**  @type {NameTuple<T>} */ (command.name);
+            }
+        ));
         this.slash = true;
         /**
          * @type {Builders.SlashCommandSubcommandBuilder | Builders.SlashCommandBuilder}
@@ -136,16 +216,9 @@ class DiscordCommand {
         contributor: config.getKey('roles/contributor'),
     };
 
-    /**
-     * @typedef {Object} CommonArgs 
-     * @property {Argument} Server
-     * @property {Argument} ServerNoAll
-    */
 
-    /**
-     * @type {CommonArgs}
-    */
-    static CommonArgs = {
+
+    static CommonArgs = /** @type {const} */ ({
         'Server': {
             name: 'server',
             description: 'The server to run the command on.',
@@ -179,7 +252,7 @@ class DiscordCommand {
                 ['Server 8', '8'],
             ]
         }
-    };
+    });
 
     /**
      * @type {import("./infoBot.js").Bot}
@@ -212,7 +285,7 @@ class DiscordCommand {
                 /**
                  * @type {DiscordAPI.APIApplicationCommandOptionChoice<string>}
                  */
-                let newval = {name:val[0], value:val[1], name_localizations: null }; 
+                let newval = { name: val[0], value: val[1], name_localizations: null };
                 return newval;
             }));
         } else if ((arg.type === 'Number' || arg.type === 'Integer')) {
@@ -223,7 +296,7 @@ class DiscordCommand {
                 /**
                  * @type {DiscordAPI.APIApplicationCommandOptionChoice<number>}
                  */
-                let newval = {name:val[0], value:val[1], name_localizations: null }; 
+                let newval = { name: val[0], value: val[1], name_localizations: null };
                 return newval;
             }));
         }
@@ -233,6 +306,55 @@ class DiscordCommand {
         builder.setDescription(arg.description);
         command[DiscordCommand.addoptions[arg.type]](builder);
     }
+    /**
+     * @template {NameTuple<T>} U
+     * @typedef {TypeStringToType<ExtracttypeFromName<T[number],U>>} ReturnTypeGet
+     */
+    /**
+     * @template {NameTuple<T>} U
+     * @typedef {ExtractRequiredFromName<T[Number],U> extends true ? ReturnTypeGet<U>: (ReturnTypeGet<U> | null)} ReturnTypeGetWithReq
+     */
+    /**
+     * @template {NameTuple<T>} U
+     * @param {U} name 
+     * @param {DiscordAPI.ChatInputCommandInteraction} interaction 
+     * @returns {ReturnTypeGetWithReq<U>}
+     */
+    GetOption(interaction, name) {
+        let arg = this.args.filter((argument) => {
+            if (argument.type == 'Subcommand') return  (argument.command.name === name);
+            return  (argument.name === name);
+        })[0].type;
+        let ret;
+        switch(arg) {
+            case 'Boolean':
+                ret = interaction.options.getBoolean(name);
+                break;
+            case 'Channel':
+                ret = interaction.options.getChannel(name);
+                break;
+            case 'Integer':
+                ret = interaction.options.getInteger(name);
+                break;
+            case 'Mentionable':
+                ret = interaction.options.getMentionable(name);
+                break;
+            case 'Number':
+                ret = interaction.options.getNumber(name);
+                break;
+            case 'Role':
+                ret = interaction.options.getRole(name);
+                break;
+            case 'String':
+                ret = interaction.options.getString(name);
+                break;
+            case 'User':
+                ret = interaction.options.getUser(name);
+                break;
+        }
+        return /** @type {ReturnTypeGet<U>} */  (ret);
+    }
+    
 
     create_command() {
         this.slashbuilder.setName(this.name);
@@ -242,6 +364,8 @@ class DiscordCommand {
             this.AddOption(this.slashbuilder, arg);
         }
     }
+
+
 
     /**
      * @param {import("./infoBot.js").Bot} client
@@ -285,7 +409,9 @@ class DiscordCommand {
         }
         return true;
     }
+    async AutoComplete() {
 
+    }
     /**
      * @argument {import("discord.js").CommandInteraction<'cached'>} interaction
     */
